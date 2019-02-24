@@ -1,0 +1,79 @@
+
+%%
+
+%class JFlexScanner
+
+%function next_token
+
+%type Token
+
+other 		=.
+
+whitespace	=[ \n\t]|\{([^\}]*)\}
+
+letter		=[A-Za-z]
+
+digit		=[0-9]
+
+integer		={digit}+
+
+valid_id	={letter}(({letter}|{digit})*)
+
+valid_number	={integer}((\.{integer})?)((E((\+|\-)?){integer})?)
+
+%eofval{
+				  return  new Token( EnumToken.EOF, "" ); 
+%eofval}
+
+%%
+
+<YYINITIAL>	"program"	{ return  new Token( EnumToken.PROGRAM, yytext() ); }
+<YYINITIAL>	"read"		{ return  new Token( EnumToken.READ, yytext() ); }
+<YYINITIAL>	"write"		{ return  new Token( EnumToken.WRITE, yytext() ); }
+<YYINITIAL>	"return"	{ return  new Token( EnumToken.RETURN, yytext() ); }
+<YYINITIAL>	"."		{ return  new Token( EnumToken.DOT, yytext() ); }
+<YYINITIAL>	":="		{ return  new Token( EnumToken.ASSIGNOP, yytext() ); }
+<YYINITIAL>	"="		{ return  new Token( EnumToken.RELOP, yytext() ); }
+<YYINITIAL>	"<="		{ return  new Token( EnumToken.RELOP, yytext() ); }
+<YYINITIAL>	">="		{ return  new Token( EnumToken.RELOP, yytext() ); }
+<YYINITIAL>	"<"		{ return  new Token( EnumToken.RELOP, yytext() ); }
+<YYINITIAL>	">"		{ return  new Token( EnumToken.RELOP, yytext() ); }
+<YYINITIAL>	"<>"		{ return  new Token( EnumToken.RELOP, yytext() ); }
+<YYINITIAL>	"+"		{ return  new Token( EnumToken.ADDOP, yytext() ); }
+<YYINITIAL>	"-"		{ return  new Token( EnumToken.ADDOP, yytext() ); }
+<YYINITIAL>	"or"		{ return  new Token( EnumToken.ADDOP, yytext() ); }
+<YYINITIAL>	"*"		{ return  new Token( EnumToken.MULOP, yytext() ); }
+<YYINITIAL>	"/"		{ return  new Token( EnumToken.MULOP, yytext() ); }
+<YYINITIAL>	"div"		{ return  new Token( EnumToken.MULOP, yytext() ); }
+<YYINITIAL>	"mod"		{ return  new Token( EnumToken.MULOP, yytext() ); }
+<YYINITIAL>	"and"		{ return  new Token( EnumToken.MULOP, yytext() ); }
+<YYINITIAL>	";"		{ return  new Token( EnumToken.SEMICOLON, yytext() ); }
+<YYINITIAL>	":"		{ return  new Token( EnumToken.COLON, yytext() ); }
+<YYINITIAL>	","		{ return  new Token( EnumToken.COMMA, yytext() ); }
+<YYINITIAL>	"("		{ return  new Token( EnumToken.LRPAREN, yytext() ); }
+<YYINITIAL>	")"		{ return  new Token( EnumToken.RRPAREN, yytext() ); }
+<YYINITIAL>	"["		{ return  new Token( EnumToken.LSPAREN, yytext() ); }
+<YYINITIAL>	"]"		{ return  new Token( EnumToken.RSPAREN, yytext() ); }
+<YYINITIAL>	"{"		{ return  new Token( EnumToken.LCPAREN, yytext() ); }
+<YYINITIAL>	"}"		{ return  new Token( EnumToken.RCPAREN, yytext() ); }
+<YYINITIAL>	"program"	{ return  new Token( EnumToken.PROGRAM, yytext() ); }
+<YYINITIAL>	"var"		{ return  new Token( EnumToken.VAR, yytext() ); }
+<YYINITIAL>	"array"		{ return  new Token( EnumToken.ARRAY, yytext() ); }
+<YYINITIAL>	"of"		{ return  new Token( EnumToken.OF, yytext() ); }
+<YYINITIAL>	"integer"	{ return  new Token( EnumToken.INTEGER, yytext() ); }
+<YYINITIAL>	"real"		{ return  new Token( EnumToken.REAL, yytext() ); }
+<YYINITIAL>	"function"	{ return  new Token( EnumToken.FUNCTION, yytext() ); }
+<YYINITIAL>	"procedure"	{ return  new Token( EnumToken.PROCEDURE, yytext() ); }
+<YYINITIAL>	"begin"		{ return  new Token( EnumToken.BEGIN, yytext() ); }
+<YYINITIAL>	"end"		{ return  new Token( EnumToken.END, yytext() ); }
+<YYINITIAL>	"if"		{ return  new Token( EnumToken.IF, yytext() ); }
+<YYINITIAL>	"then"		{ return  new Token( EnumToken.THEN, yytext() ); }
+<YYINITIAL>	"else"		{ return  new Token( EnumToken.ELSE, yytext() ); }
+<YYINITIAL>	"while"		{ return  new Token( EnumToken.WHILE, yytext() ); }
+<YYINITIAL>	"do"		{ return  new Token( EnumToken.DO, yytext() ); }
+<YYINITIAL>	"not"		{ return  new Token( EnumToken.NOT, yytext() ); }
+{valid_id}			{ return  new Token( EnumToken.ID, yytext() ); }
+{valid_number}			{ return  new Token( EnumToken.NUM, yytext() ); }
+{whitespace}			{					    }
+{other}				{ System.out.println("ERROR IN SCANNER INVALID CHAR(S): " + yytext()); }
+
