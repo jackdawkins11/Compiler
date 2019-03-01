@@ -1,5 +1,14 @@
 package symbolTable;
 
+/*
+ *
+ * A symbol can be a few different types,
+ * and if it is a variable
+ * it can be a few different types
+ * of variables. All this is stored
+ * in Symbol.
+ */
+
 public class Symbol{
 
 	EnumId idType;

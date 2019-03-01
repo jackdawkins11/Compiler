@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 /* MyScanner */
 
-import Scanner.*;
+import scanner.*;
 
 /* JUnit */
 
@@ -20,6 +20,16 @@ import static org.junit.Assert.*;
 
 public class TestScanner{
 	
+	/*
+	 *
+	 * This function takes the name
+	 * of a file with tokens and also a name
+	 * of a file with tokens annotated to describe their
+	 * type, and veirfies that it gets the same types
+	 * and strings for each token in tthe first file
+	 * as the annotated file.
+	 */
+
 	static boolean testTheScanner( String args[] ){
 
 		if( args.length != 2 ){
@@ -152,6 +162,13 @@ public class TestScanner{
 		}
 
 	}
+
+	/*
+	 *
+	 * Run the above test on two different 
+	 * files of tokens.
+	 *
+	 */
 
 	@Test 
 	public void runTests(){

@@ -1,12 +1,38 @@
 
 package symbolTable;
 
+/*
+ *
+ * Java Utilities used to
+ *
+ */
+
 import java.util.HashMap;
 import java.util.Vector;
+
+/*
+ * The symbol table is a stack
+ * of hashmaps, each of which represents
+ * a scope for a variable. So a variable added
+ * stays around until the height of the stack
+ * goes below where it was when it was added.
+ */
 
 public class SymbolTable{
 
 	Vector< HashMap< String, Symbol > > symbolMap = new Vector< HashMap< String, Symbol > >();
+
+	public int getDepth(){
+
+		return symbolMap.size() - 1 ;
+
+	}
+
+	public void returnToDepth( int depth ){
+
+		symbolMap.setSize( depth + 1 );
+
+	}
 
 	public void pushScope(){
 
