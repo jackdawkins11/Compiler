@@ -9,11 +9,12 @@ package symbolTable;
 
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.Set;
 
 /*
  * The symbol table is a stack
  * of hashmaps, each of which represents
- * a scope for a variable. So a variable added
+ * a scope for a identifier. So an identifier added
  * stays around until the height of the stack
  * goes below where it was when it was added.
  */
@@ -22,11 +23,41 @@ public class SymbolTable{
 
 	Vector< HashMap< String, Symbol > > symbolMap = new Vector< HashMap< String, Symbol > >();
 
+	public void print(){
+
+		Set<String> keySet = symbolMap.lastElement().keySet();
+
+		for( int  i= 0 ; i < keySet.size(); i++){
+
+			EnumId idType = symbolMap.lastElement().get( keySet.toArray()[ i ] ).getIdType();
+
+			EnumVar varType = symbolMap.lastElement().get( keySet.toArray()[ i ] ).getVarType();
+
+			String lexeme = symbolMap.lastElement().get( keySet.toArray()[ i ] ).getIdentifier();
+
+			System.out.println( idType.toString() + "  " + varType.toString() + "  " + lexeme );
+
+		}
+
+	}
+
+	public SymbolTable(){
+		pushScope();
+	}
+
+	/*
+	 * get depth
+	 */
+
 	public int getDepth(){
 
 		return symbolMap.size() - 1 ;
 
 	}
+
+	/*
+	 * pop a certain amount of times
+	 */
 
 	public void returnToDepth( int depth ){
 
@@ -34,11 +65,19 @@ public class SymbolTable{
 
 	}
 
+	/*
+	 * push stack
+	 */
+
 	public void pushScope(){
 
 		symbolMap.add( new HashMap< String, Symbol >() );
 
 	}
+
+	/*
+	 * pop stack
+	 */
 
 	public void popScope(){
 
@@ -46,37 +85,38 @@ public class SymbolTable{
 
 	}
 
-	public void addSymbol( EnumId idType, EnumVar varType, String lexeme ){
+	/*
+	 * add symbol
+	 */
 
-		Symbol newSymbol = new Symbol( idType, varType, lexeme );
+	public void add( Symbol newSymbol ){
 
-		symbolMap.lastElement().put( lexeme, newSymbol );
+		symbolMap.lastElement().put( newSymbol.getIdentifier(), newSymbol );
 
 	}
+
+	/*
+	 * delete symbol of the given type
+	 * with the given lexeme
+	 */
 	
-	public void addSymbol( EnumId idType, String lexeme ){
+	public void delete( EnumId idType, String identifier ){
 
-		Symbol newSymbol = new Symbol( idType, EnumVar.NULL, lexeme );
-
-		symbolMap.lastElement().put( lexeme, newSymbol );
-
-	}
-
-	public boolean isProgramName( String lexeme ){
-
-		boolean foundProgram = false;
+		boolean deletedFirstInstance = false;
 
 		for( int i = symbolMap.size() - 1;
-				0 <= i && !foundProgram;
-				i--){
+				0 <= i && !deletedFirstInstance;
+			       	i--){
 
-			if( symbolMap.get( i ).containsKey( lexeme ) ){
+			if( symbolMap.get( i ).containsKey( identifier ) ){
 
-				Symbol symbol = symbolMap.get( i ).get( lexeme );
+				Symbol symbol = symbolMap.get( i ).get( identifier );
 
-				if( symbol.getIdType() == EnumId.PROGRAM ){
+				if( symbol.getIdType() == idType ){
 
-					foundProgram = true;
+					symbolMap.get( i ).remove( identifier, symbol );
+
+					deletedFirstInstance = true;
 
 				}
 			
@@ -84,25 +124,28 @@ public class SymbolTable{
 
 		}
 
-		return foundProgram;
-
 	}
-	
-	public boolean isFunctionName( String lexeme ){
 
-		boolean foundFunction = false;
+	/*
+	 * search for a symbol
+	 * witht the given type and lexeme
+	 */
+	
+	public boolean exists( EnumId idType, String identifier ){
+
+		boolean foundSymbol = false;
 
 		for( int i = symbolMap.size() - 1;
-				0 <= i && !foundFunction;
+				0 <= i && !foundSymbol;
 				i--){
 
-			if( symbolMap.get( i ).containsKey( lexeme ) ){
+			if( symbolMap.get( i ).containsKey( identifier ) ){
 
-				Symbol symbol = symbolMap.get( i ).get( lexeme );
+				Symbol symbol = symbolMap.get( i ).get( identifier );
 
-				if( symbol.getIdType() == EnumId.FUNCTION ){
+				if( symbol.getIdType() == idType ){
 
-					foundFunction = true;
+					foundSymbol = true;
 
 				}
 			
@@ -110,113 +153,9 @@ public class SymbolTable{
 
 		}
 
-		return foundFunction;
+		return foundSymbol;
 
 	}
-	
-	public boolean isVariableRealName( String lexeme ){
 
-		boolean foundVariable = false;
-
-		for( int i = symbolMap.size() - 1;
-				0 <= i && !foundVariable;
-				i--){
-
-			if( symbolMap.get( i ).containsKey( lexeme ) ){
-
-				Symbol symbol = symbolMap.get( i ).get( lexeme );
-
-				if( symbol.getIdType() == EnumId.VARIABLE 
-				 && symbol.getVarType() == EnumVar.REAL ){
-
-					foundVariable = true;
-
-				}
-			
-			}
-
-		}
-
-		return foundVariable;
-	}
-	
-	public boolean isVariableIntegerName( String lexeme ){
-
-		boolean foundVariable = false;
-
-		for( int i = symbolMap.size() - 1;
-				0 <= i && !foundVariable;
-				i--){
-
-			if( symbolMap.get( i ).containsKey( lexeme ) ){
-
-				Symbol symbol = symbolMap.get( i ).get( lexeme );
-
-				if( symbol.getIdType() == EnumId.VARIABLE 
-				 && symbol.getVarType() == EnumVar.INTEGER ){
-
-					foundVariable = true;
-
-				}
-			
-			}
-
-		}
-
-		return foundVariable;
-	}
-	
-	public boolean isArrayRealName( String lexeme ){
-
-		boolean foundArray = false;
-
-		for( int i = symbolMap.size() - 1;
-				0 <= i && !foundArray;
-				i--){
-
-			if( symbolMap.get( i ).containsKey( lexeme ) ){
-
-				Symbol symbol = symbolMap.get( i ).get( lexeme );
-
-				if( symbol.getIdType() == EnumId.ARRAY 
-				 && symbol.getVarType() == EnumVar.REAL ){
-
-					foundArray = true;
-
-				}
-			
-			}
-
-		}
-
-		return foundArray;
-	}
-	
-	public boolean isArrayIntegerName( String lexeme ){
-
-		boolean foundArray = false;
-
-		for( int i = symbolMap.size() - 1;
-				0 <= i && !foundArray;
-				i--){
-
-			if( symbolMap.get( i ).containsKey( lexeme ) ){
-
-				Symbol symbol = symbolMap.get( i ).get( lexeme );
-
-				if( symbol.getIdType() == EnumId.ARRAY 
-				 && symbol.getVarType() == EnumVar.INTEGER ){
-
-					foundArray = true;
-
-				}
-			
-			}
-
-		}
-
-		return foundArray;
-	}
-			
 };	
 

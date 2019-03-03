@@ -12,8 +12,8 @@ public class TestSymbolTable{
 	/*
 	 *
 	 * Test the symbol table by pushing and popping
-	 * the current scope while adding and searching
-	 * for symobls.
+	 * the current scope while adding, searching and deleting
+	 * symobls.
 	 */
 
 	@Test
@@ -23,41 +23,43 @@ public class TestSymbolTable{
 
 		symbolTable.pushScope();
 
-		symbolTable.addSymbol( EnumId.PROGRAM, "prgm" );
+		symbolTable.add( new Symbol( EnumId.PROGRAM, "prgm" ) );
 
+		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
+		assertFalse( symbolTable.exists( EnumId.FUNCTION, "prgm" ) );
+		
 		int savedDepth = symbolTable.getDepth();
-
-		assertFalse( symbolTable.isProgramName( "jack" ) );
-
+		
 		symbolTable.pushScope();
 
-		symbolTable.addSymbol( EnumId.VARIABLE, EnumVar.REAL, "jack" );
-
+		symbolTable.add( new Symbol( EnumId.VARIABLE, EnumVar.REAL, "jack" )  );
+		
+		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
+		assertTrue( symbolTable.exists( EnumId.VARIABLE, "jack" ) );
+		assertFalse( symbolTable.exists( EnumId.VARIABLE, "gjack" ) );
+		
 		symbolTable.pushScope();
 
-		assertTrue( symbolTable.isVariableRealName( "jack" ) );
+		symbolTable.add( new Symbol( EnumId.ARRAY, EnumVar.INTEGER, 1, 4, "arr" ) );
+	
+		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
+		assertTrue( symbolTable.exists( EnumId.VARIABLE, "jack" ) );
+		assertTrue( symbolTable.exists( EnumId.ARRAY, "arr" ) );
 
-		assertFalse( symbolTable.isVariableRealName( "erik" ) );
+		symbolTable.delete( EnumId.VARIABLE, "jack" );
 
-		symbolTable.pushScope();
-
-		symbolTable.addSymbol( EnumId.FUNCTION, "erik"  );
-
-		assertTrue( symbolTable.isFunctionName( "erik" ) );
+		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
+		assertFalse( symbolTable.exists( EnumId.VARIABLE, "jack" ) );
+		assertTrue( symbolTable.exists( EnumId.ARRAY, "arr" ) );
 
 		symbolTable.popScope();
-
-		assertFalse( symbolTable.isFunctionName("erik") );
 		
-		assertFalse( symbolTable.isFunctionName("jack") );
+		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
+		assertFalse( symbolTable.exists( EnumId.ARRAY, "arr" ) );
 
 		symbolTable.returnToDepth( savedDepth );
 
-		assertFalse( symbolTable.isVariableRealName( "jack" ) );
-
-		assertTrue( symbolTable.isProgramName( "prgm" ) );
-
-
+		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
 	}
 
 }
