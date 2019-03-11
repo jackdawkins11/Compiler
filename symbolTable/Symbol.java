@@ -1,13 +1,5 @@
-package symbolTable;
 
-/*
- *
- * A symbol can be a few different types,
- * and if it is a variable
- * it can be a few different types
- * of variables. All this is stored
- * in Symbol.
- */
+package symbolTable;
 
 public class Symbol{
 
@@ -19,73 +11,23 @@ public class Symbol{
 
 	String lexeme;
 
-	/*
-	 *
-	 * There are three constructors and also
-	 * three functions called init that
-	 * function similarly by setting private values.
-	 * There are 3, one for each of
-	 * -Variable
-	 * -arrays
-	 * -functions or programs
-	 */
-
-	//this is the general one when all values are specified
-	//or it is an array
-
 	public Symbol( EnumId idType_tmp, EnumVar varType_tmp, int rows_tmp, int cols_tmp, String lexeme_tmp ){
-		
-		idType = idType_tmp;
-
-		varType = varType_tmp;
-
-		rows = rows_tmp;
-
-		cols = cols_tmp;
-
-		lexeme = lexeme_tmp;
+	
+		init( idType_tmp, varType_tmp, rows_tmp, cols_tmp, lexeme_tmp );
 
 	}
 
-	//this is the one for variables
-	
 	public Symbol( EnumId idType_tmp, EnumVar varType_tmp, String lexeme_tmp ){
 		
-		assert( idType_tmp == EnumId.VARIABLE 
-				&& varType_tmp != EnumVar.NULL );
-
-		idType = idType_tmp;
-
-		varType = varType_tmp;
-
-		rows = -1;
-
-		cols = -1;
-
-		lexeme = lexeme_tmp;
+		init( idType_tmp, varType_tmp, lexeme_tmp );
 
 	}
 
-	//this is the one for functions or programs
-	
 	public Symbol( EnumId idType_tmp, String lexeme_tmp ){
 		
-		assert( idType_tmp != EnumId.ARRAY
-				&& idType_tmp != EnumId.VARIABLE );
-
-		idType = idType_tmp;
-
-		varType = EnumVar.NULL;
-
-		rows = -1;
-
-		cols = -1;
-
-		lexeme = lexeme_tmp;
+		init( idType_tmp, lexeme_tmp );
 
 	}
-
-	//arrays or everything known
 
 	public void init( EnumId idType_tmp, EnumVar varType_tmp, int rows_tmp, int cols_tmp, String lexeme_tmp ){
 		
@@ -101,8 +43,6 @@ public class Symbol{
 
 	}
 
-	//variables
-	
 	public void init( EnumId idType_tmp, EnumVar varType_tmp, String lexeme_tmp ){
 		
 		assert( idType_tmp == EnumId.VARIABLE 
@@ -120,8 +60,6 @@ public class Symbol{
 
 	}
 
-	//program or function
-	
 	public void init( EnumId idType_tmp, String lexeme_tmp ){
 		
 		assert( idType_tmp != EnumId.ARRAY
@@ -139,11 +77,24 @@ public class Symbol{
 
 	}
 
-	/*
-	 *
-	 * getters
-	 *
-	 */
+	public void print(){
+
+		if( idType == EnumId.ARRAY ){
+
+			System.out.println("idType: " + idType.toString() + " lexeme: " + lexeme + " varType: " + varType.toString() 
+					+ " rows: " + rows + " cols: " + cols );
+		
+		}else if( idType == EnumId.VARIABLE ){
+
+			System.out.println("idType: " + idType.toString() + " lexeme: " + lexeme + " varType: " + varType.toString() );
+
+		}else{
+
+			System.out.println("idType: " + idType.toString() + " lexeme: " + lexeme );
+
+		}
+
+	}
 
 	public EnumId getIdType(){
 		return idType;

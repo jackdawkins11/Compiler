@@ -1,23 +1,9 @@
 
 package symbolTable;
 
-/*
- *
- * Java Utilities used to
- *
- */
-
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Set;
-
-/*
- * The symbol table is a stack
- * of hashmaps, each of which represents
- * a scope for a identifier. So an identifier added
- * stays around until the height of the stack
- * goes below where it was when it was added.
- */
 
 public class SymbolTable{
 
@@ -25,100 +11,16 @@ public class SymbolTable{
 
 	public void print(){
 
-		Set<String> keySet = symbolMap.lastElement().keySet();
+		for( int depth = symbolMap.size() - 1;
+				0 <= depth; depth-- ){
 
-		for( int  i= 0 ; i < keySet.size(); i++){
+			System.out.println("symbols at level " + depth );
 
-			EnumId idType = symbolMap.lastElement().get( keySet.toArray()[ i ] ).getIdType();
+			Set< String > keySet = symbolMap.get( depth ).keySet();
 
-			EnumVar varType = symbolMap.lastElement().get( keySet.toArray()[ i ] ).getVarType();
+			for( int i= 0 ; i < keySet.size(); i++){
 
-			String lexeme = symbolMap.lastElement().get( keySet.toArray()[ i ] ).getIdentifier();
-
-			System.out.println( idType.toString() + "  " + varType.toString() + "  " + lexeme );
-
-		}
-
-	}
-
-	public SymbolTable(){
-		pushScope();
-	}
-
-	/*
-	 * get depth
-	 */
-
-	public int getDepth(){
-
-		return symbolMap.size() - 1 ;
-
-	}
-
-	/*
-	 * pop a certain amount of times
-	 */
-
-	public void returnToDepth( int depth ){
-
-		symbolMap.setSize( depth + 1 );
-
-	}
-
-	/*
-	 * push stack
-	 */
-
-	public void pushScope(){
-
-		symbolMap.add( new HashMap< String, Symbol >() );
-
-	}
-
-	/*
-	 * pop stack
-	 */
-
-	public void popScope(){
-
-		symbolMap.remove( symbolMap.size() - 1 );
-
-	}
-
-	/*
-	 * add symbol
-	 */
-
-	public void add( Symbol newSymbol ){
-
-		symbolMap.lastElement().put( newSymbol.getIdentifier(), newSymbol );
-
-	}
-
-	/*
-	 * delete symbol of the given type
-	 * with the given lexeme
-	 */
-	
-	public void delete( EnumId idType, String identifier ){
-
-		boolean deletedFirstInstance = false;
-
-		for( int i = symbolMap.size() - 1;
-				0 <= i && !deletedFirstInstance;
-			       	i--){
-
-			if( symbolMap.get( i ).containsKey( identifier ) ){
-
-				Symbol symbol = symbolMap.get( i ).get( identifier );
-
-				if( symbol.getIdType() == idType ){
-
-					symbolMap.get( i ).remove( identifier, symbol );
-
-					deletedFirstInstance = true;
-
-				}
+				symbolMap.get( depth ).get( keySet.toArray()[ i ] ).print();
 			
 			}
 
@@ -126,11 +28,31 @@ public class SymbolTable{
 
 	}
 
-	/*
-	 * search for a symbol
-	 * witht the given type and lexeme
-	 */
+	public SymbolTable(){
+		
+		pushScope();
 	
+	}
+	
+	public void pushScope(){
+
+		symbolMap.add( new HashMap< String, Symbol >() );
+
+	}
+
+
+	public void popScope(){
+
+		symbolMap.remove( symbolMap.size() - 1 );
+
+	}
+
+	public void add( Symbol newSymbol ){
+
+		symbolMap.lastElement().put( newSymbol.getIdentifier(), newSymbol );
+
+	}
+
 	public boolean exists( EnumId idType, String identifier ){
 
 		boolean foundSymbol = false;
@@ -154,6 +76,32 @@ public class SymbolTable{
 		}
 
 		return foundSymbol;
+
+	}
+
+	public void delete( EnumId idType, String identifier ){
+
+		boolean foundSymbol = false;
+
+		for( int i = symbolMap.size() - 1;
+				0 <= i && !foundSymbol;
+				i--){
+
+			if( symbolMap.get( i ).containsKey( identifier ) ){
+
+				Symbol symbol = symbolMap.get( i ).get( identifier );
+
+				if( symbol.getIdType() == idType ){
+
+					foundSymbol = true;
+
+					symbolMap.get( i ).remove( symbol.getIdentifier(), symbol );
+
+				}
+			
+			}
+
+		}
 
 	}
 

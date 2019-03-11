@@ -1,190 +1,114 @@
 
-/* stream from a file */
-
-import java.io.FileInputStream;
-
 import java.io.InputStreamReader;
-
-/* scan for tokens seperated by whitespace */
-
+import java.io.FileInputStream;
+import java.io.StringBufferInputStream;
 import java.util.Scanner;
-
-/* MyScanner */
-
 import scanner.*;
-
-/* JUnit */
-
 import org.junit.*;
 import static org.junit.Assert.*;
 
 public class TestScanner{
 	
-	/*
-	 *
-	 * This function takes the name
-	 * of a file with tokens and also a name
-	 * of a file with tokens annotated to describe their
-	 * type, and veirfies that it gets the same types
-	 * and strings for each token in tthe first file
-	 * as the annotated file.
-	 */
+	static boolean testTheScanner( String stringOrFilenameA, String stringOrFilenameB, boolean isFilename ){
 
-	static boolean testTheScanner( String args[] ){
+		/* step one: create the scanners */
 
-		if( args.length != 2 ){
+		MyScanner tokenScanner = new MyScanner( stringOrFilenameA, isFilename );
 
-			System.out.println("usage: <file with pascal code> <file with the token seperated by space> ");
+		Scanner annotatedTokenScanner = null;
 
-			return false;
+		if( isFilename ){
+
+			FileInputStream fis = null;
+
+			try{
+				
+				fis = new FileInputStream( stringOrFilenameB );	
+
+			}catch( Exception e ){ e.printStackTrace(); }
+
+			InputStreamReader isr = new InputStreamReader( fis );
+
+			annotatedTokenScanner = new Scanner( isr );
+
+		}else{
+	
+			StringBufferInputStream sbis = new StringBufferInputStream( stringOrFilenameB );	
+
+			InputStreamReader isr = new InputStreamReader( sbis );
+
+			annotatedTokenScanner = new Scanner( isr );
 
 		}
-
-		/* open files */
-
-		//code
-
-		FileInputStream code_fis = null;
-
-		try{
-
-			code_fis = new FileInputStream( args[0] );
-
-		}catch (Exception e ){ e.printStackTrace(); }
-
-		InputStreamReader code_isr = new InputStreamReader( code_fis );
-
-		//tokens
-
-		FileInputStream token_fis = null;
-
-		try{
-
-			token_fis = new FileInputStream( args[1] );
-
-		}catch (Exception e ){ e.printStackTrace(); }
-
-
-		/* create the scanners */
-
-		MyScanner code = new MyScanner( code_isr );
-
-		Scanner ans = new Scanner( token_fis );
-
-		/* set token/string to null */
-
-		Token token = new Token( EnumToken.EOF, "" );
-
-		String ans_string = null;
 		
-		String ans_type = null;
+		/* step two: start getting tokens
+		 * from tokenScanner and assert
+		 * it equals the annotated version.
+		 */
+
+		boolean success = true;
+
+		while( tokenScanner.hasNext() && success ){
+
+			Token token = tokenScanner.next();
+
+			String correctLexeme = null,
+			       correctType= null;
+
+			if( annotatedTokenScanner.hasNext() ){
+
+				correctLexeme = annotatedTokenScanner.next();
+
+				if( annotatedTokenScanner.hasNext() ){
 			
-		boolean is_first_iteration = true;
-
-		boolean end_of_file = false;
-
-		boolean good_so_far = true;
-		
-		while( is_first_iteration || ( !end_of_file && good_so_far ) ){
-			
-			//do they have another token?
-
-			boolean ans_has_next, code_has_next;
-
-			if( code.hasNext() ){
-
-				token = code.next();
-
-				code_has_next = true;
-
-			}else{
-
-				code_has_next = false;
-
-			}
-
-			if( ans.hasNext() ){
-
-				ans_string = ans.next();
-
-				if( ans.hasNext() ){
-
-					ans_type = ans.next();
-
-					ans_has_next = true;
-
-				}else{
-
-					ans_has_next = false;
+					correctType = annotatedTokenScanner.next();
 
 				}
 
-			}else{
+			}
 
-				ans_has_next = false;
+			success = correctLexeme != null
+				&& correctType != null;
+
+			if( success ){
+
+				success = token.getType().toString().equals( correctType )
+					&& token.getString().equals( correctLexeme );
 
 			}
 
-			//true if either scanner ran out
-
-			end_of_file = !code_has_next || !ans_has_next;
-
-			if( end_of_file ){
-
-				//System.out.println("end of file");
-				
-				//did only one scanner end?
-				
-				good_so_far = code_has_next == ans_has_next;
-
-			}else{
-
-				//System.out.println("\"" + token.getString() + "\" == \"" + ans_string 
-				//		+ "\" and " + token.getType().toString() + " == " + ans_type );
-
-				good_so_far = ans_string.equals( token.getString() ) 
-					&& ans_type.equals( token.getType().toString() );
-
-			}
-
-			is_first_iteration = false;
-		
 		}
 
-		if( good_so_far ){
-
-			return true;
-
-		}else{
-
-			return false;
-
-		}
+		return success;
 
 	}
-
-	/*
-	 *
-	 * Run the above test on two different 
-	 * files of tokens.
-	 *
-	 */
 
 	@Test 
 	public void runTests(){
 
-		String args[] = new String[2];
+		assertTrue( testTheScanner( "testData/scannerTestData/tokens1.txt",
+				       "testData/scannerTestData/annotatedTokens1.txt",
+			       true ) );
+		
+		assertTrue( testTheScanner( "testData/scannerTestData/tokens2.txt",
+				       "testData/scannerTestData/annotatedTokens2.txt",
+			       true ) );
 
-		args[ 0 ] = "test_data/code_1.txt";
-		args[ 1 ] = "test_data/correct_1.txt";
+		String tokenString1 = 
+			"this program var ) [ := ";
 
-		assertTrue( testTheScanner( args ) );
+		String annotatedTokenString1 = 
+			"this ID program PROGRAM var VAR ) RRPAREN [ LSPAREN := ASSIGNOP";
 
-		args[ 0 ] = "test_data/code_2.txt";
-		args[ 1 ] = "test_data/correct_2.txt";
-
-		assertTrue( testTheScanner( args ) );
-
+		assertTrue( testTheScanner( tokenString1, annotatedTokenString1,
+					false ) );
+	
+		String uncorrectAnnotatedTokenString1 =	
+			"this VAR program PROGRAM var VAR ) RRPAREN [ LSPAREN := ASSIGNOP";
+	
+		assertFalse( testTheScanner( tokenString1, uncorrectAnnotatedTokenString1,
+					false ) );
+	
 	}
 	
 }

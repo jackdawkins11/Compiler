@@ -2,6 +2,7 @@
 package compiler;
 
 import parser.*;
+import scanner.*;
 
 class CompilerMain{
 
@@ -15,7 +16,9 @@ class CompilerMain{
 
 		}
 
-		Recognizer recognizer = new Recognizer( args[ 0 ] );
+		MyScanner myScanner = new MyScanner( args[ 0 ], true );
+
+		Recognizer recognizer= new Recognizer( myScanner );
 
 		if( recognizer.programNT() ){
 

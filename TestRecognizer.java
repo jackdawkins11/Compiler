@@ -1,78 +1,89 @@
 
-//import the recognizer
-import parser.Recognizer;
-
-/* import JUnit */
-
 import org.junit.*;
 import static org.junit.Assert.*;
+import parser.Recognizer;
+import scanner.MyScanner;
 
 public class TestRecognizer{
-
-	/*
-	 * This first tests the recognizer on
-	 * 6 pascal programs, 3 of which are correct
-	 * and 3 which are not but are similar. Then it tests
-	 * on files almost exactly like the correct
-	 * pascal program it just recognized except
-	 * with syntax errors that can only be caught
-	 * by the symbolTable. For example
-	 * using a variable before it has been declared.
-	 * Then it tests on 4 more complex programs
-	 * 2 of which are correct and the others
-	 * similar but incorrect replicas.
-	 */
-
+	
 	@Test
 	public void test1(){
 
-		Recognizer recognizer = new Recognizer("test_data/correct1.pas");
+		MyScanner cScanner = null;
 
-		assertTrue( recognizer.programNT() );
+		Recognizer cRecognizer = null;
 
-		recognizer = new Recognizer("test_data/incorrect1.pas");
+		cScanner = new MyScanner( "testData/recognizerTestData/correct1.pas", true );
 
-		assertFalse( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/correct2.pas");
+		assertTrue( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/correct2.pas", true );
 
-		assertTrue( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/incorrect2.pas");
+		assertTrue( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/correct3.pas", true );
 
-		assertFalse( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/correct3.pas");
+		assertTrue( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/correct4.pas", true );
 
-		assertTrue( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/incorrect3.pas");
+		assertTrue( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/correct5.pas", true );
 
-		assertFalse( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/incorrect4.pas");
+		assertTrue( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/incorrect1.pas", true );
 
-		assertFalse( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/incorrect5.pas");
+		assertFalse( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/incorrect2.pas", true );
 
-		assertFalse( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/correct4.pas");
+		assertFalse( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/incorrect3.pas", true );
 
-		assertTrue( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/correct5.pas");
+		assertFalse( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/incorrect4.pas", true );
 
-		assertTrue( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/incorrect6.pas");
+		assertFalse( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/incorrect5.pas", true );
 
-		assertFalse( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
 
-		recognizer = new Recognizer("test_data/incorrect7.pas");
+		assertFalse( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/incorrect6.pas", true );
 
-		assertFalse( recognizer.programNT() );
+		cRecognizer = new Recognizer( cScanner );
+
+		assertFalse( cRecognizer.programNT() );
+	
+		cScanner = new MyScanner( "testData/recognizerTestData/incorrect7.pas", true );
+
+		cRecognizer = new Recognizer( cScanner );
+
+		assertFalse( cRecognizer.programNT() );
 
 	}
 

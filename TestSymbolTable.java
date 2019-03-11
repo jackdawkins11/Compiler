@@ -1,67 +1,55 @@
 
-
 import symbolTable.*;
-
-/* JUnit */
-
 import org.junit.*;
 import static org.junit.Assert.*;
 
 public class TestSymbolTable{
 
-	/*
-	 *
-	 * Test the symbol table by pushing and popping
-	 * the current scope while adding, searching and deleting
-	 * symobls.
-	 */
-
 	@Test
 	public void testTable(){
 
-		SymbolTable symbolTable = new SymbolTable();
+		SymbolTable symbolTable  = new SymbolTable();
 
-		symbolTable.pushScope();
+		Symbol programSymbol = new Symbol( EnumId.PROGRAM, "main" );
 
-		symbolTable.add( new Symbol( EnumId.PROGRAM, "prgm" ) );
+		symbolTable.add( programSymbol );
 
-		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
-		assertFalse( symbolTable.exists( EnumId.FUNCTION, "prgm" ) );
+		assertTrue( symbolTable.exists( EnumId.PROGRAM, "main" ) );
+
+		Symbol funct1Symbol = new Symbol( EnumId.FUNCTION, "addNum" );
+
+		symbolTable.add( funct1Symbol );
+
+		assertTrue( symbolTable.exists( EnumId.FUNCTION, "addNum" ) );
+
+		Symbol var1Symbol = new Symbol( EnumId.VARIABLE, EnumVar.INTEGER, "count" );
+
+		symbolTable.add( var1Symbol );
+
+		assertTrue( symbolTable.exists( EnumId.VARIABLE, "count" ) );
+
+		Symbol var2Symbol = new Symbol( EnumId.ARRAY, EnumVar.REAL, 10, 1, "accumArray" );
+
+		symbolTable.add( var2Symbol );
+
+		assertTrue( symbolTable.exists( EnumId.ARRAY, "accumArray" ) );
+
+		symbolTable.delete( EnumId.PROGRAM, "main" );
 		
-		int savedDepth = symbolTable.getDepth();
-		
-		symbolTable.pushScope();
-
-		symbolTable.add( new Symbol( EnumId.VARIABLE, EnumVar.REAL, "jack" )  );
-		
-		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
-		assertTrue( symbolTable.exists( EnumId.VARIABLE, "jack" ) );
-		assertFalse( symbolTable.exists( EnumId.VARIABLE, "gjack" ) );
-		
-		symbolTable.pushScope();
-
-		symbolTable.add( new Symbol( EnumId.ARRAY, EnumVar.INTEGER, 1, 4, "arr" ) );
+		assertFalse( symbolTable.exists( EnumId.PROGRAM, "main" ) );
 	
-		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
-		assertTrue( symbolTable.exists( EnumId.VARIABLE, "jack" ) );
-		assertTrue( symbolTable.exists( EnumId.ARRAY, "arr" ) );
-
-		symbolTable.delete( EnumId.VARIABLE, "jack" );
-
-		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
-		assertFalse( symbolTable.exists( EnumId.VARIABLE, "jack" ) );
-		assertTrue( symbolTable.exists( EnumId.ARRAY, "arr" ) );
-
-		symbolTable.popScope();
+		symbolTable.delete( EnumId.FUNCTION, "addNum" ) ;
 		
-		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
-		assertFalse( symbolTable.exists( EnumId.ARRAY, "arr" ) );
+		assertFalse( symbolTable.exists( EnumId.FUNCTION, "addNum" ) );
+		
+		symbolTable.delete( EnumId.VARIABLE, "count" ) ;
+		
+		assertFalse( symbolTable.exists( EnumId.VARIABLE, "count" ) );
+		
+		symbolTable.delete( EnumId.ARRAY, "accumArray" );
+		
+		assertFalse( symbolTable.exists( EnumId.ARRAY, "accumArray" ) );
 
-		symbolTable.returnToDepth( savedDepth );
-
-		assertTrue( symbolTable.exists( EnumId.PROGRAM, "prgm" ) );
 	}
 
 }
-
-

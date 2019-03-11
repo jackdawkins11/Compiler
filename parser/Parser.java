@@ -3,9 +3,10 @@ package parser;
 
 import scanner.*;
 import symbolTable.*;
+import syntaxTree.*;
 import java.util.Vector;
 
-public class Recognizer{
+public class Parser{
 
 	Vector< Token > allTokens = new Vector< Token >();
 	
@@ -13,7 +14,7 @@ public class Recognizer{
 
 	SymbolTable symbolTable = new SymbolTable();
 
-	public Recognizer( MyScanner myScanner ){
+	public Parser( MyScanner myScanner ){
 
 		while( myScanner.hasNext() ){
 
@@ -25,50 +26,89 @@ public class Recognizer{
 
 	public void printTable(){ symbolTable.print(); }
 	
-	public boolean programNT(){
+	public ProgramNode programNT(){
 
 		int savedGlIter = glIter;
 
-		//"program"
+		//EXTRA
+
+		ProgramNode programNode1 = null;
+
+		//EXTRA
+
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.PROGRAM ){
 
-			glIter ++;
+			glIter++;
 
-			//ID
 			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
-	
-				//create program identifier
+
+				//EXTRA
+
+				programNode1 = new ProgramNode( allTokens.get( glIter ).getString() );
+
 				Symbol newProgramId = new Symbol( EnumId.PROGRAM, allTokens.get( glIter ).getString() );
+
+				symbolTable.add( newProgramId );
+				
+				//EXTRA
 
 				glIter ++;
 
-				//";"
 				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
 
 					glIter ++;
-					
-					//add program identifier
-					symbolTable.add( newProgramId );
 
-					//non-terminal declarations
-					if( declarationsNT() ){
+					//EXTRA
+
+					DeclarationsNode declarationsNode1 = new DeclarationsNode();
+					
+					//EXTRA
+
+					if( declarationsNT( declarationsNode1 ) ){
+
+						//EXTRA
+
+						programNode1.setVariables( declarationsNode1 );
+
+						//EXTRA
 
 						glIter ++;
 
-						//non-terminal subprogram_declarations
-						if( subprogram_declarationsNT() ){
+						//EXTRA
+
+						SubProgramDeclarationsNode subProgramDeclarationsNode1 = new SubProgramDeclarationsNode();
+
+						//EXTRA
+
+						if( subprogram_declarationsNT( subProgramDeclarationsNode1 ) ){
+
+							//EXTRA
+
+							programNode1.setFunctions( subProgramDeclarationsNode1 );
+
+							//EXTRA
 
 							glIter ++;
 
-							//non-terminal compound_statement
-							if( compound_statementNT() ){
+							//EXTRA
+
+							CompoundStatementNode compoundStatementNode1 = new CompoundStatementNode();
+
+							//EXTRA
+
+							if( compound_statementNT( compoundStatementNode1 ) ){
+
+								//EXTRA
+
+								programNode1.setMain( compoundStatementNode1 );
+
+								//EXTRA
 
 								glIter ++;
 
-								//"."
 								if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.DOT ){
 
-									return true;
+									return programNode1;
 
 								}
 
@@ -78,17 +118,20 @@ public class Recognizer{
 
 					}
 
-					//remove the program identifier
-					symbolTable.delete( EnumId.PROGRAM, newProgramId.getIdentifier() );
-
 				}
+			
+				//EXTRA
+
+				symbolTable.delete( EnumId.PROGRAM, newProgramId.getIdentifier() );
+
+				//EXTRA
 
 			}
 
 		}
 		glIter = savedGlIter;
 
-		return false;
+		return null;
 
 	}
 
@@ -96,19 +139,20 @@ public class Recognizer{
 
 		int savedGlIter = glIter;
 
-		//ID
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
+
+			//EXTRA
 
 			identifiers.add( allTokens.get( glIter ).getString() );
 
+			//EXTRA
+
 			glIter ++;
 
-			//","
 			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COMMA ){
 
 				glIter++;
 
-				//identifier_list
 				if( identifier_listNT( identifiers ) ){
 
 					return true ;
@@ -117,16 +161,23 @@ public class Recognizer{
 
 			}
 
+			//EXTRA
+
 			identifiers.remove( identifiers.size() - 1 );
+
+			//EXTRA
 
 		}
 		glIter = savedGlIter;
 
-		//ID
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
+
+			//EXTRA
 
 			identifiers.add( allTokens.get( glIter ).getString() );
 			
+			//EXTRA
+
 			return true;
 
 		}
@@ -136,37 +187,36 @@ public class Recognizer{
 
 	}
 
-	boolean declarationsNT(){
+	boolean declarationsNT( DeclarationsNode declarationsNode1 ){
 
 		int savedGlIter = glIter;
 
-		//"var"
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.VAR ){
 
 			glIter++;
 
-			//create the vector of identifiers
+			//EXTRA
 
 			Vector< String > identifiers = new Vector<String>();
 
-			//identifier_list
+			//EXTRA
+
 			if( identifier_listNT( identifiers ) ){
 
 				assert( 0 < identifiers.size() );
 
 				glIter++;
 
-				//":"
 				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
 
 					glIter++;
 
-					//create a dummy symbol to
-					//pass to typeNT to discover the type
+					//EXTRA
 
 					Symbol newSymbolType = new Symbol( EnumId.FUNCTION, "" );
 
-					//type
+					//EXTRA
+
 					if( typeNT( newSymbolType ) ){
 
 						assert( ( newSymbolType.getIdType() == EnumId.VARIABLE
@@ -175,20 +225,25 @@ public class Recognizer{
 
 						glIter++;
 
-						//";"
 						if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
 
 							glIter++;
+						
+							//EXTRA	
 
-							//declarations
-							if( declarationsNT() ){
+							for( int i = 0; i < identifiers.size(); i++){
+								symbolTable.add( new Symbol( newSymbolType.getIdType(), newSymbolType.getVarType(),
+										newSymbolType.getRows(), newSymbolType.getCols(),
+										identifiers.get( i ) ) );
+							}
 
-								//add the symbols
-								for( int i = 0; i < identifiers.size(); i++){
-									symbolTable.add( new Symbol( newSymbolType.getIdType(), newSymbolType.getVarType(),
-											newSymbolType.getRows(), newSymbolType.getCols(),
-											identifiers.get( i ) ) );
-								}
+							for( int i = 0; i < identifiers.size(); i++){
+								declarationsNode1.addVariable( new Variable( identifiers.get( i ) ) );
+							}
+
+							//EXTRA
+
+							if( declarationsNT( declarationsNode1 ) ){
 
 								return true;
 
@@ -215,7 +270,6 @@ public class Recognizer{
 
 		int savedGlIter = glIter;
 
-		//standard_type
 		if( standard_typeNT( newSymbolType ) ){
 
 			return true;
@@ -223,17 +277,14 @@ public class Recognizer{
 		}
 		glIter = savedGlIter;
 
-		//"array"
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ARRAY ){
 
 			glIter++;
 
-			//"["
 			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LSPAREN ){
 
 				glIter++;
 
-				//num
 				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.NUM ){
 
 					int rows = 0;
@@ -247,12 +298,10 @@ public class Recognizer{
 					
 					glIter++;
 
-					//":"
 					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
 
 						glIter++;
 
-						//num
 						if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.NUM ){
 
 							int cols = 0;
@@ -266,17 +315,14 @@ public class Recognizer{
 
 							glIter++;
 
-							//"]"
 							if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RSPAREN ){
 
 								glIter++;
 
-								//"of"
 								if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.OF ){
 
 									glIter++;
 
-									//standard_type
 									if( standard_typeNT( newSymbolType ) ){
 
 										newSymbolType.init( EnumId.ARRAY, newSymbolType.getVarType(), rows, cols, "" ); 
@@ -308,7 +354,6 @@ public class Recognizer{
 
 		int savedGlIter = glIter;
 
-		//"integer"
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.REAL ){
 
 			newSymbolType.init( EnumId.VARIABLE, EnumVar.REAL, "" );
@@ -318,7 +363,6 @@ public class Recognizer{
 		}
 		glIter = savedGlIter;
 
-		//"real"
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.INTEGER ){
 
 			newSymbolType.init( EnumId.VARIABLE, EnumVar.INTEGER, "" );
@@ -332,22 +376,31 @@ public class Recognizer{
 
 	}
 
-	boolean subprogram_declarationsNT(){
+	boolean subprogram_declarationsNT( SubProgramDeclarationsNode subProgramDeclarationsNode1 ){
 
 		int savedGlIter = glIter;
 
-		//subprogram_declarations
-		if( subprogram_declarationNT() ){
+		//EXTRA
+
+		SubProgramNode subProgramNode1 = new SubProgramNode();
+
+		//EXTRA
+
+		if( subprogram_declarationNT( subProgramNode1 ) ){
+
+			//EXTRA
+
+			subProgramDeclarationsNode.addSubProgram( subProgramNode1 );
+
+			//EXTRA
 
 			glIter++;
 
-			//";"
 			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
 
 				glIter++;
 
-				//subprogram_declarations
-				if( subprogram_declarationsNT() ){
+				if( subprogram_declarationsNT( subProgramDeclarationsNode ) ){
 
 					return true;
 
@@ -364,22 +417,43 @@ public class Recognizer{
 
 	}
 
-	boolean subprogram_declarationNT(){
+	boolean subprogram_declarationNT( SubProgramNode subProgramNode ){
 
 		int savedGlIter = glIter;
 
-		//subprogram_head
-		if( subprogram_headNT() ){
+		if( subprogram_headNT( subProgramNode ) ){
 
 			glIter++;
 
-			//declarations
-			if( declarationsNT() ){
+			//EXTRA
+
+			DeclarationsNode declarationsNode = new DeclarationsNode();
+
+			//EXTRA
+
+			if( declarationsNT( declarationsNode ) ){
+
+				//EXTRA
+
+				subProgramNode.setVariables( declarationsNode );
+
+				//EXTRA
 
 				glIter++;
 
-				//compound_statement
-				if( compound_statementNT() ){
+				//EXTRA
+
+				CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
+
+				//EXTRA
+
+				if( compound_statementNT( compoundStatementNode ) ){
+
+					//EXTRA
+
+					subProgramNode.setMain( compoundStatementNode );
+
+					//EXTRA
 
 					return true;
 
@@ -394,43 +468,51 @@ public class Recognizer{
 
 	}
 
-	boolean subprogram_headNT(){
+	boolean subprogram_headNT( SubProgramNode subProgramNode ){
 
 		int savedGlIter = glIter;
 
-		//"function"
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.FUNCTION ){
 
 			glIter++;
 
-			//id
 			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
+
+				//EXTRA
 
 				Symbol functionSymbol = new Symbol( EnumId.FUNCTION, allTokens.get( glIter ).getString() );
 
+				subProgramNode.setName( allTokens.get( glIter ).getString() );
+				
+				//EXTRA
+
 				glIter ++;
 
-				//arguments
 				if( argumentsNT() ){
 
 					glIter++;
 
-					//":"
 					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
 
 						glIter++;
 
+						//EXTRA
+
 						Symbol newSymbolType = new Symbol( EnumId.FUNCTION, "" );
 
-						//standard_type
+						//EXTRA
+
 						if( standard_typeNT( newSymbolType ) ){
 
 							glIter++;
 
-							//";"
 							if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
-							
+					
+								//EXTRA	
+
 								symbolTable.add( functionSymbol );
+
+								//EXTRA
 
 								return true;
 
@@ -447,24 +529,23 @@ public class Recognizer{
 		}
 		glIter = savedGlIter;
 
-		//procedure
+		/*
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.PROCEDURE ){
 
 			glIter++;
 
-			//ID
 			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
 
 				Symbol functionSymbol = new Symbol( EnumId.FUNCTION, allTokens.get( glIter ).getString() );
-				
+			
+				subProgramNode.setName( allTokens.get( glIter ).getString() );
+
 				glIter++;
 
-				//arguments
 				if( argumentsNT() ){
 
 					glIter++;
 
-					//";"
 					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
 
 						symbolTable.add( functionSymbol );
@@ -480,6 +561,7 @@ public class Recognizer{
 
 		}
 		glIter = savedGlIter;
+		*/
 
 		return false;
 
@@ -489,17 +571,14 @@ public class Recognizer{
 
 		int savedGlIter = glIter;
 
-		//"("
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LRPAREN ){
 
 			glIter++;
 
-			//parameter_list
 			if( parameter_listNT() ){
 
 				glIter++;
 
-				//")"
 				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RRPAREN ){
 
 					return true;
@@ -523,21 +602,18 @@ public class Recognizer{
 
 		Vector< String > identifiers = new Vector<String>();
 
-		//identifier_list
 		if( identifier_listNT( identifiers ) ){
 
 			assert( 0 < identifiers.size() );
 
 			glIter++;
 
-			//":"
 			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
 
 				glIter++;
 
 				Symbol newSymbolType = new Symbol( EnumId.FUNCTION, "") ;
 
-				//type
 				if( typeNT( newSymbolType ) ){
 					
 					assert( ( newSymbolType.getIdType() == EnumId.VARIABLE
@@ -546,15 +622,12 @@ public class Recognizer{
 
 					glIter++;
 
-					//";"
 					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
 
 						glIter++;
 
-						//parameter_list
 						if( parameter_listNT() ){
 							
-							//add the symbols
 							for( int i = 0; i < identifiers.size(); i++){
 								symbolTable.add( new Symbol( newSymbolType.getIdType(), newSymbolType.getVarType(),
 										newSymbolType.getRows(), newSymbolType.getCols(),
@@ -576,28 +649,24 @@ public class Recognizer{
 
 		identifiers.clear();
 
-		//identifier_list
 		if( identifier_listNT( identifiers ) ){
 
 			assert( 0 < identifiers.size() );
 			
 			glIter++;
 
-			//":"
 			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
 
 				glIter++;
 
 				Symbol newSymbolType = new Symbol( EnumId.FUNCTION, "" ) ;
 
-				//type
 				if( typeNT( newSymbolType ) ){
 		
 					assert( ( newSymbolType.getIdType() == EnumId.VARIABLE
 							|| newSymbolType.getIdType() == EnumId.ARRAY )
 					     		&& newSymbolType.getVarType() != EnumVar.NULL );
 
-					//add the symbols
 					for( int i = 0; i < identifiers.size(); i++){
 						symbolTable.add( new Symbol( newSymbolType.getIdType(), newSymbolType.getVarType(),
 							newSymbolType.getRows(), newSymbolType.getCols(),
@@ -617,7 +686,7 @@ public class Recognizer{
 
 	}
 
-	boolean compound_statementNT(){
+	boolean compound_statementNT( CompoundStatementNode compoundStatementNode ){
 
 		int savedGlIter = glIter;
 
@@ -627,7 +696,7 @@ public class Recognizer{
 			glIter++;
 
 			//optional_statements
-			if( optional_statementsNT() ){
+			if( optional_statementsNT( compoundStatementNode ) ){
 
 				glIter++;
 
@@ -647,12 +716,12 @@ public class Recognizer{
 
 	}
 
-	boolean optional_statementsNT(){
+	boolean optional_statementsNT( CompoundStatementNode compoundStatementNode ){
 
 		int savedGlIter = glIter;
 
 		//statement_list
-		if( statement_listNT() ){
+		if( statement_listNT( compoundStatementNode ) ){
 
 			return true;
 
@@ -665,12 +734,12 @@ public class Recognizer{
 
 	}
 
-	boolean statement_listNT(){
+	boolean statement_listNT( compoundStatementNode ){
 
 		int savedGlIter = glIter;
 
 		//statement
-		if( statementNT() ){
+		if( statementNT( compoundStatementNode ) ){
 
 			glIter++;
 
@@ -680,7 +749,7 @@ public class Recognizer{
 				glIter++;
 
 				//statement_list
-				if( statement_listNT() ){
+				if( statement_listNT( compoundStatementNode ) ){
 
 					return true;
 
@@ -691,8 +760,10 @@ public class Recognizer{
 		}
 		glIter = savedGlIter;
 
+		compoundStatementNode.clear();
+
 		//statement
-		if( statementNT() ){
+		if( statementNT( compoundStatementNode ) ){
 
 			return true;
 
@@ -703,12 +774,14 @@ public class Recognizer{
 
 	}
 
-	boolean statementNT(){
+	boolean statementNT( CompoundStatementNode compoundStatementNode ){
 
 		int savedGlIter = glIter;
 
+		VariableNode variableNode = new VariableNode();
+
 		//variable
-		if( variableNT() ){
+		if( variableNT( variableNode ) ){
 
 			glIter++;
 
@@ -717,6 +790,8 @@ public class Recognizer{
 
 				glIter++;
 
+				ExpressionNode expressionNode 
+				
 				//expression
 				if( expressionNT() ){
 
@@ -778,6 +853,7 @@ public class Recognizer{
 							}
 
 						}
+					
 					}
 
 				}
@@ -899,7 +975,7 @@ public class Recognizer{
 		
 		//id
 		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID
-		 	&& symbolTable.exists( EnumId.VARIABLE, allTokens.get( glIter ).getString() ) ){		//check symbol table
+		 	&& symbolTable.exists( EnumId.ARRAY, allTokens.get( glIter ).getString() ) ){		//check symbol table
 
 			glIter++;
 
