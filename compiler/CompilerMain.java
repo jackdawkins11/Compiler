@@ -1,37 +1,37 @@
 
 package compiler;
 
-import parser.*;
-import scanner.*;
+import scanner.MyScanner;
+import parser.Parser;
+import syntaxTree.ProgramNode;
 
-class CompilerMain{
+public class CompilerMain{
 
 	public static void main( String args[] ){
 
-		if( args.length != 1 ){
+		MyScanner scanner = new MyScanner( args[ 0 ], true );
 
-			System.out.println("This takes in a single file name and tries to parse the file.");
+		Parser parser = new Parser( scanner );
 
-			assert(false);
+		ProgramNode programNode = null;
 
-		}
+		try{
 
-		MyScanner myScanner = new MyScanner( args[ 0 ], true );
+			programNode = parser.program();
 
-		Recognizer recognizer= new Recognizer( myScanner );
+		}catch( Exception e ){
 
-		if( recognizer.programNT() ){
+			System.out.println("Exception: " + e.getMessage() );
 
-			System.out.println("The input is a MicroPascal program. Printing symbol table.");
-
-			recognizer.printTable();
-
-		}else{
-
-			System.out.println("The input is not a MicroPascal program.");
+			System.exit( 1 );
 
 		}
+	
+		parser.printSymbolTable();
+
+		System.out.println("Indented to string: \n" + programNode.indentedToString( 0 ) );		
 
 	}
 
 }
+
