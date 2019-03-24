@@ -1,11 +1,11 @@
 
-import java.io.InputStreamReader;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.StringBufferInputStream;
-import java.util.Scanner;
-import scanner.*;
 import org.junit.*;
 import static org.junit.Assert.*;
+import java.util.Scanner;
+import scanner.*;
 
 public class TestScanner{
 	

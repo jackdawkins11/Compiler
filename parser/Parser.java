@@ -4,1415 +4,800 @@ package parser;
 import scanner.*;
 import symbolTable.*;
 import syntaxTree.*;
+import variableType.VariableType;
 import java.util.Vector;
 
 public class Parser{
 
-	Vector< Token > allTokens = new Vector< Token >();
+	////////////////
+	//    data    //
+	////////////////
 	
-	int glIter = 0;
+	MyScanner scanner;
 
 	SymbolTable symbolTable = new SymbolTable();
 
-	public Parser( MyScanner myScanner ){
+	Token lookAHead;
 
-		while( myScanner.hasNext() ){
+	boolean endOfFile;
 
-			allTokens.add( myScanner.next() );
+	//////////////////////////
+	//	constructor     //
+	//////////////////////////
 
-		}
+	public Parser( MyScanner scanner_tmp ){
 
-	}
+		scanner = scanner_tmp;
+			
+		if( scanner.hasNext() ){
 
-	public void printTable(){ symbolTable.print(); }
+			lookAHead = scanner.next();
+
+			endOfFile = false;
 	
-	public ProgramNode programNT(){
+		}else{
 
-		int savedGlIter = glIter;
-
-		//EXTRA
-
-		ProgramNode programNode1 = null;
-
-		//EXTRA
-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.PROGRAM ){
-
-			glIter++;
-
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
-
-				//EXTRA
-
-				programNode1 = new ProgramNode( allTokens.get( glIter ).getString() );
-
-				Symbol newProgramId = new Symbol( EnumId.PROGRAM, allTokens.get( glIter ).getString() );
-
-				symbolTable.add( newProgramId );
-				
-				//EXTRA
-
-				glIter ++;
-
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
-
-					glIter ++;
-
-					//EXTRA
-
-					DeclarationsNode declarationsNode1 = new DeclarationsNode();
-					
-					//EXTRA
-
-					if( declarationsNT( declarationsNode1 ) ){
-
-						//EXTRA
-
-						programNode1.setVariables( declarationsNode1 );
-
-						//EXTRA
-
-						glIter ++;
-
-						//EXTRA
-
-						SubProgramDeclarationsNode subProgramDeclarationsNode1 = new SubProgramDeclarationsNode();
-
-						//EXTRA
-
-						if( subprogram_declarationsNT( subProgramDeclarationsNode1 ) ){
-
-							//EXTRA
-
-							programNode1.setFunctions( subProgramDeclarationsNode1 );
-
-							//EXTRA
-
-							glIter ++;
-
-							//EXTRA
-
-							CompoundStatementNode compoundStatementNode1 = new CompoundStatementNode();
-
-							//EXTRA
-
-							if( compound_statementNT( compoundStatementNode1 ) ){
-
-								//EXTRA
-
-								programNode1.setMain( compoundStatementNode1 );
-
-								//EXTRA
-
-								glIter ++;
-
-								if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.DOT ){
-
-									return programNode1;
-
-								}
-
-							}
-
-						}
-
-					}
-
-				}
+			lookAHead = null;
 			
-				//EXTRA
-
-				symbolTable.delete( EnumId.PROGRAM, newProgramId.getIdentifier() );
-
-				//EXTRA
-
-			}
+			endOfFile = true;
 
 		}
-		glIter = savedGlIter;
-
-		return null;
 
 	}
 
-	boolean identifier_listNT( Vector< String > identifiers ){
+	///////////////////////////////
+	//	public methods       //
+	///////////////////////////////
 
-		int savedGlIter = glIter;
+	public ProgramNode program() throws Exception {
 
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
+		try{
 
-			//EXTRA
+		match( EnumToken.PROGRAM );
 
-			identifiers.add( allTokens.get( glIter ).getString() );
+		String programName = match( EnumToken.ID );
 
-			//EXTRA
-
-			glIter ++;
-
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COMMA ){
-
-				glIter++;
-
-				if( identifier_listNT( identifiers ) ){
-
-					return true ;
-
-				}
-
-			}
-
-			//EXTRA
-
-			identifiers.remove( identifiers.size() - 1 );
-
-			//EXTRA
-
-		}
-		glIter = savedGlIter;
-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
-
-			//EXTRA
-
-			identifiers.add( allTokens.get( glIter ).getString() );
-			
-			//EXTRA
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		return false;
-
-	}
-
-	boolean declarationsNT( DeclarationsNode declarationsNode1 ){
-
-		int savedGlIter = glIter;
-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.VAR ){
-
-			glIter++;
-
-			//EXTRA
-
-			Vector< String > identifiers = new Vector<String>();
-
-			//EXTRA
-
-			if( identifier_listNT( identifiers ) ){
-
-				assert( 0 < identifiers.size() );
-
-				glIter++;
-
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
-
-					glIter++;
-
-					//EXTRA
-
-					Symbol newSymbolType = new Symbol( EnumId.FUNCTION, "" );
-
-					//EXTRA
-
-					if( typeNT( newSymbolType ) ){
-
-						assert( ( newSymbolType.getIdType() == EnumId.VARIABLE
-								|| newSymbolType.getIdType() == EnumId.ARRAY )
-						     		&& newSymbolType.getVarType() != EnumVar.NULL );
-
-						glIter++;
-
-						if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
-
-							glIter++;
-						
-							//EXTRA	
-
-							for( int i = 0; i < identifiers.size(); i++){
-								symbolTable.add( new Symbol( newSymbolType.getIdType(), newSymbolType.getVarType(),
-										newSymbolType.getRows(), newSymbolType.getCols(),
-										identifiers.get( i ) ) );
-							}
-
-							for( int i = 0; i < identifiers.size(); i++){
-								declarationsNode1.addVariable( new Variable( identifiers.get( i ) ) );
-							}
-
-							//EXTRA
-
-							if( declarationsNT( declarationsNode1 ) ){
-
-								return true;
-
-							}
-
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//empty
-		glIter --;
-		return true;
-
-	}
-
-	boolean typeNT( Symbol newSymbolType ){
-
-		int savedGlIter = glIter;
-
-		if( standard_typeNT( newSymbolType ) ){
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ARRAY ){
-
-			glIter++;
-
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LSPAREN ){
-
-				glIter++;
-
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.NUM ){
-
-					int rows = 0;
-
-					try{
-						rows = Integer.parseInt( allTokens.get( glIter ).getString() );
-
-					}catch( Exception e ){ e.printStackTrace(); }
-
-					assert( 0 < rows );
-					
-					glIter++;
-
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
-
-						glIter++;
-
-						if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.NUM ){
-
-							int cols = 0;
-
-							try{
-								cols = Integer.parseInt( allTokens.get( glIter ).getString() );
-
-							}catch( Exception e ){ e.printStackTrace(); }
-					
-							assert( 0 < cols );
-
-							glIter++;
-
-							if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RSPAREN ){
-
-								glIter++;
-
-								if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.OF ){
-
-									glIter++;
-
-									if( standard_typeNT( newSymbolType ) ){
-
-										newSymbolType.init( EnumId.ARRAY, newSymbolType.getVarType(), rows, cols, "" ); 
-
-										return true;
-
-									}
-
-								}
-
-							}
-
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		return false;
-
-	}
-
-	boolean standard_typeNT( Symbol newSymbolType ){
-
-		int savedGlIter = glIter;
-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.REAL ){
-
-			newSymbolType.init( EnumId.VARIABLE, EnumVar.REAL, "" );
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.INTEGER ){
-
-			newSymbolType.init( EnumId.VARIABLE, EnumVar.INTEGER, "" );
-			
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		return false;
-
-	}
-
-	boolean subprogram_declarationsNT( SubProgramDeclarationsNode subProgramDeclarationsNode1 ){
-
-		int savedGlIter = glIter;
-
-		//EXTRA
-
-		SubProgramNode subProgramNode1 = new SubProgramNode();
-
-		//EXTRA
-
-		if( subprogram_declarationNT( subProgramNode1 ) ){
-
-			//EXTRA
-
-			subProgramDeclarationsNode.addSubProgram( subProgramNode1 );
-
-			//EXTRA
-
-			glIter++;
-
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
-
-				glIter++;
-
-				if( subprogram_declarationsNT( subProgramDeclarationsNode ) ){
-
-					return true;
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//empty
-		glIter--;
-		return true;
-
-	}
-
-	boolean subprogram_declarationNT( SubProgramNode subProgramNode ){
-
-		int savedGlIter = glIter;
-
-		if( subprogram_headNT( subProgramNode ) ){
-
-			glIter++;
-
-			//EXTRA
-
-			DeclarationsNode declarationsNode = new DeclarationsNode();
-
-			//EXTRA
-
-			if( declarationsNT( declarationsNode ) ){
-
-				//EXTRA
-
-				subProgramNode.setVariables( declarationsNode );
-
-				//EXTRA
-
-				glIter++;
-
-				//EXTRA
-
-				CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
-
-				//EXTRA
-
-				if( compound_statementNT( compoundStatementNode ) ){
-
-					//EXTRA
-
-					subProgramNode.setMain( compoundStatementNode );
-
-					//EXTRA
-
-					return true;
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		return false;
-
-	}
-
-	boolean subprogram_headNT( SubProgramNode subProgramNode ){
-
-		int savedGlIter = glIter;
-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.FUNCTION ){
-
-			glIter++;
-
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
-
-				//EXTRA
-
-				Symbol functionSymbol = new Symbol( EnumId.FUNCTION, allTokens.get( glIter ).getString() );
-
-				subProgramNode.setName( allTokens.get( glIter ).getString() );
-				
-				//EXTRA
-
-				glIter ++;
-
-				if( argumentsNT() ){
-
-					glIter++;
-
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
-
-						glIter++;
-
-						//EXTRA
-
-						Symbol newSymbolType = new Symbol( EnumId.FUNCTION, "" );
-
-						//EXTRA
-
-						if( standard_typeNT( newSymbolType ) ){
-
-							glIter++;
-
-							if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
-					
-								//EXTRA	
-
-								symbolTable.add( functionSymbol );
-
-								//EXTRA
-
-								return true;
-
-							}
-
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		/*
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.PROCEDURE ){
-
-			glIter++;
-
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
-
-				Symbol functionSymbol = new Symbol( EnumId.FUNCTION, allTokens.get( glIter ).getString() );
-			
-				subProgramNode.setName( allTokens.get( glIter ).getString() );
-
-				glIter++;
-
-				if( argumentsNT() ){
-
-					glIter++;
-
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
-
-						symbolTable.add( functionSymbol );
-						
-						return true;
-
-					}
-
-				}
-
-
-			}
-
-		}
-		glIter = savedGlIter;
-		*/
-
-		return false;
-
-	}
-
-	boolean argumentsNT(){
-
-		int savedGlIter = glIter;
-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LRPAREN ){
-
-			glIter++;
-
-			if( parameter_listNT() ){
-
-				glIter++;
-
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RRPAREN ){
-
-					return true;
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//empty
-		glIter--;
-		return true;
-
-	}
-
-	boolean parameter_listNT(){
-
-		int savedGlIter = glIter;
-
-		Vector< String > identifiers = new Vector<String>();
-
-		if( identifier_listNT( identifiers ) ){
-
-			assert( 0 < identifiers.size() );
-
-			glIter++;
-
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
-
-				glIter++;
-
-				Symbol newSymbolType = new Symbol( EnumId.FUNCTION, "") ;
-
-				if( typeNT( newSymbolType ) ){
-					
-					assert( ( newSymbolType.getIdType() == EnumId.VARIABLE
-							|| newSymbolType.getIdType() == EnumId.ARRAY )
-					     		&& newSymbolType.getVarType() != EnumVar.NULL );
-
-					glIter++;
-
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
-
-						glIter++;
-
-						if( parameter_listNT() ){
-							
-							for( int i = 0; i < identifiers.size(); i++){
-								symbolTable.add( new Symbol( newSymbolType.getIdType(), newSymbolType.getVarType(),
-										newSymbolType.getRows(), newSymbolType.getCols(),
-										identifiers.get( i ) ) );
-							}
-
-							return true;
-
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		identifiers.clear();
-
-		if( identifier_listNT( identifiers ) ){
-
-			assert( 0 < identifiers.size() );
-			
-			glIter++;
-
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COLON ){
-
-				glIter++;
-
-				Symbol newSymbolType = new Symbol( EnumId.FUNCTION, "" ) ;
-
-				if( typeNT( newSymbolType ) ){
+		match( EnumToken.SEMICOLON );
 		
-					assert( ( newSymbolType.getIdType() == EnumId.VARIABLE
-							|| newSymbolType.getIdType() == EnumId.ARRAY )
-					     		&& newSymbolType.getVarType() != EnumVar.NULL );
+		DeclarationsNode variables = declarations() ;
 
-					for( int i = 0; i < identifiers.size(); i++){
-						symbolTable.add( new Symbol( newSymbolType.getIdType(), newSymbolType.getVarType(),
-							newSymbolType.getRows(), newSymbolType.getCols(),
-							identifiers.get( i ) ) );
-					}
-					
-					return true;
+		SubProgramDeclarationsNode functions = subprogram_declarations() ;
 
-				}
+		CompoundStatementNode main = compound_statement() ;
 
-			}
+		match( EnumToken.DOT );
+
+		return new ProgramNode( programName, variables, functions, main );
+	
+		}catch( Exception e ){
+
+			throw e;
 
 		}
-		glIter = savedGlIter;
+	}
 
-		return false;
+	public void printSymbolTable(){
+
+		symbolTable.print();
 
 	}
 
-	boolean compound_statementNT( CompoundStatementNode compoundStatementNode ){
+	////////////////////////
+	//      helpers       //
+	////////////////////////	
+	
+	private String match( EnumToken expectedType ) throws Exception {
 
-		int savedGlIter = glIter;
+		String ret = null;
 
-		//"begin"
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.BEGIN ){
+		if( !endOfFile && lookAHead.getType() == expectedType ){
 
-			glIter++;
+			ret = lookAHead.getString();
 
-			//optional_statements
-			if( optional_statementsNT( compoundStatementNode ) ){
+			if( scanner.hasNext() ){
 
-				glIter++;
+				lookAHead = scanner.next();
 
-				//"end"
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.END ){
+				endOfFile = false;
 
-					return true;
+			}else{
 
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		return false;
-
-	}
-
-	boolean optional_statementsNT( CompoundStatementNode compoundStatementNode ){
-
-		int savedGlIter = glIter;
-
-		//statement_list
-		if( statement_listNT( compoundStatementNode ) ){
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		//empty
-		glIter--;
-		return true;
-
-	}
-
-	boolean statement_listNT( compoundStatementNode ){
-
-		int savedGlIter = glIter;
-
-		//statement
-		if( statementNT( compoundStatementNode ) ){
-
-			glIter++;
-
-			//";"
-			if( allTokens.get( glIter ).getType() == EnumToken.SEMICOLON ){
-
-				glIter++;
-
-				//statement_list
-				if( statement_listNT( compoundStatementNode ) ){
-
-					return true;
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		compoundStatementNode.clear();
-
-		//statement
-		if( statementNT( compoundStatementNode ) ){
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		return false;
-
-	}
-
-	boolean statementNT( CompoundStatementNode compoundStatementNode ){
-
-		int savedGlIter = glIter;
-
-		VariableNode variableNode = new VariableNode();
-
-		//variable
-		if( variableNT( variableNode ) ){
-
-			glIter++;
-
-			//assignop
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ASSIGNOP ){
-
-				glIter++;
-
-				ExpressionNode expressionNode 
+				lookAHead = null;
 				
-				//expression
-				if( expressionNT() ){
-
-					return true;
-
-				}
+				endOfFile = true;
 
 			}
 
-		}
-		glIter = savedGlIter;
+		}else{
 
-		//procedure_statement
-		if( procedure_statementNT() ){
+			String lookAHeadTypeString = "null";
 
-			return true;
+			if( !endOfFile ){ lookAHeadTypeString = lookAHead.getType().toString(); }
 
-		}
-		glIter = savedGlIter;
-
-		//compound_statement
-		if( compound_statementNT() ){
-
-			return true;
+			throw new Exception( "Matching " + expectedType.toString() + " found " + lookAHeadTypeString
+				+ " instead." );
 
 		}
-		glIter = savedGlIter;
 
-		//"if"
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.IF ){
-
-			glIter++;
-
-			//expression
-			if( expressionNT() ){
-
-				glIter++;
-
-				//"then"
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.THEN ){
-
-					glIter++;
-
-					//statement
-					if( statementNT() ){
-
-						glIter++;
-
-						//"else"
-						if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ELSE ){
-
-							glIter++;
-
-							//statement
-							if( statementNT() ){
-
-								return true;
-
-							}
-
-						}
-					
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//"while"
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.WHILE ){
-
-			glIter++;
-
-			//expression
-			if( expressionNT() ){
-
-				glIter++;
-
-				//"do"
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.DO ){
-
-					glIter++;
-
-					//statement
-					if( statementNT() ){
-
-						return true;
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//"read"
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.READ ){
-
-			glIter++;
-
-			//"("
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LRPAREN ){
-
-				glIter++;
-
-				//id
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
-
-					glIter++;
-
-					//")"
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RRPAREN ){
-
-						return true;
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//"write"
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.WRITE ){
-
-			glIter++;
-
-			//"("
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LRPAREN ){
-
-				glIter++;
-
-				//expression
-				if( expressionNT() ){
-
-					glIter++;
-
-					//")"
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RRPAREN ){
-
-						return true;
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//"return"
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RETURN ){
-
-			glIter++;
-
-			//expression
-			if( expressionNT() ){
-
-				return true;
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		return false;
+		return ret;
 
 	}
 
-	boolean variableNT(){
+	Vector< String > identifier_list() throws Exception {
 
-		int savedGlIter = glIter;
+		try{
+
+		Vector< String > ID_list = new Vector< String >();
+
+		ID_list.add( match( EnumToken.ID ) );
+
+		while( lookAHead.getType() == EnumToken.COMMA ){
+
+			match( EnumToken.COMMA );
+
+			ID_list.add( match( EnumToken.ID ) );
+
+		}
+
+		return ID_list;
+
+		} catch( Exception e ){
+
+			throw e;
+
+		}
+	
+	}
+
+	DeclarationsNode declarations() throws Exception {
+
+		try{
+
+		DeclarationsNode declarationsNode = new DeclarationsNode();
+
+		while( lookAHead.getType() == EnumToken.VAR ){
 		
-		//id
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID
-		 	&& symbolTable.exists( EnumId.ARRAY, allTokens.get( glIter ).getString() ) ){		//check symbol table
+			match( EnumToken.VAR );
 
-			glIter++;
+			Vector< String > variableNames = identifier_list();
 
-			//"["
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LSPAREN ){
+			match( EnumToken.COLON );
 
-				glIter++;
+			VariableType variableType = type();
 
-				//expression
-				if( expressionNT() ){
+			match( EnumToken.SEMICOLON );
 
-					glIter++;
+			for( int i = 0; i < variableNames.size(); i++){
 
-					//"]"
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RSPAREN ){
+				VariableNode variableNode = null;
+				
+				if( variableType.isArray() ){
+					
+					variableNode = new ArrayVariableNode( variableNames.get( i ), variableType );
 
-						return true;
+				}else{
+
+					variableNode = new StandardVariableNode( variableNames.get( i ), variableType );
+
+				}
+
+				declarationsNode.addVariable( variableNode );
+
+				symbolTable.addVariable( variableNode );
+
+			}
+
+		}
+
+		return declarationsNode;
+
+		}catch( Exception e ){
+
+			throw e;
+
+		}
+	}
+	
+	VariableType type() throws Exception {
+
+		try{
+
+		VariableType variableType = null;
+
+		if( lookAHead.getType() == EnumToken.INTEGER ){
+
+			match( EnumToken.INTEGER );
+
+			variableType = new VariableType( EnumToken.INTEGER );
+
+		}else if( lookAHead.getType() == EnumToken.REAL ){
+
+			match( EnumToken.REAL );
+
+			variableType = new VariableType( EnumToken.REAL );
+
+		}else{
+
+			match( EnumToken.ARRAY );
+
+			match( EnumToken.LSPAREN );
+
+			String rowsString = match( EnumToken.NUM );
+
+			int rows = -1;
+			
+			rows = Integer.parseInt( rowsString );
+
+			match( EnumToken.COLON );
+
+			String colsString = match( EnumToken.NUM );
+
+			int cols = -1;
+			
+			cols = Integer.parseInt( colsString );
+
+			match( EnumToken.RSPAREN );
+
+			match( EnumToken.OF );
+
+			if( lookAHead.getType() == EnumToken.REAL ){
+
+				match( EnumToken.REAL );
+
+				variableType = new VariableType( rows, cols, EnumToken.REAL );
+
+			}else if( lookAHead.getType() == EnumToken.INTEGER ){
+
+				match( EnumToken.INTEGER );
+
+				variableType = new VariableType( rows, cols, EnumToken.INTEGER );
+
+			}else{ throw new Exception( "error" ); }
+
+		}
+
+		return variableType;
+	
+		}catch( Exception e ){
+
+			throw e;
+
+		}
+	}
+
+	SubProgramDeclarationsNode subprogram_declarations() throws Exception {
+
+		try{
+
+		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
+
+		while( lookAHead.getType() == EnumToken.FUNCTION
+				|| lookAHead.getType() == EnumToken.PROCEDURE ){
+
+			SubProgramNode subProgramNode = subprogram_declaration();
+
+			subProgramDeclarationsNode.addSubProgram( subProgramNode );
+
+			symbolTable.addSubProgram( subProgramNode );
+
+			match( EnumToken.SEMICOLON );
+
+		}
+
+		return subProgramDeclarationsNode;
+
+		}catch( Exception e ){
+
+			throw e;
+
+		}
+
+	}
+
+	SubProgramNode subprogram_declaration() throws Exception {
+
+		try{
+
+		SubProgramNode subProgramNode = null;
+
+		if( lookAHead.getType() == EnumToken.FUNCTION ){
+
+			match( EnumToken.FUNCTION );
+
+			String functionName = match( EnumToken.ID );
+
+			DeclarationsNode parameters = arguments();
+
+			match( EnumToken.COLON );
+
+			VariableType functionType = type();
+
+			match( EnumToken.SEMICOLON );
+
+			DeclarationsNode variables = declarations() ;
+
+			CompoundStatementNode main = compound_statement() ;
+
+			subProgramNode = new FunctionNode( functionName, parameters,
+					functionType, variables, main );
+
+		}else if( lookAHead.getType() == EnumToken.PROCEDURE ){
+
+			match( EnumToken.PROCEDURE );
+
+			String procedureName = match( EnumToken.ID );
+
+			DeclarationsNode parameters = arguments();
+
+			match( EnumToken.SEMICOLON );
+
+			DeclarationsNode variables = declarations() ;
+
+			CompoundStatementNode main = compound_statement() ;
+
+			subProgramNode = new ProcedureNode( procedureName, parameters,
+					variables, main );
+
+		}else{
+
+			throw new Exception( "subprogram_declaration" );
+
+		}
+
+		return subProgramNode;
+
+		}catch( Exception e ){
+
+			throw e;
+
+		}
+	}
+
+	DeclarationsNode arguments() throws Exception {
+
+		try{
+
+		DeclarationsNode declarationsNode = new DeclarationsNode();
+		
+		boolean firstIteration = true;
+
+		if( lookAHead.getType() == EnumToken.LRPAREN ){
+
+			match( EnumToken.LRPAREN );
+			
+			do{
+
+				if( !firstIteration ){
+
+					match( EnumToken.SEMICOLON );
+
+				}
+
+				Vector< String > variableNames = identifier_list();
+
+				match( EnumToken.COLON );
+
+				VariableType variableType = type();
+
+				for( int i = 0; i < variableNames.size(); i++){
+
+					VariableNode variableNode = null;
+				
+					if( variableType.isArray() ){
+					
+						variableNode = new ArrayVariableNode( variableNames.get( i ),
+							variableType );
+
+					}else{
+
+						variableNode = new StandardVariableNode( variableNames.get( i ),
+								variableType );
 
 					}
 
+					declarationsNode.addVariable( variableNode );
+
+					symbolTable.addVariable( variableNode );
+
 				}
+
+				firstIteration = false;
+
+			}while( lookAHead.getType() == EnumToken.SEMICOLON );
+
+			match( EnumToken.RRPAREN );
+		
+		}
+
+		return declarationsNode;
+
+		}catch( Exception e ){
+
+			throw e;
+
+		}
+	}
+
+	CompoundStatementNode compound_statement() throws Exception {
+
+		try{
+
+		CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
+
+		match( EnumToken.BEGIN );
+
+		boolean isFirstIteration = true;
+
+		while( lookAHead.getType() != EnumToken.END ){
+
+			if( !isFirstIteration ){
+
+				match( EnumToken.SEMICOLON );
 
 			}
 
-		}
-		glIter = savedGlIter;
+			compoundStatementNode.addStatement( statement() );
 
-		//id
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID 
-				&& symbolTable.exists( EnumId.VARIABLE, allTokens.get( glIter ).getString() ) ){		//check symbol table
-
-			return true;
+			isFirstIteration = false;
 
 		}
-		glIter = savedGlIter;
+			
+		match( EnumToken.END );
 
-		return false;
+		return compoundStatementNode;
+
+		}catch( Exception e ){
+
+			throw e;
+
+		}
+	}
+
+	StatementNode statement() throws Exception {
+
+		try{
+
+		StatementNode statementNode = null;
+
+		if( lookAHead.getType() == EnumToken.ID
+				&& symbolTable.isVariableName( lookAHead.getString() ) ){
+
+			String variableName = match( EnumToken.ID );
+
+			VariableNode variableNode = symbolTable.getVariableByName( variableName );
+			
+			if( lookAHead.getType() == EnumToken.LSPAREN ){
+
+				match( EnumToken.LSPAREN );
+
+				ExpressionNode arrayIndex = expression();
+
+				match( EnumToken.RSPAREN );
+
+				match( EnumToken.ASSIGNOP );
+
+				ExpressionNode rValue = expression();
+
+				statementNode = new ArrayAssignmentStatementNode( (ArrayVariableNode) variableNode, arrayIndex, rValue );
+
+			}else{
+			
+				match( EnumToken.ASSIGNOP );
+
+				ExpressionNode rValue = expression();
+
+				statementNode = new VariableAssignmentStatementNode( (StandardVariableNode) variableNode, rValue );
+
+			}
+
+		}else if( lookAHead.getType() == EnumToken.ID 
+				&& symbolTable.isSubProgramName( lookAHead.getString() ) ){
+
+			String procedureName = match( EnumToken.ID );
+
+			SubProgramNode procedureNode = symbolTable.getSubProgramByName( procedureName );
+
+			if( lookAHead.getType() == EnumToken.LRPAREN ){
+
+				match( EnumToken.LRPAREN );
+
+				Vector< ExpressionNode > parameters = expression_list();
+
+				match( EnumToken.RRPAREN );
+
+				statementNode = new ProcedureStatementNode( procedureNode, parameters );
+
+			}else{
+
+				statementNode = new ProcedureStatementNode( procedureNode );
+
+			}
+
+		}else if( lookAHead.getType() == EnumToken.BEGIN ){
+
+			statementNode = compound_statement();
+
+		}else if( lookAHead.getType() == EnumToken.IF ){
+
+			match( EnumToken.IF );
+
+			ExpressionNode testExpression = expression();
+
+			match( EnumToken.THEN );
+
+			StatementNode ifStatementNode = statement();
+
+			match( EnumToken.ELSE );
+
+			StatementNode thenStatementNode = statement();
+
+			statementNode = new IfThenStatementNode( testExpression, ifStatementNode, thenStatementNode );
+
+		}else if( lookAHead.getType() == EnumToken.WHILE ){
+
+			match( EnumToken.WHILE );
+
+			ExpressionNode testExpression = expression();
+
+			match( EnumToken.DO );
+
+			StatementNode doStatementNode = statement();
+
+			statementNode = new WhileDoStatementNode( testExpression, doStatementNode );
+
+		}else if( lookAHead.getType() == EnumToken.READ ){
+
+			match( EnumToken.READ );
+
+			match( EnumToken.LRPAREN );
+
+			String readName = match( EnumToken.ID );
+
+			match( EnumToken.RRPAREN );
+
+			statementNode = new ReadStatementNode( readName );
+
+		}else if( lookAHead.getType() == EnumToken.WRITE ){
+
+			match( EnumToken.WRITE );
+
+			match( EnumToken.LRPAREN );
+
+			ExpressionNode writeExpression = expression();
+
+			match( EnumToken.RRPAREN );
+
+			statementNode = new WriteStatementNode( writeExpression );
+
+		}else if( lookAHead.getType() == EnumToken.RETURN ){
+
+			match( EnumToken.RETURN );
+
+			ExpressionNode returnExpression = expression();
+
+			statementNode = new ReturnStatementNode( returnExpression );
+
+		}
+
+		return statementNode;
+
+		}catch( Exception e ){
+
+			throw e;
+
+		}
+	}
+
+	Vector< ExpressionNode > expression_list() throws Exception {
+
+		try{
+
+		Vector< ExpressionNode > expressionList = new Vector< ExpressionNode >();
+
+		expressionList.add( expression() );
+
+		while( lookAHead.getType() == EnumToken.COMMA ){
+
+			match( EnumToken.COMMA );
+
+			expressionList.add( expression() );
+
+		}
+
+		return expressionList;
+
+		}catch( Exception e ){
+
+			throw e;
+
+		}
 
 	}
 
-	boolean procedure_statementNT(){
+	ExpressionNode expression() throws Exception {
 
-		int savedGlIter= glIter;
+		try{
 
-		//id
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID 
-				&& symbolTable.exists( EnumId.FUNCTION, allTokens.get( glIter ).getString() ) ){		//check symbol table
+		ExpressionNode result = null;
 
-			glIter++;
+		ExpressionNode simple_expression1 = simple_expression();
 
-			//"("
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LRPAREN ){
+		if( lookAHead.getType() == EnumToken.RELOP ){
 
-				glIter++;
+			String relOpString = match( EnumToken.RELOP );
 
-				//expression_list
-				if( expression_listNT() ){
+			ExpressionNode simple_expression2 = simple_expression();
 
-					glIter++;
+			result = new OperationExpressionNode( simple_expression1, relOpString, simple_expression2 );
+			
+		}else{
 
-					//")"
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RRPAREN ){
-
-						return true;
-
-					}
-
-				}
-
-			}
+			result = simple_expression1;
 
 		}
-		glIter = savedGlIter;
 
-		//id
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID ){
+		return result;
 
-			return true;
+		} catch( Exception e ){
+
+			throw e;
 
 		}
-		glIter = savedGlIter;
-
-		return false;
-
 	}
 
-	boolean expression_listNT(){
+	ExpressionNode simple_expression() throws Exception {
+		
+		try{
 
-		int savedGlIter = glIter;
+		String signString = "+";
 
-		//expression
-		if( expressionNT() ){
+		if( lookAHead.getType() == EnumToken.SIGN ){
 
-			glIter++;
-
-			//","
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.COMMA ){
-
-				glIter++;
-
-				//expression_list
-				if( expression_listNT() ){
-
-					return true;
-
-				}
-
-			}
+			signString = match( EnumToken.SIGN );
 
 		}
-		glIter = savedGlIter;
 
-		//expression
-		if( expressionNT() ){
+		Vector< ExpressionNode > terms = new Vector< ExpressionNode >();
 
-			return true;
+		terms.add( term() );
+		
+		Vector< String > addOpStrings = new Vector< String >();
+
+		while( lookAHead.getType() == EnumToken.ADDOP ){
+
+			addOpStrings.add( match( EnumToken.ADDOP ) );
+
+			terms.add( term() );
 
 		}
-		glIter = savedGlIter;
 
-		return false;
+		Vector< ExpressionNode > result = new Vector< ExpressionNode >();
 
+		result.add( terms.get( terms.size() - 1 ) );
+
+		for( int i = addOpStrings.size() - 1; 0 <= i; i--){
+
+			result.add( new OperationExpressionNode( terms.get( i ), addOpStrings.get( i ), result.get( result.size() - 1 ) ) );
+
+		}
+
+		return result.get( result.size() - 1 );
+
+		}catch( Exception e ){
+
+			throw e;
+
+		}
 	}
 
-	boolean expressionNT(){
+	ExpressionNode term() throws Exception {
 
-		int savedGlIter = glIter;
+		try{
 
-		//simple_expression
-		if( simple_expressionNT() ){
+		Vector< ExpressionNode > factors = new Vector< ExpressionNode >();
 
-			glIter++;
+		factors.add( factor() );
+		
+		Vector< String > mulOpStrings = new Vector< String >();
 
-			//relop
-			if( allTokens.get( glIter ).getType() == EnumToken.RELOP ){
+		while( lookAHead.getType() == EnumToken.MULOP ){
 
-				glIter++;
+			mulOpStrings.add( match( EnumToken.MULOP ) );
 
-				//simple_expression
-				if( simple_expressionNT() ){
-
-					return true;
-
-				}
-
-			}
+			factors.add( factor() );
 
 		}
-		glIter = savedGlIter;
 
-		//simple_expression
-		if( simple_expressionNT() ){
+		Vector< ExpressionNode > result = new Vector< ExpressionNode >();
 
-			return true;
+		result.add( factors.get( factors.size() - 1 ) );
+
+		for( int i = mulOpStrings.size() - 1; 0 <= i; i--){
+
+			result.add( new OperationExpressionNode( factors.get( i ), mulOpStrings.get( i ), result.get( result.size() - 1 ) ) );
 
 		}
-		glIter = savedGlIter;
 
-		return false;
+		return result.get( result.size() - 1 );
 
+		}catch( Exception e ){
+
+			throw e;
+
+		}
 	}
 
-	boolean simple_expressionNT(){
+	ExpressionNode factor() throws Exception {
 
-		int savedGlIter = glIter;
+		try{
 
-		//term
-		if( termNT() ){
+		ExpressionNode result = null;
 
-			glIter++;
+		if( lookAHead.getType() == EnumToken.ID ){
 
-			//simple_part
-			if( simple_partNT() ){
+			String idName = match( EnumToken.ID );
 
-				return true;
+			if( lookAHead.getType() == EnumToken.LSPAREN ){
 
-			}
+				match( EnumToken.LSPAREN );
 
-		}
-		glIter = savedGlIter;
+				ExpressionNode arrayIndex = expression();
 
-		//sign
-		if( signNT() ){
+				match( EnumToken.RSPAREN );
 
-			glIter++;
+				result = new ArrayValueExpressionNode( (ArrayVariableNode) symbolTable.getVariableByName( idName ), arrayIndex );
 
-			//term
-			if( termNT() ){
+			}else if( lookAHead.getType() == EnumToken.LRPAREN ){
 
-				glIter++;
+				match( EnumToken.LRPAREN );
 
-				//simple_part
-				if( simple_partNT() ){
+				Vector< ExpressionNode > parameters = expression_list();
 
-					return true;
+				match( EnumToken.RRPAREN );
 
-				}
+				result = new FunctionValueExpressionNode( (FunctionNode) symbolTable.getSubProgramByName( idName ), parameters );
+
+			}else{
+
+				result = new VariableValueExpressionNode( (StandardVariableNode) symbolTable.getVariableByName( idName ) );
 
 			}
 
-		}
-		glIter = savedGlIter;
+		}else if( lookAHead.getType() == EnumToken.NUM ){
 
-		return false;
+			result = new NumValueExpressionNode( match( EnumToken.NUM ) );
 
-	}
+		}else if( lookAHead.getType() == EnumToken.NOT ){
 
-	boolean simple_partNT(){
+			match( EnumToken.NOT );
 
-		int savedGlIter = glIter;
+			result = new NotValueExpressionNode( factor() );
 
-		//addop
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ADDOP ){
+		}else if( lookAHead.getType() == EnumToken.LRPAREN ){
 
-			glIter++;
+			match( EnumToken.LRPAREN );
 
-			//term
-			if( termNT() ){
+			result = expression();
 
-				glIter++;
+			match( EnumToken.RRPAREN );
 
-				//simple_part
-				if( simple_partNT() ){
+		}else{
 
-					return true;
-
-				}
-			}
+			assert( false );
 
 		}
-		glIter = savedGlIter;
 
-		//empty
-		glIter--;
-		return true;
+		return result;	
 
-	}
+		}catch( Exception e ){
 
-	boolean termNT(){
-
-		int savedGlIter = glIter;
-
-		//factor
-		if( factorNT() ){
-
-			glIter++;
-
-			//term_part
-			if( term_partNT() ){
-
-				return true;
-
-			}
+			throw e;
 
 		}
-		glIter = savedGlIter;
-
-		return false;
-	}
-
-	boolean term_partNT(){
-
-		int savedGlIter = glIter;
-
-		//mulop
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.MULOP ){
-
-			glIter++;
-
-			//factor
-			if( factorNT() ){
-
-				glIter++;
-
-				//term_part
-				if( term_partNT() ){
-
-					return true;
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//empty
-		glIter--;
-		return true;
-
-	}
-
-	boolean factorNT(){
-
-		int savedGlIter = glIter;
-
-		//id
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID 
-		 	&& symbolTable.exists( EnumId.VARIABLE, allTokens.get( glIter ).getString() ) ){		//check symbol table
-
-			glIter++;
-
-			//"["
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LSPAREN ){
-
-				glIter++;
-
-				//expression
-				if( expressionNT() ){
-
-					glIter++;
-
-					//"]"
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RSPAREN ){
-
-						return true;
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//id
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID 
-		 	&& symbolTable.exists( EnumId.VARIABLE, allTokens.get( glIter ).getString() ) ){		//check symbol table
-
-			glIter++;
-
-			//"("
-			if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LRPAREN ){
-
-				glIter++;
-
-				//expression_list
-				if( expression_listNT() ){
-
-					glIter++;
-
-					//")"
-					if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RRPAREN ){
-
-						return true;
-
-					}
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//id
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.ID 
-		 	&& symbolTable.exists( EnumId.VARIABLE, allTokens.get( glIter ).getString() ) ){		//check symbol table
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		//num
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.NUM ){
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		//"("
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.LRPAREN ){
-
-			glIter++;
-
-			if( expressionNT() ){
-
-				glIter++;
-
-				//")"
-				if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.RRPAREN ){
-
-					return true;
-
-				}
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		//not
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getType() == EnumToken.NOT ){
-
-			glIter++;
-
-			//factor
-			if( factorNT() ){
-
-				return true;
-
-			}
-
-		}
-		glIter = savedGlIter;
-
-		return false;
-
-	}
-
-	boolean signNT(){
-
-		int savedGlIter = glIter;
-
-		//+
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getString().equals( "+" ) ){
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		//-
-		if( glIter < allTokens.size() && allTokens.get( glIter ).getString().equals( "-" ) ){
-
-			return true;
-
-		}
-		glIter = savedGlIter;
-
-		return false;
-
 	}
 
 }
+
+
 
 

@@ -12,13 +12,13 @@ public class DeclarationsNode extends SyntaxTreeNode {
 		variables.add( newVariable );
 
 	}
-
+	
 	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level );
 
-		answer += "Declarations\n";
+		answer += "DeclarationsNode.\n";
 
 		for( VariableNode variable : variables ){
 

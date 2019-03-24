@@ -8,26 +8,25 @@ public class ProgramNode extends SyntaxTreeNode {
 	private SubProgramDeclarationsNode functions;
 	private CompoundStatementNode main;
 
-	public ProgramNode( String aName ){ name = aName; }
+	public ProgramNode( String nameTmp, DeclarationsNode variablesTmp,
+		SubProgramDeclarationsNode functionsTmp, CompoundStatementNode mainTmp ){
 
-	public DeclarationsNode getVariables(){ return variables; }
+		name = nameTmp;
 
-	public SubProgramDeclarationsNode getFunctions(){ return functions; }
+		variables = variablesTmp;
 
-	public CompoundStatementNode getMain(){ return main; }
+		functions = functionsTmp;
 
-	public void setVariables( DeclarationsNode variablesTmp ){ variables = variablesTmp; }
+		main = mainTmp;
 
-	public void setFunctions( SubProgramDeclarationsNode functionsTmp ){ functions = functionsTmp; }
-
-	public void setMain( CompoundStatementNode mainTmp ){ main = mainTmp; }
+	}
 
 	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level );
 
-		answer += "Program: " + name + "\n";
+		answer += "ProgramNode. Name: " + name + "\n";
 
 		answer += variables.indentedToString( level + 1 );
 

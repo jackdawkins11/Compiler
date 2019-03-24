@@ -3,7 +3,7 @@ package syntaxTree;
 
 import java.util.ArrayList;
 
-public class CompoundStatementNode extends StatementNode {
+public class CompoundStatementNode extends StatementNode{
 
 	private ArrayList< StatementNode > statements = new ArrayList< StatementNode >();
 
@@ -18,7 +18,7 @@ public class CompoundStatementNode extends StatementNode {
 
 		String answer = indentation( level );
 
-		answer += "Compound Statement\n";
+		answer += "CompoundStatementNode.\n";
 
 		for( StatementNode cStatement : statements ){
 

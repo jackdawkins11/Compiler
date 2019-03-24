@@ -1,90 +1,193 @@
 
 import org.junit.*;
 import static org.junit.Assert.*;
-import parser.Recognizer;
-import scanner.MyScanner;
+import java.util.Scanner;
+import scanner.*;
+import parser.Parser;
+import syntaxTree.*;
 
 public class TestRecognizer{
-	
+
 	@Test
-	public void test1(){
+	public void testOne(){
 
-		MyScanner cScanner = null;
+		String program = 
+				"program foo;\n"
+			+	"var fee, fi, fo, fum : integer;\n"
+			+	"begin\n"
+			+		"fee := 4;\n"
+			+		"fi := 5;\n"
+			+		"fo := 3 * fee + fi;\n"
+			+		"if fo < 13\n"
+			+		"then\n"
+			+			"fo := 13\n"
+			+		"else\n"
+			+			"fo := 26\n"
+			+		";\n"	
+			+		"write( fo )\n"
+			+	"end\n"
+			+	".\n"
+			;
 
-		Recognizer cRecognizer = null;
+		MyScanner scanner = new MyScanner( program, false );
 
-		cScanner = new MyScanner( "testData/recognizerTestData/correct1.pas", true );
+		Parser parser = new Parser( scanner );
 
-		cRecognizer = new Recognizer( cScanner );
+		boolean exceptionWasThrown = false;
 
-		assertTrue( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/correct2.pas", true );
+		try{
 
-		cRecognizer = new Recognizer( cScanner );
+			ProgramNode programNode = parser.program();
 
-		assertTrue( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/correct3.pas", true );
+		} catch( Exception e ){
 
-		cRecognizer = new Recognizer( cScanner );
+			exceptionWasThrown = true;
 
-		assertTrue( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/correct4.pas", true );
+		}
 
-		cRecognizer = new Recognizer( cScanner );
+		assertFalse( exceptionWasThrown );
 
-		assertTrue( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/correct5.pas", true );
+	}
 
-		cRecognizer = new Recognizer( cScanner );
+	@Test
+	public void testTwo(){
 
-		assertTrue( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/incorrect1.pas", true );
+		String program = 
+				"program foo;\n"
+			+	"var fee, fi, fo, fum : integer;\n"
+			+	"function funct ( x, y, z : real ) : integer;\n"
+			+	"var a, b, c : real;\n"
+			+	"begin\n"
+			+		"a := x * y + x\n"
+			+	"end\n"
+			+	";\n"
+			+	"begin\n"
+			+		"fee := 4;\n"
+			+		"fi := 5;\n"
+			+		"fo := 3 * fee + fi;\n"
+			+		"if fo < 13\n"
+			+		"then\n"
+			+			"fo := 13\n"
+			+		"else\n"
+			+			"fo := 26\n"
+			+		";\n"	
+			+		"write( fo );\n"
+			+		"fee := funct( fee, 3, fi);\n"
+			+		"funct\n"
+			+	"end\n"
+			+	".\n"
+			;
+		
+		MyScanner scanner = new MyScanner( program, false );
 
-		cRecognizer = new Recognizer( cScanner );
+		Parser parser = new Parser( scanner );
 
-		assertFalse( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/incorrect2.pas", true );
+		boolean exceptionWasThrown = false;
 
-		cRecognizer = new Recognizer( cScanner );
+		try{
 
-		assertFalse( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/incorrect3.pas", true );
+			ProgramNode programNode = parser.program();
 
-		cRecognizer = new Recognizer( cScanner );
+		} catch( Exception e ){
 
-		assertFalse( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/incorrect4.pas", true );
+			exceptionWasThrown = true;
 
-		cRecognizer = new Recognizer( cScanner );
+		}
 
-		assertFalse( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/incorrect5.pas", true );
+		assertFalse( exceptionWasThrown );
 
-		cRecognizer = new Recognizer( cScanner );
+	}
 
-		assertFalse( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/incorrect6.pas", true );
 
-		cRecognizer = new Recognizer( cScanner );
+	@Test
+	public void testThree(){
 
-		assertFalse( cRecognizer.programNT() );
-	
-		cScanner = new MyScanner( "testData/recognizerTestData/incorrect7.pas", true );
+		String program = 
+				"program foo;\n"
+			+	"var fee, fi, fo, fum : integer;\n"
+			+	"begin\n"
+			+		"fee := 4;\n"
+			+		"fi := 5;\n"
+			+		"fo := 3  fee + fi;\n"
+			+		"if fo < 13\n"
+			+		"then\n"
+			+			"fo := 13\n"
+			+		"else\n"
+			+			"fo := 26\n"
+			+		";\n"	
+			+		"write( fo )\n"
+			+	"end\n"
+			+	".\n"
+			;
 
-		cRecognizer = new Recognizer( cScanner );
+		MyScanner scanner = new MyScanner( program, false );
 
-		assertFalse( cRecognizer.programNT() );
+		Parser parser = new Parser( scanner );
+
+		boolean exceptionWasThrown = false;
+
+		try{
+
+			ProgramNode programNode = parser.program();
+
+		} catch( Exception e ){
+
+			exceptionWasThrown = true;
+
+		}
+
+		assertTrue( exceptionWasThrown );
+
+	}
+
+	@Test
+	public void testFour(){
+
+		String program = 
+				"program foo;\n"
+			+	"var fee, fi, fo, fum : integer;\n"
+			+	"function funct ( x, y, z : real ) : integer;\n"
+			+	"var a, b, c : real;\n"
+			+	"begin\n"
+			+		"a := x * y + x\n"
+			+	"end\n"
+			+	";\n"
+			+	"begin\n"
+			+		"fee := 4;\n"
+			+		"fi := 5;\n"
+			+		"fo := 3 * fee + fi;\n"
+			+		"if fo < 13\n"
+			+		"then\n"
+			+			"fo := 13\n"
+			+		"else\n"
+			+			"fo := 26\n"
+			+		";\n"	
+			+		"write( fo );\n"
+			+		"fee := funct( fee 3, fi);\n"
+			+		"funct\n"
+			+	"end\n"
+			+	".\n"
+			;
+		
+		MyScanner scanner = new MyScanner( program, false );
+
+		Parser parser = new Parser( scanner );
+
+		boolean exceptionWasThrown = false;
+
+		try{
+
+			ProgramNode programNode = parser.program();
+
+		} catch( Exception e ){
+
+			exceptionWasThrown = true;
+
+		}
+
+		assertTrue( exceptionWasThrown );
 
 	}
 
 }
+

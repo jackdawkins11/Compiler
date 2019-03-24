@@ -2,108 +2,83 @@
 package symbolTable;
 
 import java.util.HashMap;
-import java.util.Vector;
-import java.util.Set;
+import syntaxTree.*;
 
 public class SymbolTable{
 
-	Vector< HashMap< String, Symbol > > symbolMap = new Vector< HashMap< String, Symbol > >();
+	HashMap< String, VariableNode > variables = new HashMap< String, VariableNode >();
+	
+	HashMap< String, SubProgramNode > subPrograms = new HashMap< String, SubProgramNode >();
 
 	public void print(){
 
-		for( int depth = symbolMap.size() - 1;
-				0 <= depth; depth-- ){
+		for( String key : variables.keySet() ){
 
-			System.out.println("symbols at level " + depth );
-
-			Set< String > keySet = symbolMap.get( depth ).keySet();
-
-			for( int i= 0 ; i < keySet.size(); i++){
-
-				symbolMap.get( depth ).get( keySet.toArray()[ i ] ).print();
-			
-			}
+			System.out.println( "Variable: " + key );
 
 		}
+	
+		for( String key : subPrograms.keySet() ){
 
-	}
+			System.out.println( "SubProgram: " + key );
 
-	public SymbolTable(){
-		
-		pushScope();
+		}
 	
 	}
-	
-	public void pushScope(){
 
-		symbolMap.add( new HashMap< String, Symbol >() );
+	public void addVariable( VariableNode variableNode ){
 
-	}
-
-
-	public void popScope(){
-
-		symbolMap.remove( symbolMap.size() - 1 );
+		variables.put( variableNode.getName(), variableNode );
 
 	}
 
-	public void add( Symbol newSymbol ){
+	public void addSubProgram( SubProgramNode subProgramNode ){
 
-		symbolMap.lastElement().put( newSymbol.getIdentifier(), newSymbol );
-
-	}
-
-	public boolean exists( EnumId idType, String identifier ){
-
-		boolean foundSymbol = false;
-
-		for( int i = symbolMap.size() - 1;
-				0 <= i && !foundSymbol;
-				i--){
-
-			if( symbolMap.get( i ).containsKey( identifier ) ){
-
-				Symbol symbol = symbolMap.get( i ).get( identifier );
-
-				if( symbol.getIdType() == idType ){
-
-					foundSymbol = true;
-
-				}
-			
-			}
-
-		}
-
-		return foundSymbol;
+		subPrograms.put( subProgramNode.getName(), subProgramNode );
 
 	}
 
-	public void delete( EnumId idType, String identifier ){
+	public boolean isVariableName( String name ){
 
-		boolean foundSymbol = false;
+		if( variables.containsKey( name ) ){
 
-		for( int i = symbolMap.size() - 1;
-				0 <= i && !foundSymbol;
-				i--){
+			return true;
 
-			if( symbolMap.get( i ).containsKey( identifier ) ){
+		}else{
 
-				Symbol symbol = symbolMap.get( i ).get( identifier );
-
-				if( symbol.getIdType() == idType ){
-
-					foundSymbol = true;
-
-					symbolMap.get( i ).remove( symbol.getIdentifier(), symbol );
-
-				}
-			
-			}
+			return false;
 
 		}
 
 	}
 
-};	
+	public boolean isSubProgramName( String name ){
+
+		if( subPrograms.containsKey( name ) ){
+
+			return true;
+
+		}else{
+
+			return false;
+
+		}
+
+	}
+
+	public VariableNode getVariableByName( String name ){
+
+		return variables.get( name );
+
+	}
+
+	public SubProgramNode getSubProgramByName( String name ){
+
+		return subPrograms.get( name );
+
+	}
+
+}
+
+
 
