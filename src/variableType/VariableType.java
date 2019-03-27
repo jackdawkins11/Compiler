@@ -3,27 +3,40 @@ package variableType;
 
 import scanner.*;
 
+/*
+ * This class represents a variable
+ * type.
+ */
+
 public class VariableType{
 
-	int rows, cols;
+	//////////////////
+	//     Data     //
+	//////////////////
 
-	EnumToken standardType;
+	int beginIndex, endIndex;
+
+	EnumStandardType standardType;
 
 	boolean thisIsArray;
 
-	public VariableType( int rowsTmp, int colsTmp, EnumToken standardTypeTmp ){
+	/////////////////////////
+	//     Constructor     //
+	/////////////////////////
+
+	public VariableType( int beginIndexTmp, int endIndexTmp, EnumStandardType standardTypeTmp ){
 
 		thisIsArray = true;
 
-		rows = rowsTmp;
+		beginIndex = beginIndexTmp;
 
-		cols = colsTmp;
+		endIndex = endIndexTmp;
 
 		standardType = standardTypeTmp;
 
 	}
 	
-	public VariableType( EnumToken standardTypeTmp ){
+	public VariableType( EnumStandardType standardTypeTmp ){
 
 		thisIsArray = false;
 
@@ -31,25 +44,29 @@ public class VariableType{
 
 	}
 
+	/////////////////////
+	//     Getters     //
+	/////////////////////
+
 	public boolean isArray(){
 
 		return thisIsArray;
 
 	}
 
-	public int getCols(){
+	public int getBeginIndex(){
 
-		return cols;
-
-	}
-
-	public int getRows(){
-
-		return rows;
+		return beginIndex;
 
 	}
 
-	public EnumToken getType(){
+	public int getEndIndex(){
+
+		return endIndex;
+
+	}
+	
+	public EnumStandardType getType(){
 
 		return standardType;
 
