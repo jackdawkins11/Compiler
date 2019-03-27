@@ -5,7 +5,8 @@ public class ArrayAssignmentStatementNode extends StatementNode{
 
 	private ArrayVariableNode array;
 
-	private ExpressionNode arrayOffset, rValue;
+	private ExpressionNode arrayOffset,
+		rValue;
 
 	public ArrayAssignmentStatementNode( ArrayVariableNode arrayTmp, ExpressionNode arrayOffsetTmp,
 			ExpressionNode rValueTmp ){
