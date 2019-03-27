@@ -38,6 +38,7 @@ public class VariableValueExpressionNode extends ExpressionNode {
 		String answer = indentation( level )
 			+ "VariableValueExpressionNode."
 			+ "\n"
+			+ arrayIndex.indentedToString( level + 1 )
 			+ variable.indentedToString( level + 1 );
 
 		return answer;

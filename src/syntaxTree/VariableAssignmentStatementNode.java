@@ -45,6 +45,7 @@ public class VariableAssignmentStatementNode extends StatementNode{
 		String answer = indentation( level )
 			+ "VariableAssignmentStatementNode."
 			+ "\n"
+			+ arrayOffset.indentedToString( level + 1 )
 			+ variable.indentedToString( level + 1 )
 			+ rValue.indentedToString( level + 1 );
 
