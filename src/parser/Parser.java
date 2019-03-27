@@ -477,6 +477,12 @@ public class Parser{
 
 				ExpressionNode rValue = expression();
 
+				if( variableNode.getStandardType() != rValue.getStandardType() ){
+
+					throw new Exception( "Error incompatible types." );
+
+				}
+
 				statementNode = new VariableAssignmentStatementNode( variableNode, arrayIndex, rValue );
 
 			}else{
@@ -485,6 +491,12 @@ public class Parser{
 
 				ExpressionNode rValue = expression();
 
+				if( variableNode.getStandardType() != rValue.getStandardType() ){
+
+					throw new Exception( "Error incompatible types." );
+
+				}
+				
 				statementNode = new VariableAssignmentStatementNode( variableNode, new NumValueExpressionNode( "0" ), rValue );
 
 			}
