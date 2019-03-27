@@ -296,7 +296,21 @@ public class Parser{
 
 			match( EnumToken.COLON );
 
-			VariableType functionType = type();
+			EnumStandardType returnType = null;
+
+			if( lookAHead.getType() == EnumToken.INTEGER ){
+
+				match( EnumToken.INTEGER );
+
+				returnType = EnumStandardType.INTEGER;
+
+			}else if( lookAHead.getType() == EnumToken.REAL ){
+
+				match( EnumToken.REAL );
+
+				returnType = EnumStandardType.REAL;
+
+			}else{ throw new Exception( "function type" ); }
 
 			match( EnumToken.SEMICOLON );
 
@@ -307,7 +321,7 @@ public class Parser{
 			variables.addVariables( parameters );
 
 			subProgramNode = new SubProgramNode( functionName,
-					functionType,
+					returnType,
 					variables,
 					main );
 
@@ -321,7 +335,7 @@ public class Parser{
 
 			match( EnumToken.SEMICOLON );
 
-			VariableType procedureType = new VariableType( -1, -1, EnumStandardType.VOID );
+			EnumStandardType returnType = EnumStandardType.VOID;
 
 			DeclarationsNode variables = declarations() ;
 
@@ -330,7 +344,7 @@ public class Parser{
 			variables.addVariables( parameters );
 			
 			subProgramNode = new SubProgramNode( procedureName,
-					procedureType,
+					returnType,
 					variables,
 					main );
 
@@ -562,7 +576,7 @@ public class Parser{
 
 			statementNode = new ReturnStatementNode( returnExpression );
 
-		}
+		}else{ throw new Exception( "statement" ); }
 
 		return statementNode;
 

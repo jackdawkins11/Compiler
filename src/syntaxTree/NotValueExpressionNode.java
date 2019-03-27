@@ -1,6 +1,7 @@
 
 package syntaxTree;
 
+import variableType.EnumStandardType;
 /*
  * An expression
  * that is negated.
@@ -28,10 +29,19 @@ public class NotValueExpressionNode extends ExpressionNode {
 	//     Public Functions     //
 	//////////////////////////////
 
+	@Override
+	public EnumStandardType getStandardType(){
+
+		return expression.getStandardType();
+
+	}
+
+	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
-			+ "NotValueExpressionNode"
+			+ "NotValueExpressionNode."
+			+ " Standard Type: " + getStandardType().toString()
 			+ "\n"
 			+ expression.indentedToString( level + 1 );
 

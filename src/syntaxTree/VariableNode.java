@@ -41,6 +41,12 @@ public class VariableNode extends SyntaxTreeNode {
 
 	}
 
+	public EnumStandardType getStandardType(){
+
+		return variableType.getStandardType();
+
+	}
+
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )

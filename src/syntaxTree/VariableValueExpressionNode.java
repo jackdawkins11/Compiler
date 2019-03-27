@@ -1,6 +1,7 @@
 
 package syntaxTree;
 
+import variableType.EnumStandardType;
 /*
  * A variable
  * being used as
@@ -33,10 +34,19 @@ public class VariableValueExpressionNode extends ExpressionNode {
 	//     Public Functions     //
 	//////////////////////////////
 
+	@Override
+	public EnumStandardType getStandardType(){
+
+		return variable.getStandardType();
+
+	}
+
+	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
 			+ "VariableValueExpressionNode."
+			+ " Standard Type: " + getStandardType().toString()
 			+ "\n"
 			+ arrayIndex.indentedToString( level + 1 )
 			+ variable.indentedToString( level + 1 );

@@ -1,7 +1,7 @@
 
 package syntaxTree;
 
-import variableType.*;
+import variableType.EnumStandardType;
 
 /*
  * A SubProgramNode
@@ -18,7 +18,7 @@ public class SubProgramNode extends SyntaxTreeNode {
 
 	String name;
 
-	VariableType returnType;
+	EnumStandardType returnType;
 
 	DeclarationsNode variables;
 
@@ -29,9 +29,9 @@ public class SubProgramNode extends SyntaxTreeNode {
 	/////////////////////////
 
 	public SubProgramNode( String nameTmp,
-			VariableType returnTypeTmp,
+			EnumStandardType returnTypeTmp,
 			DeclarationsNode variablesTmp,
-			CompoundStatementNode functionBodyTmp ){
+			CompoundStatementNode functionBodyTmp ) throws Exception {
 
 		name = nameTmp;
 
@@ -50,6 +50,12 @@ public class SubProgramNode extends SyntaxTreeNode {
 	public String getName(){
 
 		return name;
+
+	}
+
+	public EnumStandardType getStandardType(){
+
+		return returnType;
 
 	}
 

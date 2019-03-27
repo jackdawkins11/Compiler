@@ -1,6 +1,8 @@
 
 package syntaxTree;
 
+import variableType.EnumStandardType;
+
 /*
  * Two expressions
  * along with an
@@ -36,11 +38,24 @@ public class OperationExpressionNode extends ExpressionNode {
 
 	}
 
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
+
+	@Override
+	public EnumStandardType getStandardType(){
+
+		return leftExpression.getStandardType();
+
+	}
+
+	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
 			+ "OperationExpressionNode."
-			+ " Operation: " + operation 
+			+ " Operation: " + operation
+			+ " Standard Type: " + getStandardType().toString()
 			+ "\n"
 			+ leftExpression.indentedToString( level + 1 )
 			+ rightExpression.indentedToString( level + 1 );

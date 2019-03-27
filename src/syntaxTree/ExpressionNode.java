@@ -1,6 +1,8 @@
 
 package syntaxTree;
 
+import variableType.EnumStandardType;
+
 /*
  * The base class
  * class for
@@ -10,4 +12,11 @@ package syntaxTree;
  */
 
 public abstract class ExpressionNode extends SyntaxTreeNode{
+
+	///////////////////////////////
+	//     Abstract Function     //
+	///////////////////////////////
+	
+	public abstract EnumStandardType getStandardType();
+
 }

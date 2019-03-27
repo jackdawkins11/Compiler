@@ -2,6 +2,7 @@
 package syntaxTree;
 
 import java.util.ArrayList;
+import variableType.EnumStandardType;
 
 /*
  * A subProgram to be evaluated
@@ -15,7 +16,7 @@ public class SubProgramValueExpressionNode extends ExpressionNode {
 	//////////////////
 	//     Data     //
 	//////////////////
-
+	
 	private SubProgramNode subProgram;
 
 	private ArrayList< ExpressionNode > parameters;
@@ -41,15 +42,24 @@ public class SubProgramValueExpressionNode extends ExpressionNode {
 
 	}
 
-	/////////////////////////////
-	//     Public Programs     //
-	/////////////////////////////
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
 
+	@Override
+	public EnumStandardType getStandardType(){
+
+		return subProgram.getStandardType();
+
+	}
+
+	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
 			+ "SubProgramValueExpressionNode."
 			+ " Name: " + subProgram.getName()
+			+ " Standard Type: " + getStandardType().toString()
 			+ "\n";
 		
 		for( int i = 0; i < parameters.size(); i++){
