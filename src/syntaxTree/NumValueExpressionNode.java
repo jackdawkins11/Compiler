@@ -1,9 +1,21 @@
 
 package syntaxTree;
 
+/*
+ * A number.
+ */
+
 public class NumValueExpressionNode extends ExpressionNode {
 
+	//////////////////
+	//     Data     //
+	//////////////////
+
 	String numString;
+
+	/////////////////////////
+	//     Constructor     //
+	/////////////////////////
 
 	public NumValueExpressionNode( String numStringTmp ){
 
@@ -11,11 +23,16 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 	}
 
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
+
 	public String indentedToString( int level ){
 
-		String answer = indentation( level );
-
-		answer += "NumValueExpressionNode. Num: " + numString + "\n";
+		String answer = indentation( level )
+			+ "NumValueExpressionNode."
+			+ " Num: " + numString 
+			+ "\n";
 
 		return answer;
 

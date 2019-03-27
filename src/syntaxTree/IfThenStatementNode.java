@@ -1,11 +1,27 @@
 
 package syntaxTree;
 
+/*
+ * An if-then
+ * test expression
+ * and two statements.
+ */
+
 public class IfThenStatementNode extends StatementNode {
 
+	//////////////////
+	//     Data     //
+	//////////////////
+
 	private ExpressionNode testExpression;
+	
 	private StatementNode thenStatement;
+	
 	private StatementNode elseStatement;
+
+	/////////////////////////
+	//     Constructor     //
+	/////////////////////////
 
 	public IfThenStatementNode( ExpressionNode testExpressionTmp,
 			StatementNode thenStatementTmp,
@@ -18,19 +34,20 @@ public class IfThenStatementNode extends StatementNode {
 		elseStatement = elseStatementTmp;
 
 	}
+
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
 	
 	@Override
 	public String indentedToString( int level ){
 
-		String answer = indentation( level );
-
-		answer += "IfThenStatementNode.\n";
-
-		answer += testExpression.indentedToString( level + 1 );
-
-		answer += thenStatement.indentedToString( level + 1 );
-
-		answer += elseStatement.indentedToString( level + 1 );
+		String answer = indentation( level )
+			+ "IfThenStatementNode."
+			+ "\n"
+			+ testExpression.indentedToString( level + 1 )
+			+ thenStatement.indentedToString( level + 1 )
+			+ elseStatement.indentedToString( level + 1 );
 
 		return answer;
 

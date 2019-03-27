@@ -3,9 +3,23 @@ package syntaxTree;
 
 import java.util.ArrayList;
 
+/*
+ * A compound statement
+ * node is just an array
+ * list of StatementNodes.
+ */
+
 public class CompoundStatementNode extends StatementNode{
 
+	//////////////////
+	//     Data     //
+	//////////////////
+
 	private ArrayList< StatementNode > statements = new ArrayList< StatementNode >();
+
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
 
 	public void addStatement( StatementNode newStatement ){
 
@@ -16,9 +30,9 @@ public class CompoundStatementNode extends StatementNode{
 	@Override
 	public String indentedToString( int level ){
 
-		String answer = indentation( level );
-
-		answer += "CompoundStatementNode.\n";
+		String answer = indentation( level )
+			+ "CompoundStatementNode."
+			+ "\n";
 
 		for( StatementNode cStatement : statements ){
 

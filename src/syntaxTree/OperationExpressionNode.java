@@ -1,7 +1,18 @@
 
 package syntaxTree;
 
+/*
+ * Two expressions
+ * along with an
+ * operation between
+ * them.
+ */
+
 public class OperationExpressionNode extends ExpressionNode {
+
+	//////////////////
+	//     Data     //
+	//////////////////
 
 	private ExpressionNode leftExpression;
 
@@ -9,7 +20,12 @@ public class OperationExpressionNode extends ExpressionNode {
 	
 	private ExpressionNode rightExpression;
 
-	public OperationExpressionNode( ExpressionNode leftExpressionTmp, String operationTmp,
+	/////////////////////////
+	//     Constructor     //
+	/////////////////////////
+
+	public OperationExpressionNode( ExpressionNode leftExpressionTmp,
+			String operationTmp,
 			ExpressionNode rightExpressionTmp ){
 
 		leftExpression = leftExpressionTmp;
@@ -22,13 +38,12 @@ public class OperationExpressionNode extends ExpressionNode {
 
 	public String indentedToString( int level ){
 
-		String answer = indentation( level );
-
-		answer += "OperationExpressionNode. Operation: " + operation + "\n";
-
-		answer += leftExpression.indentedToString( level + 1 );
-
-		answer += rightExpression.indentedToString( level + 1 );
+		String answer = indentation( level )
+			+ "OperationExpressionNode."
+			+ " Operation: " + operation 
+			+ "\n"
+			+ leftExpression.indentedToString( level + 1 )
+			+ rightExpression.indentedToString( level + 1 );
 
 		return answer;
 

@@ -1,21 +1,20 @@
 
 package syntaxTree;
 
+import variableType.*;
+
 /*
  * This class represents a
  * variable.
  */
 
-public abstract class VariableNode extends SyntaxTreeNode {
+public class VariableNode extends SyntaxTreeNode {
 
 	//////////////////
 	//     Data     //
 	//////////////////
 
-	private int beginIndex,
-		endIndex;
-
-	EnumStandardType standardType;
+	VariableType variableType;
 
 	String name;
 
@@ -23,25 +22,10 @@ public abstract class VariableNode extends SyntaxTreeNode {
 	//     Constructors     //
 	//////////////////////////
 
-	VariableNode( int beginIndexTmp, int endIndexTmp, EnumStandardType standardTypeTmp, String nameTmp ){
+	public VariableNode( String nameTmp,
+			VariableType variableTypeTmp){
 
-		beginIndex = beginIndexTmp;
-
-		endIndex = endIndexTmp;
-
-		standardType = standardTypeTmp;
-
-		name = nameTmp;
-
-	}
-
-	VariableNode( EnumStandardType standardTypeTmp, String nameTmp ){
-
-		beginIndex = 0;
-
-		endIndex = 1;
-
-		standardType = standardTypeTmp;
+		variableType = variableTypeTmp;
 
 		name = nameTmp;
 
@@ -57,14 +41,15 @@ public abstract class VariableNode extends SyntaxTreeNode {
 
 	}
 
-	String indentedToString( int level ){
+	public String indentedToString( int level ){
 
 		String answer = indentation( level )
 			+ "VariableNode."
 			+ " Name: " + name
-			+ " Standard Type: " + standardType.toString()
-			+ " beginIndex: " + beginIndex
-			+ " endIndex: " + endIndex;
+			+ " Standard Type: " + variableType.getStandardType().toString()
+			+ " Begin Index: " + variableType.getBeginIndex()
+			+ " End Index: " + variableType.getEndIndex()
+			+ "\n";
 
 		return answer;
 

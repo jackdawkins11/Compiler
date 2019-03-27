@@ -3,9 +3,22 @@ package syntaxTree;
 
 import java.util.ArrayList;
 
+/*
+ * An array
+ * of SubProgramNodes.
+ */
+
 public class SubProgramDeclarationsNode extends SyntaxTreeNode{
 
+	//////////////////
+	//     Data     //
+	//////////////////
+
 	ArrayList< SubProgramNode > subPrograms = new ArrayList< SubProgramNode >();
+
+	/////////////////////////
+	//     Constructor     //
+	/////////////////////////
 
 	public void addSubProgram( SubProgramNode subProgramNode ){
 
@@ -13,12 +26,16 @@ public class SubProgramDeclarationsNode extends SyntaxTreeNode{
 
 	}
 
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
+
 	@Override
 	public String indentedToString( int level ){
 
-		String answer = indentation( level );
-
-		answer += "SubProgramDeclarationsNode.\n";
+		String answer = indentation( level )
+			+ "SubProgramDeclarationsNode."
+			+ "\n";
 
 		for( int i = 0; i < subPrograms.size(); i++){
 

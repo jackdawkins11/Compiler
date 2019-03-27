@@ -1,30 +1,52 @@
 
 package syntaxTree;
 
+/*
+ * This represents
+ * an assignment
+ * statement.
+ */
+
 public class VariableAssignmentStatementNode extends StatementNode{
 
-	private StandardVariableNode variable;
+	//////////////////
+	//     Data     //
+	//////////////////
+
+	private VariableNode variable;
+
+	private ExpressionNode arrayOffset;
 
 	private ExpressionNode rValue;
 
-	public VariableAssignmentStatementNode( StandardVariableNode variableTmp, ExpressionNode rValueTmp ){
+	/////////////////////////
+	//     Constructor     //
+	/////////////////////////
+
+	public VariableAssignmentStatementNode( VariableNode variableTmp,
+			ExpressionNode arrayOffsetTmp,
+			ExpressionNode rValueTmp ){
 
 		variable = variableTmp;
+
+		arrayOffset = arrayOffsetTmp;
 
 		rValue = rValueTmp;
 
 	}
 
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
+
 	@Override
 	public String indentedToString( int level ){
 
-		String answer = indentation( level );
-		
-		answer += "VariableAssignmentStatementNode.\n";
-
-		answer += variable.indentedToString( level + 1 );
-
-		answer += rValue.indentedToString( level + 1 );
+		String answer = indentation( level )
+			+ "VariableAssignmentStatementNode."
+			+ "\n"
+			+ variable.indentedToString( level + 1 )
+			+ rValue.indentedToString( level + 1 );
 
 		return answer;
 

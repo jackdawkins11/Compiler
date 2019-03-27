@@ -1,15 +1,34 @@
 
 package syntaxTree;
 
+/*
+ * A ProgramNode
+ * is the entire
+ * program.
+ */
+
 public class ProgramNode extends SyntaxTreeNode {
 
+	//////////////////
+	//     Data     //
+	//////////////////
+
 	private String name;
+
 	private DeclarationsNode variables;
+
 	private SubProgramDeclarationsNode functions;
+
 	private CompoundStatementNode main;
 
-	public ProgramNode( String nameTmp, DeclarationsNode variablesTmp,
-		SubProgramDeclarationsNode functionsTmp, CompoundStatementNode mainTmp ){
+	/////////////////////////
+	//     Constructor     //
+	/////////////////////////
+
+	public ProgramNode( String nameTmp,
+			DeclarationsNode variablesTmp,
+			SubProgramDeclarationsNode functionsTmp,
+			CompoundStatementNode mainTmp ){
 
 		name = nameTmp;
 
@@ -21,18 +40,20 @@ public class ProgramNode extends SyntaxTreeNode {
 
 	}
 
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
+
 	@Override
 	public String indentedToString( int level ){
 
-		String answer = indentation( level );
-
-		answer += "ProgramNode. Name: " + name + "\n";
-
-		answer += variables.indentedToString( level + 1 );
-
-		answer += functions.indentedToString( level + 1 );
-
-		answer += main.indentedToString( level + 1 );
+		String answer = indentation( level )
+			+ "ProgramNode." 
+			+ " Name: " + name 
+			+ "\n"
+			+ variables.indentedToString( level + 1 )
+			+ functions.indentedToString( level + 1 )
+			+ main.indentedToString( level + 1 );
 
 		return answer;
 

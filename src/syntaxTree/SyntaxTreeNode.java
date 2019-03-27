@@ -1,7 +1,16 @@
 
 package syntaxTree;
 
+/*
+ * The base class
+ * for all nodes.
+ */
+
 public abstract class SyntaxTreeNode{
+
+	///////////////////////
+	//     Functions     //
+	///////////////////////
 
 	public abstract String indentedToString( int level );
 

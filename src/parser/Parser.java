@@ -4,13 +4,13 @@ package parser;
 import scanner.*;
 import symbolTable.*;
 import syntaxTree.*;
-import variableType.VariableType;
-import java.util.Vector;
+import variableType.*;
+import java.util.ArrayList;
 
 public class Parser{
 
 	////////////////
-	//    data    //
+	//    Data    //
 	////////////////
 	
 	MyScanner scanner;
@@ -22,7 +22,7 @@ public class Parser{
 	boolean endOfFile;
 
 	//////////////////////////
-	//	constructor     //
+	//	Constructor     //
 	//////////////////////////
 
 	public Parser( MyScanner scanner_tmp ){
@@ -45,9 +45,9 @@ public class Parser{
 
 	}
 
-	///////////////////////////////
-	//	public methods       //
-	///////////////////////////////
+	/////////////////////////////////
+	//	Public Functions       //
+	/////////////////////////////////
 
 	public ProgramNode program() throws Exception {
 
@@ -83,7 +83,7 @@ public class Parser{
 	}
 
 	////////////////////////
-	//      helpers       //
+	//      Helpers       //
 	////////////////////////	
 	
 	private String match( EnumToken expectedType ) throws Exception {
@@ -114,7 +114,7 @@ public class Parser{
 
 			if( !endOfFile ){ lookAHeadTypeString = lookAHead.getType().toString(); }
 
-			throw new Exception( "Trying to match an " + expectedType.toString() + " failed. Found " + lookAHeadTypeString
+			throw new Exception( "Trying to match a " + expectedType.toString() + " failed. Found " + lookAHeadTypeString
 				+ " instead." );
 
 		}
@@ -123,11 +123,11 @@ public class Parser{
 
 	}
 
-	Vector< String > identifier_list() throws Exception {
+	ArrayList< String > identifier_list() throws Exception {
 
 		try{
 
-		Vector< String > ID_list = new Vector< String >();
+		ArrayList< String > ID_list = new ArrayList< String >();
 
 		ID_list.add( match( EnumToken.ID ) );
 
@@ -159,7 +159,7 @@ public class Parser{
 		
 			match( EnumToken.VAR );
 
-			Vector< String > variableNames = identifier_list();
+			ArrayList< String > variableNames = identifier_list();
 
 			match( EnumToken.COLON );
 
@@ -169,17 +169,7 @@ public class Parser{
 
 			for( int i = 0; i < variableNames.size(); i++){
 
-				VariableNode variableNode = null;
-				
-				if( variableType.isArray() ){
-					
-					variableNode = new ArrayVariableNode( variableNames.get( i ), variableType );
-
-				}else{
-
-					variableNode = new StandardVariableNode( variableNames.get( i ), variableType );
-
-				}
+				VariableNode variableNode = new VariableNode( variableNames.get( i ), variableType );
 
 				declarationsNode.addVariable( variableNode );
 
@@ -208,13 +198,13 @@ public class Parser{
 
 			match( EnumToken.INTEGER );
 
-			variableType = new VariableType( EnumToken.INTEGER );
+			variableType = new VariableType( 0, 1, EnumStandardType.INTEGER );
 
 		}else if( lookAHead.getType() == EnumToken.REAL ){
 
 			match( EnumToken.REAL );
 
-			variableType = new VariableType( EnumToken.REAL );
+			variableType = new VariableType( 0, 1, EnumStandardType.REAL );
 
 		}else{
 
@@ -224,17 +214,13 @@ public class Parser{
 
 			String rowsString = match( EnumToken.NUM );
 
-			int rows = -1;
-			
-			rows = Integer.parseInt( rowsString );
+			int rows = Integer.parseInt( rowsString );
 
 			match( EnumToken.COLON );
 
 			String colsString = match( EnumToken.NUM );
 
-			int cols = -1;
-			
-			cols = Integer.parseInt( colsString );
+			int cols = Integer.parseInt( colsString );
 
 			match( EnumToken.RSPAREN );
 
@@ -244,13 +230,13 @@ public class Parser{
 
 				match( EnumToken.REAL );
 
-				variableType = new VariableType( rows, cols, EnumToken.REAL );
+				variableType = new VariableType( rows, cols, EnumStandardType.REAL );
 
 			}else if( lookAHead.getType() == EnumToken.INTEGER ){
 
 				match( EnumToken.INTEGER );
 
-				variableType = new VariableType( rows, cols, EnumToken.INTEGER );
+				variableType = new VariableType( rows, cols, EnumStandardType.INTEGER );
 
 			}else{ throw new Exception( "error" ); }
 
@@ -318,8 +304,12 @@ public class Parser{
 
 			CompoundStatementNode main = compound_statement() ;
 
-			subProgramNode = new FunctionNode( functionName, parameters,
-					functionType, variables, main );
+			variables.addVariables( parameters );
+
+			subProgramNode = new SubProgramNode( functionName,
+					functionType,
+					variables,
+					main );
 
 		}else if( lookAHead.getType() == EnumToken.PROCEDURE ){
 
@@ -331,12 +321,18 @@ public class Parser{
 
 			match( EnumToken.SEMICOLON );
 
+			VariableType procedureType = new VariableType( -1, -1, EnumStandardType.VOID );
+
 			DeclarationsNode variables = declarations() ;
 
 			CompoundStatementNode main = compound_statement() ;
 
-			subProgramNode = new ProcedureNode( procedureName, parameters,
-					variables, main );
+			variables.addVariables( parameters );
+			
+			subProgramNode = new SubProgramNode( procedureName,
+					procedureType,
+					variables,
+					main );
 
 		}else{
 
@@ -373,7 +369,7 @@ public class Parser{
 
 				}
 
-				Vector< String > variableNames = identifier_list();
+				ArrayList< String > variableNames = identifier_list();
 
 				match( EnumToken.COLON );
 
@@ -381,20 +377,8 @@ public class Parser{
 
 				for( int i = 0; i < variableNames.size(); i++){
 
-					VariableNode variableNode = null;
+					VariableNode variableNode = new VariableNode( variableNames.get( i ), variableType );
 				
-					if( variableType.isArray() ){
-					
-						variableNode = new ArrayVariableNode( variableNames.get( i ),
-							variableType );
-
-					}else{
-
-						variableNode = new StandardVariableNode( variableNames.get( i ),
-								variableType );
-
-					}
-
 					declarationsNode.addVariable( variableNode );
 
 					symbolTable.addVariable( variableNode );
@@ -479,7 +463,7 @@ public class Parser{
 
 				ExpressionNode rValue = expression();
 
-				statementNode = new ArrayAssignmentStatementNode( (ArrayVariableNode) variableNode, arrayIndex, rValue );
+				statementNode = new VariableAssignmentStatementNode( variableNode, arrayIndex, rValue );
 
 			}else{
 			
@@ -487,7 +471,7 @@ public class Parser{
 
 				ExpressionNode rValue = expression();
 
-				statementNode = new VariableAssignmentStatementNode( (StandardVariableNode) variableNode, rValue );
+				statementNode = new VariableAssignmentStatementNode( variableNode, new NumValueExpressionNode( "0" ), rValue );
 
 			}
 
@@ -502,15 +486,15 @@ public class Parser{
 
 				match( EnumToken.LRPAREN );
 
-				Vector< ExpressionNode > parameters = expression_list();
+				ArrayList< ExpressionNode > parameters = expression_list();
 
 				match( EnumToken.RRPAREN );
 
-				statementNode = new ProcedureStatementNode( procedureNode, parameters );
+				statementNode = new SubProgramStatementNode( procedureNode, parameters );
 
 			}else{
 
-				statementNode = new ProcedureStatementNode( procedureNode );
+				statementNode = new SubProgramStatementNode( procedureNode );
 
 			}
 
@@ -589,11 +573,11 @@ public class Parser{
 		}
 	}
 
-	Vector< ExpressionNode > expression_list() throws Exception {
+	ArrayList< ExpressionNode > expression_list() throws Exception {
 
 		try{
 
-		Vector< ExpressionNode > expressionList = new Vector< ExpressionNode >();
+		ArrayList< ExpressionNode > expressionList = new ArrayList< ExpressionNode >();
 
 		expressionList.add( expression() );
 
@@ -658,11 +642,11 @@ public class Parser{
 
 		}
 
-		Vector< ExpressionNode > terms = new Vector< ExpressionNode >();
+		ArrayList< ExpressionNode > terms = new ArrayList< ExpressionNode >();
 
 		terms.add( term() );
 		
-		Vector< String > addOpStrings = new Vector< String >();
+		ArrayList< String > addOpStrings = new ArrayList< String >();
 
 		while( lookAHead.getType() == EnumToken.ADDOP ){
 
@@ -672,7 +656,7 @@ public class Parser{
 
 		}
 
-		Vector< ExpressionNode > result = new Vector< ExpressionNode >();
+		ArrayList< ExpressionNode > result = new ArrayList< ExpressionNode >();
 
 		result.add( terms.get( terms.size() - 1 ) );
 
@@ -695,11 +679,11 @@ public class Parser{
 
 		try{
 
-		Vector< ExpressionNode > factors = new Vector< ExpressionNode >();
+		ArrayList< ExpressionNode > factors = new ArrayList< ExpressionNode >();
 
 		factors.add( factor() );
 		
-		Vector< String > mulOpStrings = new Vector< String >();
+		ArrayList< String > mulOpStrings = new ArrayList< String >();
 
 		while( lookAHead.getType() == EnumToken.MULOP ){
 
@@ -709,7 +693,7 @@ public class Parser{
 
 		}
 
-		Vector< ExpressionNode > result = new Vector< ExpressionNode >();
+		ArrayList< ExpressionNode > result = new ArrayList< ExpressionNode >();
 
 		result.add( factors.get( factors.size() - 1 ) );
 
@@ -746,21 +730,21 @@ public class Parser{
 
 				match( EnumToken.RSPAREN );
 
-				result = new ArrayValueExpressionNode( (ArrayVariableNode) symbolTable.getVariableByName( idName ), arrayIndex );
+				result = new VariableValueExpressionNode( symbolTable.getVariableByName( idName ), (NumValueExpressionNode) arrayIndex );
 
 			}else if( lookAHead.getType() == EnumToken.LRPAREN ){
 
 				match( EnumToken.LRPAREN );
 
-				Vector< ExpressionNode > parameters = expression_list();
+				ArrayList< ExpressionNode > parameters = expression_list();
 
 				match( EnumToken.RRPAREN );
 
-				result = new FunctionValueExpressionNode( (FunctionNode) symbolTable.getSubProgramByName( idName ), parameters );
+				result = new SubProgramValueExpressionNode( symbolTable.getSubProgramByName( idName ), parameters );
 
 			}else{
 
-				result = new VariableValueExpressionNode( (StandardVariableNode) symbolTable.getVariableByName( idName ) );
+				result = new VariableValueExpressionNode( symbolTable.getVariableByName( idName ), new NumValueExpressionNode( "0" ) );
 
 			}
 
