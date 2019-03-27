@@ -1,7 +1,7 @@
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.io.StringBufferInputStream;
+import java.io.ByteArrayInputStream;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.Scanner;
@@ -33,9 +33,15 @@ public class TestScanner{
 
 		}else{
 	
-			StringBufferInputStream sbis = new StringBufferInputStream( stringOrFilenameB );	
+			ByteArrayInputStream bais = null;
 
-			InputStreamReader isr = new InputStreamReader( sbis );
+			try{
+
+				bais = new ByteArrayInputStream( stringOrFilenameB.getBytes( "UTF-8" ) );
+
+			}catch( Exception e ){ e.printStackTrace(); }
+
+			InputStreamReader isr = new InputStreamReader( bais );
 
 			annotatedTokenScanner = new Scanner( isr );
 

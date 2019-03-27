@@ -6,17 +6,23 @@ import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
 
 /*
- *
- * Simple wrapper around the scanner created by 
- * JFlex. Gives a constructor for filenames and
- * string buffers. Also adds a "hasNext()" function.
+ * This class is mainly a wrapper
+ * around the scanner JFlex created.
  */
 
 public class MyScanner{
 
+	//////////////////
+	//     Data     //
+	//////////////////
+
 	JFlexScanner JFlexScanner1;
 
 	Token the_next_token;
+
+	/////////////////////////
+	//     Constructor     //
+	/////////////////////////
 
 	public MyScanner( String stringOrFilename, boolean isFilename ){
 
@@ -36,7 +42,13 @@ public class MyScanner{
 
 		}else{
 
-			ByteArrayInputStream bais = new ByteArrayInputStream( stringOrFilename );
+			ByteArrayInputStream bais = null;
+
+			try{
+
+				bais = new ByteArrayInputStream( stringOrFilename.getBytes( "UTF-8" ) );
+
+			}catch( Exception e ){ e.printStackTrace(); }
 
 			isr = new InputStreamReader( bais );
 
@@ -51,6 +63,10 @@ public class MyScanner{
 		}catch( Exception e ){ e.printStackTrace(); }
 	
 	}
+
+	//////////////////////////////
+	//     Public Functions     //
+	//////////////////////////////
 	
 	public boolean hasNext(){
 

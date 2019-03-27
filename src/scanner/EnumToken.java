@@ -3,7 +3,6 @@ package scanner;
 
 /*
  * The token types
- *
  */
 
 public enum EnumToken{
