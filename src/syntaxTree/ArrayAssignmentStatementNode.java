@@ -5,10 +5,12 @@ public class ArrayAssignmentStatementNode extends StatementNode{
 
 	private ArrayVariableNode array;
 
-	private ExpressionNode arrayOffset,
-		rValue;
+	private ExpressionNode arrayOffset;
 
-	public ArrayAssignmentStatementNode( ArrayVariableNode arrayTmp, ExpressionNode arrayOffsetTmp,
+	private ExpressionNode rValue;
+
+	public ArrayAssignmentStatementNode( ArrayVariableNode arrayTmp,
+			ExpressionNode arrayOffsetTmp,
 			ExpressionNode rValueTmp ){
 
 		array = arrayTmp;
