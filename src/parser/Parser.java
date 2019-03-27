@@ -114,7 +114,7 @@ public class Parser{
 
 			if( !endOfFile ){ lookAHeadTypeString = lookAHead.getType().toString(); }
 
-			throw new Exception( "Matching " + expectedType.toString() + " found " + lookAHeadTypeString
+			throw new Exception( "Trying to match an " + expectedType.toString() + " failed. Found " + lookAHeadTypeString
 				+ " instead." );
 
 		}
@@ -451,6 +451,7 @@ public class Parser{
 			throw e;
 
 		}
+	
 	}
 
 	StatementNode statement() throws Exception {

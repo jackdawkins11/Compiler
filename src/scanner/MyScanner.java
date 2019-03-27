@@ -3,7 +3,7 @@ package scanner;
 
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
-import java.io.StringBufferInputStream;
+import java.io.ByteArrayInputStream;
 
 /*
  *
@@ -22,7 +22,7 @@ public class MyScanner{
 
 		InputStreamReader isr = null;
 
-		if( isFilename ){	
+		if( isFilename ){
 
 			FileInputStream fis = null;
 
@@ -33,12 +33,12 @@ public class MyScanner{
 			}catch( Exception e ){ e.printStackTrace(); }
 
 			isr = new InputStreamReader( fis );
-		
+
 		}else{
 
-			StringBufferInputStream sbis = new StringBufferInputStream( stringOrFilename );
+			ByteArrayInputStream bais = new ByteArrayInputStream( stringOrFilename );
 
-			isr = new InputStreamReader( sbis );
+			isr = new InputStreamReader( bais );
 
 		}
 
