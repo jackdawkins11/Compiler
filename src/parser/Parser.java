@@ -750,6 +750,12 @@ public class Parser{
 
 			if( lookAHead.getType() == EnumToken.LSPAREN ){
 
+				if( !symbolTable.isVariableName( idName ) ){
+
+					throw new Exception( "Variable " + idName + " not declared." );
+
+				}
+				
 				match( EnumToken.LSPAREN );
 
 				ExpressionNode arrayIndex = expression();
@@ -759,6 +765,12 @@ public class Parser{
 				result = new VariableValueExpressionNode( symbolTable.getVariableByName( idName ), (NumValueExpressionNode) arrayIndex );
 
 			}else if( lookAHead.getType() == EnumToken.LRPAREN ){
+
+				if( !symbolTable.isSubProgramName( idName ) ){
+
+					throw new Exception( "Subprogram " + idName + " not declared." );
+
+				}
 
 				match( EnumToken.LRPAREN );
 
@@ -770,6 +782,12 @@ public class Parser{
 
 			}else{
 
+				if( !symbolTable.isVariableName( idName ) ){
+
+					throw new Exception( "Variable " + idName + " not declared." );
+
+				}
+				
 				result = new VariableValueExpressionNode( symbolTable.getVariableByName( idName ), new NumValueExpressionNode( "0" ) );
 
 			}
