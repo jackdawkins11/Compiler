@@ -3,7 +3,7 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import syntaxTree.*;
 import scanner.*;
-import variableType.VariableType;
+import variableType.*;
 
 public class TestSyntaxTree{
 
@@ -38,42 +38,35 @@ public class TestSyntaxTree{
 		String expected =
 				"ProgramNode. Name: JacksProgram\n"
 			+	"|-- DeclarationsNode.\n"
-			+	"|-- --- StandardVariableNode. Name: jacksInteger\n"
-			+	"|-- --- ArrayVariableNode. Name: jacksArray Rows: 1 Cols: 10\n"
+			+	"|-- --- VariableNode. Name: jacksInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
+			+	"|-- --- VariableNode. Name: jacksArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
 			+	"|-- SubProgramDeclarationsNode.\n"
-			+	"|-- --- FunctionNode. Name: functionOne\n"
+			+	"|-- --- SubProgramNode. Name: functionOne\n"
 			+	"|-- --- --- DeclarationsNode.\n"
-			+	"|-- --- --- --- StandardVariableNode. Name: functionInteger\n"
-			+	"|-- --- --- DeclarationsNode.\n"
-			+	"|-- --- --- --- ArrayVariableNode. Name: functionArray Rows: 1 Cols: 10\n"
+			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
+			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
 			+	"|-- --- --- CompoundStatementNode.\n"
 			+	"|-- CompoundStatementNode.\n"
 			;
 
-		VariableType integerType = new VariableType( EnumToken.INTEGER );
-		
-		VariableType arrayType = new VariableType( 1, 10, EnumToken.REAL );
-
 		DeclarationsNode programVariables = new DeclarationsNode();
 		
-		programVariables.addVariable( new StandardVariableNode( "jacksInteger", integerType ) );
+		programVariables.addVariable( new VariableNode( "jacksInteger", new VariableType( 0, 1, EnumStandardType.INTEGER ) ) );
 		
-		programVariables.addVariable( new ArrayVariableNode( "jacksArray", arrayType ) );
+		programVariables.addVariable( new VariableNode( "jacksArray", new VariableType( 1, 10, EnumStandardType.INTEGER ) ) );
 
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
 
-		DeclarationsNode functionParameters = new DeclarationsNode();
-
 		DeclarationsNode functionVariables = new DeclarationsNode();
-
-		functionParameters.addVariable( new StandardVariableNode( "functionInteger", integerType ) );
-
-		functionVariables.addVariable( new ArrayVariableNode( "functionArray", arrayType ) );
+	
+		functionVariables.addVariable( new VariableNode( "functionInteger", new VariableType( 0, 1, EnumStandardType.INTEGER ) ) );
+		
+		functionVariables.addVariable( new VariableNode( "functionArray", new VariableType( 1, 10, EnumStandardType.INTEGER ) ) );
 
 		CompoundStatementNode functionBody = new CompoundStatementNode();
 
-		subProgramDeclarationsNode.addSubProgram( new FunctionNode( "functionOne", functionParameters,
-					integerType, functionVariables, functionBody ) );
+		subProgramDeclarationsNode.addSubProgram( new SubProgramNode( "functionOne", EnumStandardType.INTEGER,
+					functionVariables, functionBody ) );
 
 		CompoundStatementNode main = new CompoundStatementNode();
 
@@ -82,10 +75,11 @@ public class TestSyntaxTree{
 				subProgramDeclarationsNode,
 				main );
 
-
 		assertEquals( expected, programNode.indentedToString( 0 ) );
-	}
 	
+	}
+
+	/*
 	@Test
 	public void TestThree(){
 
@@ -154,7 +148,7 @@ public class TestSyntaxTree{
 		assertEquals( expected, programNode.indentedToString( 0 ) );
 	}
 
-
+*/
 
 }
 
