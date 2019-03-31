@@ -1,120 +1,301 @@
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.ByteArrayInputStream;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.Scanner;
 import scanner.*;
 
 public class TestScanner{
-	
-	static boolean testTheScanner( String stringOrFilenameA, String stringOrFilenameB, boolean isFilename ){
-
-		/* step one: create the scanners */
-
-		MyScanner tokenScanner = new MyScanner( stringOrFilenameA, isFilename );
-
-		Scanner annotatedTokenScanner = null;
-
-		if( isFilename ){
-
-			FileInputStream fis = null;
-
-			try{
-				
-				fis = new FileInputStream( stringOrFilenameB );	
-
-			}catch( Exception e ){ e.printStackTrace(); }
-
-			InputStreamReader isr = new InputStreamReader( fis );
-
-			annotatedTokenScanner = new Scanner( isr );
-
-		}else{
-	
-			ByteArrayInputStream bais = null;
-
-			try{
-
-				bais = new ByteArrayInputStream( stringOrFilenameB.getBytes( "UTF-8" ) );
-
-			}catch( Exception e ){ e.printStackTrace(); }
-
-			InputStreamReader isr = new InputStreamReader( bais );
-
-			annotatedTokenScanner = new Scanner( isr );
-
-		}
-		
-		/* step two: start getting tokens
-		 * from tokenScanner and assert
-		 * it equals the annotated version.
-		 */
-
-		boolean success = true;
-
-		while( tokenScanner.hasNext() && success ){
-
-			Token token = tokenScanner.next();
-
-			String correctLexeme = null,
-			       correctType= null;
-
-			if( annotatedTokenScanner.hasNext() ){
-
-				correctLexeme = annotatedTokenScanner.next();
-
-				if( annotatedTokenScanner.hasNext() ){
-			
-					correctType = annotatedTokenScanner.next();
-
-				}
-
-			}
-
-			success = correctLexeme != null
-				&& correctType != null;
-
-			if( success ){
-
-				success = token.getType().toString().equals( correctType )
-					&& token.getString().equals( correctLexeme );
-
-			}
-
-		}
-
-		return success;
-
-	}
 
 	@Test 
-	public void runTests(){
+	public void testOne(){
 
-		assertTrue( testTheScanner( "testData/scannerTestData/tokens1.txt",
-				       "testData/scannerTestData/annotatedTokens1.txt",
-			       true ) );
+		String code = 
+			 	"program\n"  
+			+	"jacksprogram\n"
+			+	";\n" 
+			+	"thisisanid\n"
+			+	"so8isthis\n"
+			+	"while\n"
+			+	"do\n"
+			+	"8.9E4\n"
+			+	"002302.9E+4\n"
+			+	"0043.3\n"
+			+	"423442\n"
+			+	"23423E8\n"
+			+	"progrm\n"
+			+	"jacksprogram\n"
+			;
+
+		String [] tokens = 
+		{	"program",
+			"jacksprogram",
+			";",
+			"thisisanid",
+			"so8isthis",
+			"while",
+			"do",
+			"8.9E4",
+			"002302.9E+4",
+			"0043.3",
+			"423442",
+			"23423E8",
+			"progrm",
+			"jacksprogram"
+		};
+
+		EnumToken [] types =
+		{
+			EnumToken.PROGRAM,
+			EnumToken.ID,
+			EnumToken.SEMICOLON,
+			EnumToken.ID,
+			EnumToken.ID,
+			EnumToken.WHILE,
+			EnumToken.DO,
+			EnumToken.NUM,
+			EnumToken.NUM,
+			EnumToken.NUM,
+			EnumToken.NUM,
+			EnumToken.NUM,
+			EnumToken.ID,
+			EnumToken.ID
+		};
+
+		MyScanner scanner = new MyScanner( code, false );
+
+		int i = 0;
+
+		while( scanner.hasNext() ){
+
+			Token nextToken = scanner.next();
+
+			assertEquals( nextToken.getString(), tokens[ i ] );
+			
+			assertEquals( nextToken.getType(), types[ i ] );
+
+			i++;
+		}
+
+	}
+/*	
+program 	PROGRAM 
+foo		ID
+; 		SEMICOLON
+var		VAR
+fee		ID
+,		COMMA
+fi		ID
+,		COMMA
+fo		ID
+,		COMMA
+fum		ID
+:		COLON
+integer		INTEGER
+;		SEMICOLON
+begin		BEGIN
+fee		ID
+:=		ASSIGNOP
+4		NUM
+;		SEMICOLON
+fi		ID
+:=		ASSIGNOP
+5		NUM
+;		SEMICOLON
+fo		ID
+:=		ASSIGNOP
+3		NUM
+*		MULOP
+fee 		ID
++ 		ADDOP
+fi		ID
+;		SEMICOLON
+if 		IF
+fo 		ID
+< 		RELOP
+13		NUM
+then		THEN	
+fo 		ID
+:= 		ASSIGNOP
+13		NUM
+else		ELSE	
+fo 		ID
+:= 		ASSIGNOP
+26		NUM
+;		SEMICOLON
+write		WRITE
+( 		LRPAREN
+fo 		ID
+)		RRPAREN
+;		SEMICOLON
+end		END
+.
+{ this is coommentooppp}
+program foo;
+
+var fee, fi, fo, fum: integer;
+
+begin
+	fee := 4;
+	fi := 5;
+	fo := 3 * fee + fi;
+	if fo < 13
+		then
+			fo := 13
+		else
+			fo := 26
+	;
+	write( fo );
+end
+.
+*/
 		
-		assertTrue( testTheScanner( "testData/scannerTestData/tokens2.txt",
-				       "testData/scannerTestData/annotatedTokens2.txt",
-			       true ) );
+	@Test 
+	public void testTwo(){
 
-		String tokenString1 = 
-			"this program var ) [ := ";
+		String code =
+				"{ this is coommentooppp}\n"
+			+ 	"program foo;\n"
+			+	"var fee, fi, fo, fum: integer;\n"
+			+	"begin\n"
+			+	"fee := 4;\n"
+			+	"fi := 5;\n"
+			+	"fo := 3 * fee + fi;\n"
+			+	"if fo < 13\n"
+			+	"then\n"
+			+	"fo := 13\n"
+			+	"else\n"
+			+	"fo := 26\n"
+			+	";\n"
+			+	"write( fo );\n"
+			+	"end\n"
+			+	".\n"
+			;
 
-		String annotatedTokenString1 = 
-			"this ID program PROGRAM var VAR ) RRPAREN [ LSPAREN := ASSIGNOP";
+			String [] tokens =
+			{
+				"program",
+				"foo",
+				";",
+				"var",
+				"fee",
+				",",
+				"fi",
+				",",
+				"fo",
+				",",
+				"fum",
+				":",
+				"integer",
+				";",
+				"begin",
+				"fee",
+				":=",
+				"4",
+				";",
+				"fi",
+				":=",
+				"5",
+				";",
+				"fo",
+				":=",
+				"3",
+				"*",
+				"fee",
+				"+",
+				"fi",
+				";",
+				"if",
+				"fo",
+				"<",
+				"13",
+				"then",
+				"fo",
+				":=",
+				"13",
+				"else",
+				"fo",
+				":=",
+				"26",
+				";",
+				"write",
+				"(",
+				"fo",
+				")",
+				";",
+				"end",
+				"."
+			};
+			
+			EnumToken [] types =
+			{
+				EnumToken.PROGRAM,
+				EnumToken.ID,
+				EnumToken.SEMICOLON,
+				EnumToken.VAR,
+				EnumToken.ID,
+				EnumToken.COMMA,
+				EnumToken.ID,
+				EnumToken.COMMA,
+				EnumToken.ID,
+				EnumToken.COMMA,
+				EnumToken.ID,
+				EnumToken.COLON,
+				EnumToken.INTEGER,
+				EnumToken.SEMICOLON,
+				EnumToken.BEGIN,
+				EnumToken.ID,
+				EnumToken.ASSIGNOP,
+				EnumToken.NUM,
+				EnumToken.SEMICOLON,
+				EnumToken.ID,
+				EnumToken.ASSIGNOP,
+				EnumToken.NUM,
+				EnumToken.SEMICOLON,
+				EnumToken.ID,
+				EnumToken.ASSIGNOP,
+				EnumToken.NUM,
+				EnumToken.MULOP,
+				EnumToken.ID,
+				EnumToken.ADDOP,
+				EnumToken.ID,
+				EnumToken.SEMICOLON,
+				EnumToken.IF,
+				EnumToken.ID,
+				EnumToken.RELOP,
+				EnumToken.NUM,
+				EnumToken.THEN,
+				EnumToken.ID,
+				EnumToken.ASSIGNOP,
+				EnumToken.NUM,
+				EnumToken.ELSE,
+				EnumToken.ID,
+				EnumToken.ASSIGNOP,
+				EnumToken.NUM,
+				EnumToken.SEMICOLON,
+				EnumToken.WRITE,
+				EnumToken.LRPAREN,
+				EnumToken.ID,
+				EnumToken.RRPAREN,
+				EnumToken.SEMICOLON,
+				EnumToken.END,
+				EnumToken.DOT
+			};
 
-		assertTrue( testTheScanner( tokenString1, annotatedTokenString1,
-					false ) );
-	
-		String uncorrectAnnotatedTokenString1 =	
-			"this VAR program PROGRAM var VAR ) RRPAREN [ LSPAREN := ASSIGNOP";
-	
-		assertFalse( testTheScanner( tokenString1, uncorrectAnnotatedTokenString1,
-					false ) );
-	
+		MyScanner scanner = new MyScanner( code, false );
+
+		int i = 0;
+
+		while( scanner.hasNext() ){
+
+			Token nextToken = scanner.next();
+
+			assertEquals( nextToken.getString(), tokens[ i ] );
+		
+			assertEquals( nextToken.getType(), types[ i ] );
+
+			i++;
+		}
+
 	}
 	
 }
