@@ -77,78 +77,7 @@ public class TestScanner{
 		}
 
 	}
-/*	
-program 	PROGRAM 
-foo		ID
-; 		SEMICOLON
-var		VAR
-fee		ID
-,		COMMA
-fi		ID
-,		COMMA
-fo		ID
-,		COMMA
-fum		ID
-:		COLON
-integer		INTEGER
-;		SEMICOLON
-begin		BEGIN
-fee		ID
-:=		ASSIGNOP
-4		NUM
-;		SEMICOLON
-fi		ID
-:=		ASSIGNOP
-5		NUM
-;		SEMICOLON
-fo		ID
-:=		ASSIGNOP
-3		NUM
-*		MULOP
-fee 		ID
-+ 		ADDOP
-fi		ID
-;		SEMICOLON
-if 		IF
-fo 		ID
-< 		RELOP
-13		NUM
-then		THEN	
-fo 		ID
-:= 		ASSIGNOP
-13		NUM
-else		ELSE	
-fo 		ID
-:= 		ASSIGNOP
-26		NUM
-;		SEMICOLON
-write		WRITE
-( 		LRPAREN
-fo 		ID
-)		RRPAREN
-;		SEMICOLON
-end		END
-.
-{ this is coommentooppp}
-program foo;
-
-var fee, fi, fo, fum: integer;
-
-begin
-	fee := 4;
-	fi := 5;
-	fo := 3 * fee + fi;
-	if fo < 13
-		then
-			fo := 13
-		else
-			fo := 26
-	;
-	write( fo );
-end
-.
-*/
-		
+	
 	@Test 
 	public void testTwo(){
 

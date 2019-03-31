@@ -33,7 +33,7 @@ public class ReturnStatementNode extends StatementNode {
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
-			+ "ReturnStatementNode"
+			+ "ReturnStatementNode."
 			+ "\n"
 			+ returnExpression.indentedToString( level + 1 );
 
