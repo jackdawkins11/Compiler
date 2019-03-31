@@ -81,10 +81,7 @@ public class TestSyntaxTree{
 
 	@Test
 	public void TestThree(){
-			+	"|-- --- VariableAssignmentStatementNode.\n"
-			+	"|-- --- --- NumValueExpressionNode. Num: 0 Standard Type: INTEGER\n"
-			+	"|-- --- --- VariableNode. Name: fi Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- --- NumValueExpressionNode. Num: 5 Standard Type: INTEGER\n"
+		
 		String expected =
 				"ProgramNode. Name: JacksProgram\n"
 			+	"|-- DeclarationsNode.\n"
@@ -96,48 +93,47 @@ public class TestSyntaxTree{
 			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
 			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
 			+	"|-- --- --- CompoundStatementNode.\n"
-			+	"|-- --- --- --- ArrayAssignmentStatementNode.\n"
-			+	"|-- --- --- --- --- ArrayVariableNode. Name: functionArray Rows: 1 Cols: 10\n"
-			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 1000\n"
-			+	"|-- --- --- --- --- VariableValueExpressionNode.\n"
-			+	"|-- --- --- --- --- --- StandardVariableNode. Name: functionInteger\n"
+			+	"|-- --- --- --- VariableAssignmentStatementNode.\n"
+			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 1 Standard Type: INTEGER\n"
+			+	"|-- --- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
+			+	"|-- --- --- --- --- VariableValueExpressionNode. Standard Type: INTEGER\n"
+			+	"|-- --- --- --- --- --- NumValueExpressionNode. Num: 1 Standard Type: INTEGER\n"
+			+	"|-- --- --- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
 			+	"|-- CompoundStatementNode.\n"
 			;
 
-		VariableType integerType = new VariableType( EnumToken.INTEGER );
+		VariableType integerType = new VariableType( 0, 1, EnumStandardType.INTEGER );
 		
-		VariableType arrayType = new VariableType( 1, 10, EnumToken.REAL );
+		VariableType arrayType = new VariableType( 1, 10, EnumStandardType.INTEGER );
 
 		DeclarationsNode programVariables = new DeclarationsNode();
 		
-		programVariables.addVariable( new StandardVariableNode( "jacksInteger", integerType ) );
+		programVariables.addVariable( new VariableNode( "jacksInteger", integerType ) );
 		
-		programVariables.addVariable( new ArrayVariableNode( "jacksArray", arrayType ) );
+		programVariables.addVariable( new VariableNode( "jacksArray", arrayType ) );
 
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
 
-		DeclarationsNode functionParameters = new DeclarationsNode();
-
 		DeclarationsNode functionVariables = new DeclarationsNode();
 
-		StandardVariableNode functionInteger = new StandardVariableNode( "functionInteger", integerType );
+		VariableNode functionInteger = new VariableNode( "functionInteger", integerType );
 		
-		ArrayVariableNode functionArray = new ArrayVariableNode( "functionArray", arrayType );
+		VariableNode functionArray = new VariableNode( "functionArray", arrayType );
 
-		functionParameters.addVariable( functionInteger );
+		functionVariables.addVariable( functionInteger );
 
 		functionVariables.addVariable( functionArray );
 
 		CompoundStatementNode functionBody = new CompoundStatementNode();
 
-		NumValueExpressionNode arrayOffset = new NumValueExpressionNode( "1000" );
+		NumValueExpressionNode arrayOffset = new NumValueExpressionNode( "1" );
 
-		VariableValueExpressionNode rValue = new VariableValueExpressionNode( functionInteger );
+		VariableValueExpressionNode rValue = new VariableValueExpressionNode( functionInteger, arrayOffset );
 
-		functionBody.addStatement( new ArrayAssignmentStatementNode( functionArray, arrayOffset, rValue ) );	
+		functionBody.addStatement( new VariableAssignmentStatementNode( functionArray, arrayOffset, rValue ) );	
 
-		subProgramDeclarationsNode.addSubProgram( new FunctionNode( "functionOne", functionParameters,
-					integerType, functionVariables, functionBody ) );
+		subProgramDeclarationsNode.addSubProgram( new SubProgramNode( "functionOne", EnumStandardType.INTEGER,
+					functionVariables, functionBody ) );
 
 		CompoundStatementNode main = new CompoundStatementNode();
 
@@ -147,6 +143,7 @@ public class TestSyntaxTree{
 				main );
 
 		assertEquals( expected, programNode.indentedToString( 0 ) );
+	
 	}
 
 
