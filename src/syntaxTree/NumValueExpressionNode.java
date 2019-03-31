@@ -2,6 +2,7 @@
 package syntaxTree;
 
 import variableType.EnumStandardType;
+
 /*
  * A number.
  */

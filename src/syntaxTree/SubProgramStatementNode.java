@@ -31,7 +31,7 @@ public class SubProgramStatementNode extends StatementNode {
 
 	}
 
-	public SubProgramStatementNode( SubProgramNode subProgramTmp){
+	public SubProgramStatementNode( SubProgramNode subProgramTmp ){
 
 		subProgram = subProgramTmp;
 
@@ -59,6 +59,7 @@ public class SubProgramStatementNode extends StatementNode {
 		return answer;
 
 	}
+
 }
 
 

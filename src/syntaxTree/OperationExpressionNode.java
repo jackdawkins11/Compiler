@@ -45,7 +45,23 @@ public class OperationExpressionNode extends ExpressionNode {
 	@Override
 	public EnumStandardType getStandardType(){
 
-		return leftExpression.getStandardType();
+		if( leftExpression.getStandardType()
+				== rightExpression.getStandardType() ){
+
+			return leftExpression.getStandardType();
+
+		}else{
+
+			//round to integer
+			
+			assert( ( leftExpression.getStandardType()
+					== EnumStandardType.INTEGER )
+				|| ( rightExpression.getStandardType()
+					== EnumStandardType.INTEGER ) );
+			
+			return EnumStandardType.INTEGER;
+
+		}
 
 	}
 
@@ -63,6 +79,7 @@ public class OperationExpressionNode extends ExpressionNode {
 		return answer;
 
 	}
+
 }
 
 

@@ -2,6 +2,7 @@
 package syntaxTree;
 
 import variableType.EnumStandardType;
+
 /*
  * An expression
  * that is negated.

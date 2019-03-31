@@ -31,7 +31,7 @@ public class SubProgramNode extends SyntaxTreeNode {
 	public SubProgramNode( String nameTmp,
 			EnumStandardType returnTypeTmp,
 			DeclarationsNode variablesTmp,
-			CompoundStatementNode functionBodyTmp ) throws Exception {
+			CompoundStatementNode functionBodyTmp ){
 
 		name = nameTmp;
 

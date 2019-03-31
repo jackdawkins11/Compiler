@@ -79,21 +79,22 @@ public class TestSyntaxTree{
 	
 	}
 
-	/*
 	@Test
 	public void TestThree(){
-
+			+	"|-- --- VariableAssignmentStatementNode.\n"
+			+	"|-- --- --- NumValueExpressionNode. Num: 0 Standard Type: INTEGER\n"
+			+	"|-- --- --- VariableNode. Name: fi Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
+			+	"|-- --- --- NumValueExpressionNode. Num: 5 Standard Type: INTEGER\n"
 		String expected =
 				"ProgramNode. Name: JacksProgram\n"
 			+	"|-- DeclarationsNode.\n"
-			+	"|-- --- StandardVariableNode. Name: jacksInteger\n"
-			+	"|-- --- ArrayVariableNode. Name: jacksArray Rows: 1 Cols: 10\n"
+			+	"|-- --- VariableNode. Name: jacksInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
+			+	"|-- --- VariableNode. Name: jacksArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
 			+	"|-- SubProgramDeclarationsNode.\n"
-			+	"|-- --- FunctionNode. Name: functionOne\n"
+			+	"|-- --- SubProgramNode. Name: functionOne\n"
 			+	"|-- --- --- DeclarationsNode.\n"
-			+	"|-- --- --- --- StandardVariableNode. Name: functionInteger\n"
-			+	"|-- --- --- DeclarationsNode.\n"
-			+	"|-- --- --- --- ArrayVariableNode. Name: functionArray Rows: 1 Cols: 10\n"
+			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
+			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
 			+	"|-- --- --- CompoundStatementNode.\n"
 			+	"|-- --- --- --- ArrayAssignmentStatementNode.\n"
 			+	"|-- --- --- --- --- ArrayVariableNode. Name: functionArray Rows: 1 Cols: 10\n"
@@ -148,7 +149,6 @@ public class TestSyntaxTree{
 		assertEquals( expected, programNode.indentedToString( 0 ) );
 	}
 
-*/
 
 }
 
