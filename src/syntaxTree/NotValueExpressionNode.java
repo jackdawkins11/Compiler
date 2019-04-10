@@ -49,6 +49,15 @@ public class NotValueExpressionNode extends ExpressionNode {
 		return answer;
 
 	}
+
+	@Override
+	public String toMips( String indent ){
+
+		System.exit( 1 );
+
+		return null;
+
+	}	
 }
 
 

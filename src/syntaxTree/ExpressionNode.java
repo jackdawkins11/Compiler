@@ -13,10 +13,12 @@ import variableType.EnumStandardType;
 
 public abstract class ExpressionNode extends SyntaxTreeNode{
 
-	///////////////////////////////
-	//     Abstract Function     //
-	///////////////////////////////
+	////////////////////////////////
+	//     Abstract Functions     //
+	////////////////////////////////
 	
 	public abstract EnumStandardType getStandardType();
+
+	public abstract String toMips( String indent );
 
 }
