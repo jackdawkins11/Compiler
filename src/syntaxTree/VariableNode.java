@@ -47,6 +47,7 @@ public class VariableNode extends SyntaxTreeNode {
 
 	}
 
+	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )

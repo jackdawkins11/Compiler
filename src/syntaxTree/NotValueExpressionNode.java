@@ -53,11 +53,10 @@ public class NotValueExpressionNode extends ExpressionNode {
 	@Override
 	public String toMips( String indent ){
 
-		System.exit( 1 );
+		return "";
 
-		return null;
+	}
 
-	}	
 }
 
 

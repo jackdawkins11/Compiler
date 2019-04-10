@@ -64,7 +64,7 @@ public class NumValueExpressionNode extends ExpressionNode {
 	}
 
 	@Override
-	String toMips( String indent ){
+	public String toMips( String indent ){
 
 		//string to be used in the mips code
 		String finalNumString = null;
@@ -75,9 +75,9 @@ public class NumValueExpressionNode extends ExpressionNode {
 		int powTen = 1;
 
 		//check for exponent part
-		for( int i = 0; i < numString.size(); i++){
+		for( int i = 0; i < numString.length(); i++){
 
-			if( numString.charAt( i ) == "E" ){
+			if( numString.charAt( i ) == 'E' ){
 
 				//set noExpString
 
@@ -91,13 +91,13 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 				boolean isPositive = true;
 
-				if( numString.charAt( exponentDigitsBegin ) == "+" ){
+				if( numString.charAt( exponentDigitsBegin ) == '+' ){
 
 					isPositive = true;
 
 					exponentDigitsBegin ++;
 
-				}else if( numString.charAt( exponentDigitsBegin ) == "-" ){
+				}else if( numString.charAt( exponentDigitsBegin ) == '-' ){
 
 					isPositive = false;
 
@@ -129,17 +129,17 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 			float number = Float.parseFloat( noExpString );
 
-			number = Math.pow( number, powTen );
+			double finalnumber = Math.pow( number, powTen );
 
-			finalNumString = String.valueOf( number );
+			finalNumString = String.valueOf( finalnumber );
 
 		}else{
 
-			int number = Integer.parseFloat( noExpString );
+			int number = Integer.parseInt( noExpString );
 
-			number = Math.pow( number, powTen );
+			int finalnumber = (int) Math.pow( number, powTen );
 
-			finalNumString = String.valueOf( number );
+			finalNumString = String.valueOf( finalnumber );
 
 		}
 
@@ -149,13 +149,13 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 		if( standardType == EnumStandardType.REAL ){
 
-			answer =  indent + "add $sp, $sp, -4 #make room on stack\n"
+			answer =  indent + "addi $sp, $sp, -4 #make room on stack\n"
 				+ indent + "li.s $f12, " + finalNumString + " #put number into $f12\n"
 				+ indent + "s.s $f12, 0($sp) #put $f12 on stack\n";
 
 		}else{
 
-			answer =  indent + "add $sp, $sp, -4 #make room on stack\n"
+			answer =  indent + "addi $sp, $sp, -4 #make room on stack\n"
 				+ indent + "li $t0, " + finalNumString + " #put number into $t0\n"
 				+ indent + "sw $t0, 0($sp) #put $t0 on stack\n";
 

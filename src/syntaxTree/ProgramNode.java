@@ -59,6 +59,19 @@ public class ProgramNode extends SyntaxTreeNode {
 
 	}
 
+	public String toMips(){
+
+		String answer = "#ProgramNode " + name + "\n";
+
+		answer += ".text\n"
+			+ "main:\n";
+
+		answer += main.toMips( "    " );
+
+		return answer;
+
+	}
+
 }
 
 

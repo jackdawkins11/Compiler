@@ -54,6 +54,14 @@ public class VariableValueExpressionNode extends ExpressionNode {
 		return answer;
 
 	}
+
+	@Override
+	public String toMips( String indent ){
+
+		return "";
+
+	}
+
 }
 
 

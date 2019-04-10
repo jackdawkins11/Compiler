@@ -60,6 +60,13 @@ public class SubProgramStatementNode extends StatementNode {
 
 	}
 
+	@Override
+	public String toMips( String indent ){
+
+		return "";
+
+	}
+
 }
 
 

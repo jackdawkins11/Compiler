@@ -41,6 +41,13 @@ public class ReturnStatementNode extends StatementNode {
 
 	}
 
+	@Override
+	public String toMips( String indent ){
+
+		return "";
+
+	}
+
 }
 
 

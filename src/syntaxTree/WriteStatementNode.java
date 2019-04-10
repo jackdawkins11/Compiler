@@ -1,6 +1,8 @@
 
 package syntaxTree;
 
+import variableType.EnumStandardType;
+
 public class WriteStatementNode extends StatementNode {
 
 	//////////////////

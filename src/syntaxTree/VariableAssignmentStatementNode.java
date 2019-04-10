@@ -53,4 +53,11 @@ public class VariableAssignmentStatementNode extends StatementNode{
 
 	}
 
+	@Override
+	public String toMips( String indent ){
+
+		return "";
+
+	}
+
 }
