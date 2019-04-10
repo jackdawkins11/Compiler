@@ -183,7 +183,7 @@ public class TestCodeGen{
 			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- CompoundStatementNode.\n"
 			+	"|-- --- --- --- ReturnStatementNode.\n"
-			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 33.3 Standard Type: REAL\n"
+			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 33 Standard Type: INTEGER\n"
 			+	"|-- CompoundStatementNode.\n"
 			+	"|-- --- WhileDoStatementNode.\n"
 			+	"|-- --- --- OperationExpressionNode. Operation: < Standard Type: INTEGER\n"
@@ -259,7 +259,7 @@ public class TestCodeGen{
 
 		//functionTwo statement
 		
-		ReturnStatementNode returnStatementNode = new ReturnStatementNode( new NumValueExpressionNode( "33.3" ) );
+		ReturnStatementNode returnStatementNode = new ReturnStatementNode( new NumValueExpressionNode( "33" ) );
 		
 		CompoundStatementNode functionTwoBody = new CompoundStatementNode();
 		
@@ -267,7 +267,7 @@ public class TestCodeGen{
 		
 		//create function
 
-		SubProgramNode functionTwo = new SubProgramNode( "functionTwo", EnumStandardType.REAL,
+		SubProgramNode functionTwo = new SubProgramNode( "functionTwo", EnumStandardType.INTEGER,
 					functionTwoVariables, functionTwoBody );
 	
 		//add the functions
@@ -292,7 +292,7 @@ public class TestCodeGen{
 
 		}catch( Exception e ){
 			System.out.println( "failed to create NotValueExpressionNode" );
-	       		System.exit( 1 );
+			System.exit( 1 );
 		}
 
 		NumValueExpressionNode functionParam = new NumValueExpressionNode( "4" );
@@ -307,9 +307,12 @@ public class TestCodeGen{
 		
 		try{
 
-		operationExpressionNode = new OperationExpressionNode( notValueExpressionNode, "<", subProgramValueExpressionNode ); 
+			operationExpressionNode = new OperationExpressionNode( notValueExpressionNode, "<", subProgramValueExpressionNode ); 
 
-		}catch( Exception e ){ System.exit( 1 ); }
+		}catch( Exception e ){
+			System.out.println( e.getMessage() );
+			System.exit( 1 );
+		}
 
 		WriteStatementNode writeStatementNode = new WriteStatementNode( new NumValueExpressionNode( "3.14" ) );
 
@@ -327,7 +330,6 @@ public class TestCodeGen{
 	}
 
 	public static void main( String args[] ){
-
 
 		TestOne();
 

@@ -49,7 +49,7 @@ public class WhileDoStatementNode extends StatementNode {
 	@Override
 	public String toMips( String indent ){
 
-		String answer = indent + "#WhileDoStatementNode";
+		String answer = indent + "#WhileDoStatementNode\n";
 
 		return answer;
 
