@@ -40,8 +40,10 @@ public class WriteStatementNode extends StatementNode {
 
 	public String toMips( String indent ){
 
+		String answer = indent + "#WriteStatementNode\n";
+
 		//add expression code that leaves result in stack
-		String answer = writeExpression.toMips( indent );
+		answer += writeExpression.toMips( indent );
 
 		if( writeExpression.getStandardType() == EnumStandardType.REAL ){
 

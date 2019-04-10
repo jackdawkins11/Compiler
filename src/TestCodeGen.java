@@ -186,12 +186,12 @@ public class TestCodeGen{
 			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 33.3 Standard Type: REAL\n"
 			+	"|-- CompoundStatementNode.\n"
 			+	"|-- --- WhileDoStatementNode.\n"
-			+	"|-- --- --- OperationExpressionNode. Operation: < Standard Type: REAL\n"
-			+	"|-- --- --- --- NotValueExpressionNode. Standard Type: REAL\n"
-		       	+	"|-- --- --- --- --- VariableValueExpressionNode. Standard Type: REAL\n"
-			+	"|-- --- --- --- --- --- NumValueExpressionNode. Num: 3 Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- --- VariableNode. Name: jacksArray Standard Type: REAL Begin Index: 1 End Index: 10\n"
-			+	"|-- --- --- --- SubProgramValueExpressionNode. Name: functionTwo Standard Type: REAL\n"
+			+	"|-- --- --- OperationExpressionNode. Operation: < Standard Type: INTEGER\n"
+			+	"|-- --- --- --- NotValueExpressionNode. Standard Type: INTEGER\n"
+		       	+	"|-- --- --- --- --- VariableValueExpressionNode. Standard Type: INTEGER\n"
+			+	"|-- --- --- --- --- --- NumValueExpressionNode. Num: 0 Standard Type: INTEGER\n"
+			+	"|-- --- --- --- --- --- VariableNode. Name: jacksInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
+			+	"|-- --- --- --- SubProgramValueExpressionNode. Name: functionTwo Standard Type: INTEGER\n"
 			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 4 Standard Type: INTEGER\n"
 			+	"|-- --- --- WriteStatementNode.\n"
 			+	"|-- --- --- --- NumValueExpressionNode. Num: 3.14 Standard Type: REAL\n"
@@ -280,11 +280,20 @@ public class TestCodeGen{
 
 		//program body
 
-		NumValueExpressionNode varIndex = new NumValueExpressionNode( "3" );
-		
-		VariableValueExpressionNode varExpr = new VariableValueExpressionNode( jacksArray, varIndex );
-		
-		NotValueExpressionNode notValueExpressionNode = new NotValueExpressionNode( varExpr );
+		NumValueExpressionNode varIndex = new NumValueExpressionNode( "0" );
+	
+		VariableValueExpressionNode varExpr = new VariableValueExpressionNode( jacksInteger, varIndex );
+
+		NotValueExpressionNode notValueExpressionNode = null;
+
+		try{
+
+			notValueExpressionNode = new NotValueExpressionNode( varExpr );
+
+		}catch( Exception e ){
+			System.out.println( "failed to create NotValueExpressionNode" );
+	       		System.exit( 1 );
+		}
 
 		NumValueExpressionNode functionParam = new NumValueExpressionNode( "4" );
 
@@ -318,7 +327,6 @@ public class TestCodeGen{
 	}
 
 	public static void main( String args[] ){
-
 
 
 		TestOne();

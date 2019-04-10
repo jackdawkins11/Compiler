@@ -36,10 +36,13 @@ public class OperationExpressionNode extends ExpressionNode {
 
 		rightExpression = rightExpressionTmp;
 
-		if( leftExpression.getStandardType()
-				!= rightExpression.getStandardType() ){
+		if( ( leftExpression.getStandardType()
+			!= rightExpression.getStandardType() )
+		|| ( ( operation == "or" || operation == "and" )
+			&& leftExpression.getStandardType() == EnumStandardType.REAL )
+				){
 
-			throw new Exception( "Types do not match across operation." );
+			throw new Exception( "Invalid operation or types." );
 
 		}
 
@@ -74,13 +77,15 @@ public class OperationExpressionNode extends ExpressionNode {
 	@Override
 	public String toMips( String indent ){
 
+		String answer = indent + "#OperationExpressionNode\n";
+
 		//add code for first expression
-		String answer = leftExpression.toMips( indent );
+		answer += leftExpression.toMips( indent );
 
 		//add code for second expression
 		answer += rightExpression.toMips( indent );
 
-		if( leftExpression.getStandardType() == EnumStandardType.REAL ){
+		if( getStandardType() == EnumStandardType.REAL ){
 
 			//code to put expressions into $f11, $f12
 
@@ -92,50 +97,39 @@ public class OperationExpressionNode extends ExpressionNode {
 
 			if( operation == "+" ){
 
-				answer += indent + "add $f10, $f11, $f12 #operation result in $f10\n"
+				answer += indent + "add.s $f10, $f11, $f12 #operation result in $f10\n"
 					+ indent + "addi $sp, $sp, -4\n"
 					+ indent + "s.s $f10, ($sp) #put on stack\n";
 
 			}else if( operation == "-" ){
 
-				answer += indent + "sub $f10, $f11, $f12 #operation result in $f10\n"
-					+ indent + "addi $sp, $sp, -4\n"
-					+ indent + "s.s $f10, ($sp) #put on stack\n";
-
-			}else if( operation == "or" ){
-
-				answer += indent + "or $f10, $f11, $f12 #operation result in $f10\n"
+				answer += indent + "sub.s $f10, $f11, $f12 #operation result in $f10\n"
 					+ indent + "addi $sp, $sp, -4\n"
 					+ indent + "s.s $f10, ($sp) #put on stack\n";
 
 			}else if( operation == "*" ){
 
-				answer += indent + "mult $f11, $f12 #operation result in $LO\n"
+				answer += indent + "mult.s $f11, $f12 #operation result in $LO\n"
 					+ indent + "mflo $f10 #result in $f10\n"
 					+ indent + "addi $sp, $sp, -4\n"
 					+ indent + "s.s $f10, ($sp) #put on stack\n";
 
 			}else if( operation == "/" ){
 
-				answer += indent + "div $f11, $f12 #operation result in $LO\n"
+				answer += indent + "div.s $f11, $f12 #operation result in $LO\n"
 					+ indent + "mflo $f10 #result in $f10\n"
 					+ indent + "addi $sp, $sp, -4\n"
 					+ indent + "s.s $f10, ($sp) #put on stack\n";
 
 			}else if( operation == "mod" ){
 
-				answer += indent + "div $f11, $f12 #operation result in $LO\n"
+				answer += indent + "div.s $f11, $f12 #operation result in $LO\n"
 					+ indent + "mfhi $f10 #result in $f10\n"
 					+ indent + "addi $sp, $sp, -4\n"
 					+ indent + "s.s $f10, ($sp) #put on stack\n";
 
-			}else if( operation == "and" ){
-
-				answer += indent + "and $f10, $f11, $f12 #operation result in $f10\n"
-					+ indent + "addi $sp, $sp, -4\n"
-					+ indent + "s.s $f10, ($sp) #put on stack\n";
-
 			}
+
 
 		}else{
 

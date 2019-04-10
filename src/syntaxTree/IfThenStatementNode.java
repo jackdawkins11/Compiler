@@ -56,8 +56,10 @@ public class IfThenStatementNode extends StatementNode {
 	@Override
 	public String toMips( String indent ){
 
+		String answer = indent + "#IfThenStatementNode\n";
+
 		//get code that puts expression onto stack
-		String answer = testExpression.toMips( indent );
+		answer += testExpression.toMips( indent );
 
 		//add code that jumps to else if test expression is 0
 		answer += indent + "lw $t0, 0($sp) #put expression into $t0\n"

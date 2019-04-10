@@ -68,6 +68,8 @@ public class ProgramNode extends SyntaxTreeNode {
 
 		answer += main.toMips( "    " );
 
+		answer += functions.toMips( "" );
+
 		return answer;
 
 	}

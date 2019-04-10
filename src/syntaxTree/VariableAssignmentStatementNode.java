@@ -43,8 +43,7 @@ public class VariableAssignmentStatementNode extends StatementNode{
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
-			+ "VariableAssignmentStatementNode."
-			+ "\n"
+			+ "VariableAssignmentStatementNode.\n"
 			+ arrayOffset.indentedToString( level + 1 )
 			+ variable.indentedToString( level + 1 )
 			+ rValue.indentedToString( level + 1 );
@@ -56,7 +55,9 @@ public class VariableAssignmentStatementNode extends StatementNode{
 	@Override
 	public String toMips( String indent ){
 
-		return "";
+		String answer = indent + "#VariableAssignmentStatementNode\n";
+
+		return answer;
 
 	}
 
