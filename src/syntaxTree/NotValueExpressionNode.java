@@ -59,9 +59,9 @@ public class NotValueExpressionNode extends ExpressionNode {
 	@Override
 	public String toMips( String indent ){
 
-		String answer = indent + "#NotValueExpressionNode";
-
-		answer += indent + "lw $t0, ($sp) #put expression into $t0\n"
+		String answer = indent + "#NotValueExpressionNode\n"
+			  + expression.toMips( indent )
+			  + indent + "lw $t0, ($sp) #put expression into $t0\n"
 			  + indent + "beq $t0, $zero, Else #go to else if $t0 is 0\n"
 			  + indent + "li $t0, 1 #true expression\n"
 			  + indent + "sw $t0, ($sp) #save on stack\n"
@@ -69,7 +69,8 @@ public class NotValueExpressionNode extends ExpressionNode {
 			  + indent + "Else: \n"
 			  + indent + "li $t0, 0 #false expression\n"
 			  + indent + "sw $t0, ($sp) #save on stack\n"
-			  + indent + "Endif:\n";
+			  + indent + "Endif:\n"
+			  + indent + "#end NotValueExpressionNode\n";
 
 		return answer;
 

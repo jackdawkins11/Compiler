@@ -53,4 +53,14 @@ public class DeclarationsNode extends SyntaxTreeNode {
 
 	}
 
+	public String toMips( String indent ){
+
+		String answer = indent + "#DeclarationsNode\n";
+
+		answer += indent + "#end DeclartionsNode\n";
+
+		return answer;
+
+	}
+
 }

@@ -66,9 +66,11 @@ public class ProgramNode extends SyntaxTreeNode {
 		answer += ".text\n"
 			+ "main:\n";
 
-		answer += main.toMips( "    " );
+		answer += variables.toMips( "     " );
 
-		answer += functions.toMips( "" );
+		answer += main.toMips( "     " );
+
+		answer += functions.toMips();
 
 		return answer;
 

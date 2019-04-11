@@ -47,15 +47,17 @@ public class SubProgramDeclarationsNode extends SyntaxTreeNode{
 
 	}
 
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#SubProgramDeclarationsNode\n";
+		String answer = "#SubProgramDeclarationsNode\n";
 
 		for( SubProgramNode subProgramNode : subPrograms ){
 
-			answer += subProgramNode.toMips( indent + "     " );
+			answer += subProgramNode.toMips();
 
 		}
+
+		answer += "#end SubProgramDeclarationsNode\n";
 
 		return answer;
 

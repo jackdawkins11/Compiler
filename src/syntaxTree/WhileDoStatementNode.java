@@ -51,6 +51,21 @@ public class WhileDoStatementNode extends StatementNode {
 
 		String answer = indent + "#WhileDoStatementNode\n";
 
+		//top of loop
+		answer += indent + "topOfLoop:\n";
+
+		//loop body
+		answer += doStatement.toMips( indent );
+
+		//test to jump to topOfLoop
+		answer += testExpression.toMips( indent )
+			+ indent + "lw $t0, ($sp) #test expression in $t0\n"
+			+ indent + "addi $sp, $sp, 4 #pop stack\n"
+			+ indent + "bne $t0, $zero, topOfLoop #if $t0 goto topOfLoop\n"
+			;
+
+		answer += indent + "#end WhileDoStatementNode\n";
+
 		return answer;
 
 	}

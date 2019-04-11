@@ -2,7 +2,7 @@
 package syntaxTree;
 
 /*
- * An if-then
+ * An if-then statement is a
  * test expression
  * and two statements.
  */
@@ -56,26 +56,17 @@ public class IfThenStatementNode extends StatementNode {
 	@Override
 	public String toMips( String indent ){
 
-		String answer = indent + "#IfThenStatementNode\n";
-
-		//get code that puts expression onto stack
-		answer += testExpression.toMips( indent );
-
-		//add code that jumps to else if test expression is 0
-		answer += indent + "lw $t0, 0($sp) #put expression into $t0\n"
+		String answer = indent + "#IfThenStatementNode\n"
+			+ testExpression.toMips( indent )
+			+ indent + "lw $t0, ($sp) #put expression into $t0\n"
 			+ indent + "addi $sp, $sp, 4 #pop stack\n"
-			+ indent + "beq $t0, $zero, Else #if expression is 0 jump to Else\n";
-
-		//add then code
-		answer += thenStatement.toMips( indent )
-		        + indent + "j Endif \n";
-
-		//add else code
-		answer += indent + "Else:\n"
-		        + elseStatement.toMips( indent );
-
-		//add Endif
-		answer += indent + "Endif:\n";
+			+ indent + "beq $t0, $zero, Else #if expression is 0 jump to Else\n"
+		        + thenStatement.toMips( indent )
+		        + indent + "j Endif \n"
+			+ indent + "Else:\n"
+		        + elseStatement.toMips( indent )
+			+ indent + "Endif:\n"
+			+ indent + "#end IfThenStatementNode\n";
 
 		return answer;
 

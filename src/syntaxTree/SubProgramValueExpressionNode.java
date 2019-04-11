@@ -75,7 +75,11 @@ public class SubProgramValueExpressionNode extends ExpressionNode {
 	@Override
 	public String toMips( String indent ){
 
-		return "";
+		String answer = indent + "#SubProgramValueExpressionNode\n";
+
+		answer += indent + "#end SubProgramValueExpressionNode\n";
+
+		return answer;
 
 	}
 }

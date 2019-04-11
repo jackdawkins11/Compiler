@@ -4,7 +4,7 @@ package syntaxTree;
 /*
  * A statement
  * that reads
- * an ID.
+ * to a variable.
  */
 
 public class ReadStatementNode extends StatementNode {
@@ -44,7 +44,9 @@ public class ReadStatementNode extends StatementNode {
 	@Override
 	public String toMips( String indent ){
 
-		String answer = indent + "#ReadStatementNode";
+		String answer = indent + "#ReadStatementNode\n";
+
+		answer += indent + "#end ReadStatementNode\n";
 
 		return answer;
 

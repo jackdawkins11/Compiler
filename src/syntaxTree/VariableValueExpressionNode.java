@@ -58,7 +58,11 @@ public class VariableValueExpressionNode extends ExpressionNode {
 	@Override
 	public String toMips( String indent ){
 
-		return "";
+		String answer = indent + "#VariableValueExpressionNode\n";
+
+		answer += indent + "#end VariableValueExpressionNode\n";
+
+		return answer;
 
 	}
 

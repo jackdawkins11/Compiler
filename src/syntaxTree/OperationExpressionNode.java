@@ -186,9 +186,35 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ indent + "addi $sp, $sp, -4\n"
 					+ indent + "sw $t2, ($sp) #put on stack\n";
 
+			}else if( operation == "=" ){
+
+				answer += indent + "bne $t1, $t0, notEqual\n"
+					+ indent + "li $t2, 1 #$t0 is true\n"
+					+ indent + "j endIf\n"
+					+ indent + "notEqual:\n"
+					+ indent + "li $t2, 0 #$t0 is false\n"
+					+ indent + "endIf:\n"
+					+ indent + "addi $sp, $sp, -4\n"
+					+ indent + "sw $t2, ($sp) #put on stack\n";
+
+			}else if( operation == "<" ){
+
+				answer += indent + "slt $t2, $t1, $t0 \n"
+					+ indent + "addi $sp, $sp, -4\n"
+					+ indent + "sw $t2, ($sp) #put on stack\n";
+
+			}else if( operation == ">" ){
+
+				answer += indent + "slt $t2, $t0, $t1 \n"
+					+ indent + "addi $sp, $sp, -4\n"
+					+ indent + "sw $t2, ($sp) #put on stack\n";
+
 			}
 
+
 		}
+
+		answer += indent + "#end OperationExpressionNode\n";
 
 		return answer;
 

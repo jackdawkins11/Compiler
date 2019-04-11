@@ -4,7 +4,9 @@ package syntaxTree;
 import variableType.EnumStandardType;
 
 /*
- * A number.
+ * A number
+ * literal in an
+ * expression.
  */
 
 public class NumValueExpressionNode extends ExpressionNode {
@@ -74,10 +76,14 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 		int powTen = 1;
 
+		boolean foundE = false;
+
 		//check for exponent part
-		for( int i = 0; i < numString.length(); i++){
+		for( int i = 0; i < numString.length() && !foundE; i++){
 
 			if( numString.charAt( i ) == 'E' ){
+
+				foundE = true;
 
 				//set noExpString
 
@@ -111,7 +117,10 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 					powTen = Integer.parseInt( numString.substring( exponentDigitsBegin ) );
 				
-				}catch( Exception e ){ System.exit( 1 ); }
+				}catch( Exception e ){
+					System.out.println( "invalid num token" );
+			       		System.exit( 1 );
+				}
 
 				if( !isPositive ){
 
@@ -145,22 +154,24 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 		//the mips code
 
-		String answer = null;
+		String answer = indent + "#NumValueExpressionNode\n";
 
 		if( standardType == EnumStandardType.REAL ){
 
-			answer =  indent + "addi $sp, $sp, -4 #make room on stack\n"
+			answer +=  indent + "addi $sp, $sp, -4 #make room on stack\n"
 				+ indent + "li.s $f12, " + finalNumString + " #put number into $f12\n"
 				+ indent + "s.s $f12, 0($sp) #put $f12 on stack\n";
 
 		}else{
 
-			answer =  indent + "addi $sp, $sp, -4 #make room on stack\n"
+			answer +=  indent + "addi $sp, $sp, -4 #make room on stack\n"
 				+ indent + "li $t0, " + finalNumString + " #put number into $t0\n"
 				+ indent + "sw $t0, 0($sp) #put $t0 on stack\n";
 
 		}
 
+		answer += indent + "#end NumValueExpressionNode\n";
+		
 		return answer;
 
 	}

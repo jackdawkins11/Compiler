@@ -10,6 +10,10 @@ package syntaxTree;
 
 public abstract class StatementNode extends SyntaxTreeNode {
 
+	////////////////////////////////
+	//     Abstract Functions     //
+	////////////////////////////////
+
 	public abstract String toMips( String indent );
 
 }

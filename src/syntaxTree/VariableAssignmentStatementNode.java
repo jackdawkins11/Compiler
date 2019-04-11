@@ -57,6 +57,8 @@ public class VariableAssignmentStatementNode extends StatementNode{
 
 		String answer = indent + "#VariableAssignmentStatementNode\n";
 
+		answer += indent + "#end VariableAssignmentStatementNode\n";
+
 		return answer;
 
 	}

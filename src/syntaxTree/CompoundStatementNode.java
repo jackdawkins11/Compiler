@@ -55,6 +55,8 @@ public class CompoundStatementNode extends StatementNode{
 
 		}
 
+		answer += indent + "#End CompoundStatementNode\n";
+
 		return answer;
 
 	}

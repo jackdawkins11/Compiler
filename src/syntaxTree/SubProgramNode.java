@@ -71,11 +71,12 @@ public class SubProgramNode extends SyntaxTreeNode {
 		return answer;
 	}
 
-	public String toMips( String indent ){
+	public String toMips(){
 	
-		String answer = indent + "#SubProgramNode\n"
-			      + indent + name + ":\n"
-			      + indent + functionBody.toMips( indent );
+		String answer = "#SubProgramNode\n"
+			      + name + ":\n"
+			      + variables.toMips( "     " )
+			      + functionBody.toMips( "     " );
 
 		return answer;
 

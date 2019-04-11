@@ -44,7 +44,9 @@ public class ReturnStatementNode extends StatementNode {
 	@Override
 	public String toMips( String indent ){
 
-		String answer = indent + "#ReturnStatementNode";
+		String answer = indent + "#ReturnStatementNode\n";
+
+		answer += indent + "#end ReturnStatementNode\n";
 
 		return answer;
 
