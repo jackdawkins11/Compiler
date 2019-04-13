@@ -46,6 +46,7 @@ public class TestSyntaxTree{
 			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
 			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
+			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- CompoundStatementNode.\n"
 			+	"|-- CompoundStatementNode.\n"
 			;
@@ -59,6 +60,8 @@ public class TestSyntaxTree{
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
 
 		DeclarationsNode functionVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionArguments = new DeclarationsNode();
 	
 		functionVariables.addVariable( new VariableNode( "functionInteger", new VariableType( 0, 1, EnumStandardType.INTEGER ) ) );
 		
@@ -67,7 +70,7 @@ public class TestSyntaxTree{
 		CompoundStatementNode functionBody = new CompoundStatementNode();
 
 		subProgramDeclarationsNode.addSubProgram( new SubProgramNode( "functionOne", EnumStandardType.INTEGER,
-					functionVariables, functionBody ) );
+					functionVariables, functionArguments, functionBody ) );
 
 		CompoundStatementNode main = new CompoundStatementNode();
 
@@ -93,6 +96,7 @@ public class TestSyntaxTree{
 			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
 			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
+			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- CompoundStatementNode.\n"
 			+	"|-- --- --- --- VariableAssignmentStatementNode.\n"
 			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 1 Standard Type: INTEGER\n"
@@ -116,6 +120,8 @@ public class TestSyntaxTree{
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
 
 		DeclarationsNode functionVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionArguments = new DeclarationsNode();
 
 		VariableNode functionInteger = new VariableNode( "functionInteger", integerType );
 		
@@ -134,7 +140,7 @@ public class TestSyntaxTree{
 		functionBody.addStatement( new VariableAssignmentStatementNode( functionArray, arrayOffset, rValue ) );	
 
 		subProgramDeclarationsNode.addSubProgram( new SubProgramNode( "functionOne", EnumStandardType.INTEGER,
-					functionVariables, functionBody ) );
+					functionVariables, functionArguments, functionBody ) );
 
 		CompoundStatementNode main = new CompoundStatementNode();
 
@@ -161,6 +167,7 @@ public class TestSyntaxTree{
 			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
 			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
+			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- CompoundStatementNode.\n"
 			+	"|-- --- --- --- VariableAssignmentStatementNode.\n"
 			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 8 Standard Type: INTEGER\n"
@@ -169,6 +176,7 @@ public class TestSyntaxTree{
 			+	"|-- --- --- --- --- --- NumValueExpressionNode. Num: 1 Standard Type: INTEGER\n"
 			+	"|-- --- --- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
 			+	"|-- --- SubProgramNode. Name: functionTwo\n"
+			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- CompoundStatementNode.\n"
 			+	"|-- --- --- --- ReturnStatementNode.\n"
@@ -197,7 +205,7 @@ public class TestSyntaxTree{
 		//programVariables
 
 		DeclarationsNode programVariables = new DeclarationsNode();
-	
+		
 		VariableNode jacksInteger = new VariableNode( "jacksInteger", integerType );
 
 		VariableNode jacksArray = new VariableNode( "jacksArray", arrayRealType );
@@ -211,6 +219,8 @@ public class TestSyntaxTree{
 		//functionOneVariables
 
 		DeclarationsNode functionOneVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionOneArguments = new DeclarationsNode();
 
 		VariableNode functionInteger = new VariableNode( "functionInteger", integerType );
 		
@@ -238,13 +248,15 @@ public class TestSyntaxTree{
 		//create function
 
 		SubProgramNode functionOne = new SubProgramNode( "functionOne", EnumStandardType.INTEGER,
-					functionOneVariables, functionOneBody );
+					functionOneVariables, functionOneArguments, functionOneBody );
 	
 		//functionTwo
 
 		//functionTwoVariables
 
 		DeclarationsNode functionTwoVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionTwoArguments = new DeclarationsNode();
 
 		//functionTwo statement
 		
@@ -257,7 +269,7 @@ public class TestSyntaxTree{
 		//create function
 
 		SubProgramNode functionTwo = new SubProgramNode( "functionTwo", EnumStandardType.REAL,
-					functionTwoVariables, functionTwoBody );
+					functionTwoVariables, functionTwoArguments, functionTwoBody );
 	
 		//add the functions
 

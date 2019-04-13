@@ -141,6 +141,7 @@ public class TestParser{
 			+	"|-- --- --- --- VariableNode. Name: a Standard Type: REAL Begin Index: 0 End Index: 1\n"
 			+	"|-- --- --- --- VariableNode. Name: b Standard Type: REAL Begin Index: 0 End Index: 1\n"
 			+	"|-- --- --- --- VariableNode. Name: c Standard Type: REAL Begin Index: 0 End Index: 1\n"
+			+	"|-- --- --- DeclarationsNode.\n"
 			+	"|-- --- --- --- VariableNode. Name: x Standard Type: REAL Begin Index: 0 End Index: 1\n"
 			+	"|-- --- --- --- VariableNode. Name: y Standard Type: REAL Begin Index: 0 End Index: 1\n"
 			+	"|-- --- --- --- VariableNode. Name: z Standard Type: REAL Begin Index: 0 End Index: 1\n"
