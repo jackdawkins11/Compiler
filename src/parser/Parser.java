@@ -294,8 +294,6 @@ public class Parser{
 
 			DeclarationsNode parameters = arguments();
 
-			parameters.makeArguments();
-
 			match( EnumToken.COLON );
 
 			EnumStandardType returnType = null;
@@ -333,8 +331,6 @@ public class Parser{
 			String procedureName = match( EnumToken.ID );
 
 			DeclarationsNode parameters = arguments();
-
-			parameters.makeArguments();
 
 			match( EnumToken.SEMICOLON );
 
@@ -568,7 +564,7 @@ public class Parser{
 
 			match( EnumToken.RRPAREN );
 
-			statementNode = new ReadStatementNode( readName );
+			statementNode = new ReadStatementNode( symbolTable.getVariableByName( readName ) );
 
 		}else if( lookAHead.getType() == EnumToken.WRITE ){
 

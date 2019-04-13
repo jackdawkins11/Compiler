@@ -19,5 +19,8 @@ public abstract class ExpressionNode extends SyntaxTreeNode{
 	
 	public abstract EnumStandardType getStandardType();
 
-	public abstract String toMips( String indent );
+	public abstract String indentedToString( int level );
+	
+	public abstract String toMips();
 }
+

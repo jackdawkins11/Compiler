@@ -49,7 +49,7 @@ public class VariableType{
 
 	}
 
-	boolean isArray(){
+	public boolean isArray(){
 
 		return beginIndex != 0 || endIndex != 1;
 

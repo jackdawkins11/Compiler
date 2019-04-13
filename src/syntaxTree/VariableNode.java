@@ -16,8 +16,7 @@ public class VariableNode extends SyntaxTreeNode {
 
 	VariableType variableType;
 
-	String name,
-	       registerName;
+	String name;
 
 	//////////////////////////
 	//     Constructors     //
@@ -41,20 +40,25 @@ public class VariableNode extends SyntaxTreeNode {
 		return name;
 
 	}
-
-	public String getRegisterName(){
-
-		return registerName;
-
-	}
-
+	
 	public EnumStandardType getStandardType(){
 
 		return variableType.getStandardType();
 
 	}
 
-	@Override
+	public boolean isArray(){
+
+		return variableType.isArray();
+
+	}
+
+	public int getSize(){
+
+		return variableType.getEndIndex() - variableType.getBeginIndex();
+
+	}
+
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
@@ -69,15 +73,6 @@ public class VariableNode extends SyntaxTreeNode {
 
 	}
 	
-	public String toMips( String indent,
-			RegisterInfo registerInfo ){
-
-		registerName = registerInfo.nextRegister();
-		
-		return indent + "#VariableNode Name: " name + " Register: " + registerName + "\n";
-	
-	}
-
 }
 
 

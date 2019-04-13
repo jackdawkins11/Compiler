@@ -14,6 +14,8 @@ public abstract class StatementNode extends SyntaxTreeNode {
 	//     Abstract Functions     //
 	////////////////////////////////
 
-	public abstract String toMips( String indent );
+	public abstract String indentedToString( int level );
+
+	public abstract String toMips();
 
 }

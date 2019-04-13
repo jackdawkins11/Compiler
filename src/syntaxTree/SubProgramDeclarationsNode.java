@@ -30,7 +30,6 @@ public class SubProgramDeclarationsNode extends SyntaxTreeNode{
 	//     Public Functions     //
 	//////////////////////////////
 
-	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
@@ -47,13 +46,29 @@ public class SubProgramDeclarationsNode extends SyntaxTreeNode{
 
 	}
 
-	public String toMips(){
+	public String mipsDeclareVariables(){
 
 		String answer = "#SubProgramDeclarationsNode\n";
 
 		for( SubProgramNode subProgramNode : subPrograms ){
 
-			answer += subProgramNode.toMips();
+			answer += subProgramNode.mipsDeclareVariables();
+
+		}
+
+		answer += "#end SubProgramDeclarationsNode\n";
+
+		return answer;
+
+	}
+
+	public String mipsDeclareFunctions(){
+
+		String answer = "#SubProgramDeclarationsNode\n";
+
+		for( SubProgramNode subProgramNode : subPrograms ){
+
+			answer += subProgramNode.mipsDeclareFunctions();
 
 		}
 

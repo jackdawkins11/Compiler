@@ -75,24 +75,25 @@ public class SubProgramNode extends SyntaxTreeNode {
 		return answer;
 	}
 
-	public String toMips(){
-
-		//function variables
-			
-		RegisterInfo integerRegisterInfo = new RegisterInfo( 4, 7, "$s" );
+	public String mipsDeclareVariables(){
 		
-		RegisterInfo fpRegisterInfo = new RegisterInfo( 26, 31, "$f" );
+		String answer = "#SubProgramNode Name: " + name + "\n";
 
+		answer += variables.mipsDeclareVariables()
+			+ arguments.mipsDeclareVariables();
+
+		answer += "#end SubProgramNode\n";	
+		
+		return answer;
+
+	}
+	
+	public String mipsDeclareFunctions(){
+		
 		String answer = "#SubProgramNode\n"
 			      + name + ":\n"
-			      + variables.mipsDeclareVariables( "     ",
-					      integerRegisterInfo,
-					      fpRegisterInfo)
-			      + arguments.mipsDeclareVariables( "     ",
-					     integerRegisterInfo,
-					     fpRegisterInfo )
 			      + arguments.mipsInitFromStack()
-			      + functionBody.toMips( "     " )
+			      + functionBody.toMips()
 			      + "#end SubProgramNode\n";
 
 		return answer;

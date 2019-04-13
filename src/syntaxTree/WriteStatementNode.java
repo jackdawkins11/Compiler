@@ -24,8 +24,8 @@ public class WriteStatementNode extends StatementNode {
 	///////////////////////
 	//     Functions     //
 	///////////////////////
-	
-	@Override
+
+	@Override	
 	public String indentedToString( int level ){
 
 		String answer = indentation( level );
@@ -38,34 +38,34 @@ public class WriteStatementNode extends StatementNode {
 
 	}
 
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#WriteStatementNode\n";
+		String answer = "     #WriteStatementNode\n";
 
 		//add expression code that leaves result in stack
-		answer += writeExpression.toMips( indent );
+		answer += writeExpression.toMips();
 
 		if( writeExpression.getStandardType() == EnumStandardType.REAL ){
 
 			//append code for printing float
 
-			answer += indent + "l.s $f12, 0($sp) #move double from stack to $f12\n"
-				+ indent + "addi $sp, $sp, 4 #pop stack\n"
-				+ indent + "li $v0, 2 #syscall 2\n"
-				+ indent + "syscall\n";
+			answer += "     l.s $f12, 0($sp) #move double from stack to $f12\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ "     li $v0, 2 #syscall 2\n"
+				+ "     syscall\n";
 
 		}else{
 
 			//append code for printing int
 			
-			answer += indent + "lw $a0, 0($sp) #move int from stack to $a0\n"
-				+ indent + "addi $sp, $sp, 4 #pop stack\n"
-				+ indent + "li $v0, 2 #syscall 1\n"
-				+ indent + "syscall\n";
+			answer += "     lw $a0, 0($sp) #move int from stack to $a0\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ "     li $v0, 2 #syscall 1\n"
+				+ "     syscall\n";
 
 		}
 
-		answer += indent + "#end WriteStatementNode\n";
+		answer += "     #end WriteStatementNode\n";
 
 		return answer;
 

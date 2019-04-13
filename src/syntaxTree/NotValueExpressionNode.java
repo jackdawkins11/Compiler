@@ -20,15 +20,9 @@ public class NotValueExpressionNode extends ExpressionNode {
 	//     Constructor     //
 	/////////////////////////
 
-	public NotValueExpressionNode( ExpressionNode expressionTmp ) throws Exception {
+	public NotValueExpressionNode( ExpressionNode expressionTmp ){
 
 		expression = expressionTmp;
-
-		if( expression.getStandardType() == EnumStandardType.REAL ){
-
-			throw new Exception( "Cannot negate floating point expression." );
-
-		}
 
 	}
 
@@ -57,20 +51,21 @@ public class NotValueExpressionNode extends ExpressionNode {
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#NotValueExpressionNode\n"
-			  + expression.toMips( indent )
-			  + indent + "lw $t0, ($sp) #put expression into $t0\n"
-			  + indent + "beq $t0, $zero, Else #go to else if $t0 is 0\n"
-			  + indent + "li $t0, 1 #true expression\n"
-			  + indent + "sw $t0, ($sp) #save on stack\n"
-			  + indent + "j Endif\n"
-			  + indent + "Else: \n"
-			  + indent + "li $t0, 0 #false expression\n"
-			  + indent + "sw $t0, ($sp) #save on stack\n"
-			  + indent + "Endif:\n"
-			  + indent + "#end NotValueExpressionNode\n";
+		String answer =
+			    "     #NotValueExpressionNode\n"
+			  + expression.toMips()
+			  + "     lw $t0, ($sp) #put expression into $t0\n"
+			  + "     beq $t0, $zero, Else #go to else if $t0 is 0\n"
+			  + "     li $t0, 1 #true expression\n"
+			  + "     sw $t0, ($sp) #save on stack\n"
+			  + "     j Endif\n"
+			  + "     Else: \n"
+			  + "     li $t0, 0 #false expression\n"
+			  + "     sw $t0, ($sp) #save on stack\n"
+			  + "     Endif:\n"
+			  + "     #end NotValueExpressionNode\n";
 
 		return answer;
 

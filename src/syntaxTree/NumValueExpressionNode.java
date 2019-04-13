@@ -66,7 +66,7 @@ public class NumValueExpressionNode extends ExpressionNode {
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
 		//string to be used in the mips code
 		String finalNumString = null;
@@ -154,23 +154,12 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 		//the mips code
 
-		String answer = indent + "#NumValueExpressionNode\n";
-
-		if( standardType == EnumStandardType.REAL ){
-
-			answer +=  indent + "addi $sp, $sp, -4 #make room on stack\n"
-				+ indent + "li.s $f4, " + finalNumString + " #put number into $f4\n"
-				+ indent + "s.s $f4, 0($sp) #put $f4 on stack\n";
-
-		}else{
-
-			answer +=  indent + "addi $sp, $sp, -4 #make room on stack\n"
-				+ indent + "li $t0, " + finalNumString + " #put number into $t0\n"
-				+ indent + "sw $t0, 0($sp) #put $t0 on stack\n";
-
-		}
-
-		answer += indent + "#end NumValueExpressionNode\n";
+		String answer = 
+			  "     #NumValueExpressionNode\n"
+			+ "     addi $sp, $sp, -4 #make room on stack\n"
+			+ "     li $t0, " + finalNumString + " #put number into $t0\n"
+			+ "     sw $t0, ($sp) #put $t0 on stack\n"
+			+ "     #end NumValueExpressionNode\n";
 		
 		return answer;
 

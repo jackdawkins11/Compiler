@@ -2,6 +2,7 @@
 package syntaxTree;
 
 import java.util.ArrayList;
+import variableType.*;
 
 /*
  * A statement
@@ -23,14 +24,7 @@ public class SubProgramStatementNode extends StatementNode {
 	//////////////////////////
 
 	public SubProgramStatementNode( SubProgramNode subProgramTmp,
-			ArrayList< ExpressionNode > parametersTmp )
-	throws exception {
-
-		if( 2 < parametersTmp.getSize() ){
-
-			throw new Exception( "too many parameters in function definition." );
-
-		}
+			ArrayList< ExpressionNode > parametersTmp ){
 
 		subProgram = subProgramTmp;
 
@@ -50,6 +44,7 @@ public class SubProgramStatementNode extends StatementNode {
 	//     Public Programs     //
 	/////////////////////////////
 
+	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
@@ -68,28 +63,19 @@ public class SubProgramStatementNode extends StatementNode {
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#SubProgramStatementNode\n";
+		String answer = "     #SubProgramStatementNode\n";
 
 		for( int i =0 ; i < parameters.size(); i++){
 
-			if( parameters.get( i ).getStandardType()
-					== EnumStandardType.REAL ){
-
-				answer += parameters.get( i ).toMips( indent );
-
-			}else{
-
-				answer += parameters.get( i ).toMips( indent );
-
-			}
+			answer += parameters.get( i ).toMips();
 
 		}
 
-		answer += "jal " + subProgram.getName() + "\n";
+		answer += "     jal " + subProgram.getName() + "\n";
 		
-		String answer += indent + "#end SubProgramStatementNode\n";
+		answer += "     #end SubProgramStatementNode\n";
 
 		return answer;
 

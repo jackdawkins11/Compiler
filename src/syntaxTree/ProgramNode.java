@@ -61,23 +61,19 @@ public class ProgramNode extends SyntaxTreeNode {
 	public String toMips(){
 
 		String answer = "#ProgramNode " + name + "\n";
+	
+		answer += ".data\n";
 
+		answer += variables.mipsDeclareVariables();
+
+		answer += functions.mipsDeclareVariables();
+		
 		answer += ".text\n"
 			+ "main:\n";
 
-		//global variables
-		
-		RegisterInfo integerRegisterInfo = new RegisterInfo( 0, 3, "$s" );
-		
-		RegisterInfo fpRegisterInfo = new RegisterInfo( 20, 25, "$f" );
+		answer += main.toMips();
 
-		answer += variables.mipsDeclareVariables( "     ",
-				integerRegisterInfo,
-				fpRegisterInfo );
-
-		answer += main.toMips( "     " );
-
-		answer += functions.toMips();
+		answer += functions.mipsDeclareFunctions();
 
 		answer += "#end ProgramNode\n";
 

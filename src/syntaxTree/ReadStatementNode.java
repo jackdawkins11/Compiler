@@ -1,6 +1,8 @@
 
 package syntaxTree;
 
+import variableType.*;
+
 /*
  * A statement
  * that reads
@@ -15,18 +17,19 @@ public class ReadStatementNode extends StatementNode {
 
 	private VariableNode variable;
 
-	private ExpressionNode arrayOffset;
-
 	/////////////////////////
 	//     Constructor     //
 	/////////////////////////
 
-	public VariableAssignmentStatementNode( VariableNode variableTmp,
-			ExpressionNode arrayOffsetTmp ){
+	public ReadStatementNode( VariableNode variableTmp ) throws Exception {
 
 		variable = variableTmp;
 
-		arrayOffset = arrayOffsetTmp;
+		if( variable.isArray() ){
+
+			throw new Exception( "Cannot call read with array." );
+
+		}
 
 	}
 
@@ -39,7 +42,6 @@ public class ReadStatementNode extends StatementNode {
 
 		String answer = indentation( level )
 			+ "ReadStatementNode.\n"
-			+ arrayOffset.indentedToString( level + 1 )
 			+ variable.indentedToString( level + 1 );
 
 		return answer;
@@ -47,11 +49,27 @@ public class ReadStatementNode extends StatementNode {
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#ReadStatementNode\n";
+		String answer = "     #ReadStatementNode\n";
 
-		answer += indent + "#end ReadStatementNode\n";
+		if( variable.getStandardType() == EnumStandardType.REAL ){
+
+			answer += "     li $v0, 6 #read float is syscall 6\n"
+				+ "     syscall\n"
+				+ "     la $t0, " + variable.getName() + " #$t0 is location of var\n"
+				+ "     sw $f0, ($t0) #set var\n";
+
+		}else{
+
+			answer += "     li $v0, 5 #read int is syscall 5\n"
+				+ "     syscall\n"
+				+ "     la $t0, " + variable.getName() + " #$t0 is location of var\n"
+				+ "     sw $v0, ($t0) #set var\n";
+
+		}
+
+		answer += "     #end ReadStatementNode\n";
 
 		return answer;
 

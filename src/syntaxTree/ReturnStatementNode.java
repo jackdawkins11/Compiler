@@ -1,6 +1,8 @@
 
 package syntaxTree;
 
+import variableType.*;
+
 /*
  * A node
  * that represents
@@ -29,7 +31,6 @@ public class ReturnStatementNode extends StatementNode {
 	//     Public Functions     //
 	//////////////////////////////
 	
-	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
@@ -42,28 +43,28 @@ public class ReturnStatementNode extends StatementNode {
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#ReturnStatementNode\n";
+		String answer = "     #ReturnStatementNode\n";
 
-		answer += returnExpression.toMips( indent );
+		answer += returnExpression.toMips();
 
 		if( returnExpression.getStandardType()
 				== EnumStandardType.REAL ){
 
-			answer += "lw $f0, ($sp) #$f0 is floating point return\n"
-				+ "addi $sp, $sp, 4 #pop stack\n"
+			answer += "     lw $f0, ($sp) #$f0 is floating point return\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
 				;
 
 		}else{
 
-			answer += "lw $v0, ($sp) #$v0 is return register\n"
-				+ "addi $sp, $sp, 4 #pop stack\n"
+			answer += "     lw $v0, ($sp) #$v0 is return register\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
 				;
 
 		}
 		
-		answer += indent + "#end ReturnStatementNode\n";
+		answer += "     #end ReturnStatementNode\n";
 
 		return answer;
 	

@@ -56,15 +56,36 @@ public class VariableValueExpressionNode extends ExpressionNode {
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#VariableValueExpressionNode\n";
+		String answer = "     #VariableValueExpressionNode\n";
 
-		answer += indent + "#end VariableValueExpressionNode\n";
+		if( variable.isArray() ){
+		
+			answer += arrayIndex.toMips()
+				+ "     lw $t0, ($sp) #$t0 is array index\n"
+				+ "     add $t0, $t0, $t0\n"
+				+ "     add $t0, $t0, $t0\n"
+				+ "     lw $t1, " + variable.getName() + " #$t1 is array start\n"
+				+ "     add $t0, $t1, $t0 # $t0 is value\n"
+				+ "     lw $t1, ($t0) #$t1 is value\n"
+				+ "     sw $t1, ($sp) #add to stack\n";
+	
+		}else{
+
+			answer += "     lw $t0, " + variable.getName() + " #$t0 is value\n"
+				+ "     addi $sp, $sp, -4 #make room on stack\n"
+				+ "     lw $t0, ($sp) #add to stack\n";
+	
+		}
+
+		answer += "     #end VariableValueExpressionNode\n";
 
 		return answer;
 
 	}
+
+
 
 }
 

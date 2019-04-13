@@ -45,17 +45,17 @@ public class CompoundStatementNode extends StatementNode{
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#CompoundStatementNode\n";
+		String answer = "     #CompoundStatementNode\n";
 
 		for( StatementNode statement : statements ){
 
-			answer += statement.toMips( indent );
+			answer += statement.toMips();
 
 		}
 
-		answer += indent + "#end CompoundStatementNode\n";
+		answer += "     #end CompoundStatementNode\n";
 
 		return answer;
 

@@ -28,23 +28,13 @@ public class OperationExpressionNode extends ExpressionNode {
 
 	public OperationExpressionNode( ExpressionNode leftExpressionTmp,
 			String operationTmp,
-			ExpressionNode rightExpressionTmp ) throws Exception {
+			ExpressionNode rightExpressionTmp ){
 
 		leftExpression = leftExpressionTmp;
 
 		operation = operationTmp;
 
 		rightExpression = rightExpressionTmp;
-
-		if( ( leftExpression.getStandardType()
-			!= rightExpression.getStandardType() )
-		|| ( ( operation == "or" || operation == "and" )
-			&& leftExpression.getStandardType() == EnumStandardType.REAL )
-				){
-
-			throw new Exception( "Invalid operation or types." );
-
-		}
 
 	}
 
@@ -75,19 +65,19 @@ public class OperationExpressionNode extends ExpressionNode {
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#OperationExpressionNode\n";
+		String answer = "     #OperationExpressionNode\n";
 
 		//add code for first expression
-		answer += leftExpression.toMips( indent );
+		answer += leftExpression.toMips();
 
 		//add code for second expression
-		answer += rightExpression.toMips( indent );
+		answer += rightExpression.toMips();
 
 		if( getStandardType() == EnumStandardType.REAL ){
 
-			System.out.println("invalid ..");
+			System.out.println("soon..");
 
 			System.exit( 1 );
 
@@ -95,108 +85,108 @@ public class OperationExpressionNode extends ExpressionNode {
 
 			//code to put expressions into $t0, $t1
 
-			answer += indent + "lw $t0, 4($sp) \n"
-				+ indent + "lw $t1, ($sp) \n"
-				+ indent + "addi $sp, $sp, 4 #save room for one word on stack\n";
+			answer += "     lw $t0, 4($sp) \n"
+				+ "     lw $t1, ($sp) \n"
+				+ "     addi $sp, $sp, 4 #save room for one word on stack\n";
 
 			//code to put operation onto stack
 			
 			if( operation == "+" ){
 
-				answer += indent + "add $t2, $t0, $t1 #operation result in $t2\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     add $t2, $t0, $t1 #operation result in $t2\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "-" ){
 
-				answer += indent + "sub $t2, $t0, $t1 #operation result in $t2\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     sub $t2, $t0, $t1 #operation result in $t2\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "or" ){
 				
-				answer += indent + "bne $t0, $zero, success\n"
-					+ indent + "bne $t1, $zero, success\n"
-					+ indent + "li $t2, 0 #$t2 is false\n"
-					+ indent + "j endIf\n"
-					+ indent + "success:\n"
-					+ indent + "li $t2, 1 #$t2 is true\n"
-					+ indent + "endIf:\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     bne $t0, $zero, success\n"
+					+ "     bne $t1, $zero, success\n"
+					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     j endIf\n"
+					+ "     success:\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "*" ){
 
-				answer += indent + "mult $t0, $t1 #operation result in $LO\n"
-					+ indent + "mflo $t2 #result in $t2\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     mult $t0, $t1 #operation result in $LO\n"
+					+ "     mflo $t2 #result in $t2\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "/" ){
 
-				answer += indent + "div $t0, $t1 #operation result in $LO\n"
-					+ indent + "mflo $t2 #result in $t2\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     div $t0, $t1 #operation result in $LO\n"
+					+ "     mflo $t2 #result in $t2\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "mod" ){
 
-				answer += indent + "div $t0, $t1 #operation result in $LO\n"
-					+ indent + "mfhi $t2 #result in $t2\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     div $t0, $t1 #operation result in $LO\n"
+					+ "     mfhi $t2 #result in $t2\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "and" ){
 
-				answer += indent + "beq $t0, $zero, fail\n"
-					+ indent + "beq $t1, $zero, fail\n"
-					+ indent + "li $t2, 1 #$t2 is true\n"
-					+ indent + "j endIf\n"
-					+ indent + "fail:\n"
-					+ indent + "li $t2, 0 #$t2 is false\n"
-					+ indent + "endIf:\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     beq $t0, $zero, fail\n"
+					+ "     beq $t1, $zero, fail\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     fail:\n"
+					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "=" ){
 
-				answer += indent + "bne $t0, $t1, notEqual\n"
-					+ indent + "li $t2, 1 #$t2 is true\n"
-					+ indent + "j endIf\n"
-					+ indent + "notEqual:\n"
-					+ indent + "li $t2, 0 #$t2 is false\n"
-					+ indent + "endIf:\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     bne $t0, $t1, notEqual\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     notEqual:\n"
+					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "<=" ){
 
-				answer += indent + "bne $t0, $t1, notEqual\n"
-					+ indent + "li $t2, 1 #$t2 is true\n"
-					+ indent + "j endIf\n"
-					+ indent + "notEqual:\n"
-					+ indent + "slt $t2, $t0, $t1 \n"
-					+ indent + "endIf:\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     bne $t0, $t1, notEqual\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     notEqual:\n"
+					+ "     slt $t2, $t0, $t1 \n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == ">=" ){
 
-				answer += indent + "bne $t0, $t1, notEqual\n"
-					+ indent + "li $t2, 1 #$t2 is true\n"
-					+ indent + "j endIf\n"
-					+ indent + "notEqual:\n"
-					+ indent + "slt $t2, $t1, $t0 \n"
-					+ indent + "endIf:\n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     bne $t0, $t1, notEqual\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     notEqual:\n"
+					+ "     slt $t2, $t1, $t0 \n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == "<" ){
 
-				answer += indent + "slt $t2, $t0, $t1 \n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     slt $t2, $t0, $t1 \n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}else if( operation == ">" ){
 
-				answer += indent + "slt $t2, $t1, $t0 \n"
-					+ indent + "sw $t2, ($sp) #put on stack\n";
+				answer += "     slt $t2, $t1, $t0 \n"
+					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}
 
 
 		}
 
-		answer += indent + "#end OperationExpressionNode\n";
+		answer += "     #end OperationExpressionNode\n";
 
 		return answer;
 

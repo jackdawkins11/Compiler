@@ -1,6 +1,8 @@
 
 package syntaxTree;
 
+import variableType.*;
+
 /*
  * This represents
  * an assignment
@@ -53,27 +55,33 @@ public class VariableAssignmentStatementNode extends StatementNode{
 	}
 
 	@Override
-	public String toMips( String indent ){
+	public String toMips(){
 
-		String answer = indent + "#VariableAssignmentStatementNode\n";
-
-		if( rValue.getType() == EnumStandardType.REAL ){
-
-
-
-		answer += rValue.toMips( indent );
+		String answer = "     #VariableAssignmentStatementNode\n";
 
 		if( variable.isArray() ){
-
-			System.out.println( "Arrays not supported yet.");
-
-			System.exit( 1 );
-
+		
+			answer += arrayOffset.toMips()
+				+ "     lw $t0, ($sp) #$t0 is array index\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ "     add $t0, $t0, $t0\n"
+				+ "     add $t0, $t0, $t0\n"
+				+ "     lw $t1, " + variable.getName() + " #$t1 is array start\n"
+				+ "     add $t0, $t1, $t0 # $t0 is value\n"
+				+ rValue.toMips()
+				+ "     lw $t1, ($sp) #$t1 is value\n"
+				+ "     sw $t1, ($t0) #set array\n";
+	
 		}else{
 
+			answer += "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
+				+ rValue.toMips()
+				+ "     lw $t1, ($sp) #$t1 is value\n"
+				+ "     sw $t1, ($t0) #set var\n";
+	
+		}
 
-
-		answer += indent + "#end VariableAssignmentStatementNode\n";
+		answer += "     #end VariableAssignmentStatementNode\n";
 
 		return answer;
 

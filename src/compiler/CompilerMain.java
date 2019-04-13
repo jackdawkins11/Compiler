@@ -27,10 +27,8 @@ public class CompilerMain{
 
 		}
 	
-		parser.printSymbolTable();
-
-		System.out.println("Indented to string: \n" + programNode.indentedToString( 0 ) );		
-
+		System.out.println( programNode.toMips() );
+		
 	}
 
 }
