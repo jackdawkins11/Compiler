@@ -13,29 +13,34 @@ public class ReadStatementNode extends StatementNode {
 	//     Data     //
 	//////////////////
 
-	String readId;
+	private VariableNode variable;
+
+	private ExpressionNode arrayOffset;
 
 	/////////////////////////
 	//     Constructor     //
 	/////////////////////////
 
-	public ReadStatementNode( String readIdTmp ){
+	public VariableAssignmentStatementNode( VariableNode variableTmp,
+			ExpressionNode arrayOffsetTmp ){
 
-		readId = readIdTmp;
+		variable = variableTmp;
+
+		arrayOffset = arrayOffsetTmp;
 
 	}
 
 	//////////////////////////////
 	//     Public Functions     //
 	//////////////////////////////
-	
+		
 	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
-			+ "ReadStatementNode."
-			+ " String: " + readId
-			+ "\n";
+			+ "ReadStatementNode.\n"
+			+ arrayOffset.indentedToString( level + 1 )
+			+ variable.indentedToString( level + 1 );
 
 		return answer;
 

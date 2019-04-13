@@ -16,7 +16,8 @@ public class VariableNode extends SyntaxTreeNode {
 
 	VariableType variableType;
 
-	String name;
+	String name,
+	       registerName;
 
 	//////////////////////////
 	//     Constructors     //
@@ -41,6 +42,12 @@ public class VariableNode extends SyntaxTreeNode {
 
 	}
 
+	public String getRegisterName(){
+
+		return registerName;
+
+	}
+
 	public EnumStandardType getStandardType(){
 
 		return variableType.getStandardType();
@@ -60,6 +67,15 @@ public class VariableNode extends SyntaxTreeNode {
 
 		return answer;
 
+	}
+	
+	public String toMips( String indent,
+			RegisterInfo registerInfo ){
+
+		registerName = registerInfo.nextRegister();
+		
+		return indent + "#VariableNode Name: " name + " Register: " + registerName + "\n";
+	
 	}
 
 }

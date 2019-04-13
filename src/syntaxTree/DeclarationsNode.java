@@ -26,17 +26,6 @@ public class DeclarationsNode extends SyntaxTreeNode {
 
 	}
 
-	public void addVariables( DeclarationsNode other ){
-
-		for( int i = 0; i < other.variables.size(); i++){
-
-			variables.add( other.variables.get( i ) );
-
-		}
-
-	}
-	
-	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
@@ -53,11 +42,50 @@ public class DeclarationsNode extends SyntaxTreeNode {
 
 	}
 
-	public String toMips( String indent ){
+	public String mipsDeclareVariables( String indent,
+			RegisterInfo integerRegisterInfo,
+			RegisterInfo fpRegisterInfo ){
 
 		String answer = indent + "#DeclarationsNode\n";
+		
+		for( VariableNode variable : variables ){
 
-		answer += indent + "#end DeclartionsNode\n";
+			if( variable.getType()
+					== EnumStandardType.REAL ){
+	
+				answer += variable.toMips( indent, fpRegisterInfo );
+
+			}else{
+
+				answer += variable.toMips( indent, integerRegisterInfo );
+
+			}
+
+		}
+		
+		answer += indent + "#end DeclarationsNode\n";
+
+		return answer;
+
+	}
+
+	public String mipsInitFromStack(){
+
+		String answer = "#DeclarationsNode being set from stack.\n";
+
+		answer += "addi $sp, $sp, "
+			+ String.valueOf( 4 * variables.size() ) + "#pop stack \n";
+
+		for( int i = 0; i < variables.size(); i++ ){
+
+			VariableNode variable = variables.get( i );
+
+			answer += "lw " + variable.getRegisterName() + ", "
+				+ String.valueOf( 4 * i ) + "($sp) #load from stack\n";
+
+		}
+		
+		answer += "#end DeclarationsNode being set from stack\n";
 
 		return answer;
 

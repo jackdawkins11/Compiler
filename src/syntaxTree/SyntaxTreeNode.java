@@ -12,8 +12,6 @@ public abstract class SyntaxTreeNode{
 	//     Functions     //
 	///////////////////////
 
-	public abstract String indentedToString( int level );
-
 	protected String indentation( int level ){
 
 		String answer = "";

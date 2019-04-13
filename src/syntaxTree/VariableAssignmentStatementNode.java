@@ -57,6 +57,22 @@ public class VariableAssignmentStatementNode extends StatementNode{
 
 		String answer = indent + "#VariableAssignmentStatementNode\n";
 
+		if( rValue.getType() == EnumStandardType.REAL ){
+
+
+
+		answer += rValue.toMips( indent );
+
+		if( variable.isArray() ){
+
+			System.out.println( "Arrays not supported yet.");
+
+			System.exit( 1 );
+
+		}else{
+
+
+
 		answer += indent + "#end VariableAssignmentStatementNode\n";
 
 		return answer;

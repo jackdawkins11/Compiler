@@ -20,7 +20,7 @@ public class SubProgramNode extends SyntaxTreeNode {
 
 	EnumStandardType returnType;
 
-	DeclarationsNode variables;
+	DeclarationsNode variables, arguments;
 
 	CompoundStatementNode functionBody;
 
@@ -31,6 +31,7 @@ public class SubProgramNode extends SyntaxTreeNode {
 	public SubProgramNode( String nameTmp,
 			EnumStandardType returnTypeTmp,
 			DeclarationsNode variablesTmp,
+			DeclarationsNode argumentsTmp,
 			CompoundStatementNode functionBodyTmp ){
 
 		name = nameTmp;
@@ -38,6 +39,8 @@ public class SubProgramNode extends SyntaxTreeNode {
 		returnType = returnTypeTmp;
 
 		variables = variablesTmp;
+		
+		arguments = argumentsTmp;
 
 		functionBody = functionBodyTmp;
 
@@ -66,22 +69,34 @@ public class SubProgramNode extends SyntaxTreeNode {
 			+ " Name: " + name
 			+ "\n"
 			+ variables.indentedToString( level + 1 )
+			+ arguments.indentedToString( level + 1 )
 			+ functionBody.indentedToString( level + 1 );
 
 		return answer;
 	}
 
 	public String toMips(){
-	
+
+		//function variables
+			
+		RegisterInfo integerRegisterInfo = new RegisterInfo( 4, 7, "$s" );
+		
+		RegisterInfo fpRegisterInfo = new RegisterInfo( 26, 31, "$f" );
+
 		String answer = "#SubProgramNode\n"
 			      + name + ":\n"
-			      + variables.toMips( "     " )
-			      + functionBody.toMips( "     " );
+			      + variables.mipsDeclareVariables( "     ",
+					      integerRegisterInfo,
+					      fpRegisterInfo)
+			      + arguments.mipsDeclareVariables( "     ",
+					     integerRegisterInfo,
+					     fpRegisterInfo )
+			      + arguments.mipsInitFromStack()
+			      + functionBody.toMips( "     " )
+			      + "#end SubProgramNode\n";
 
 		return answer;
 
 	}
-
-
 
 }

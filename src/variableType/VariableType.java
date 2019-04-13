@@ -49,6 +49,12 @@ public class VariableType{
 
 	}
 
+	boolean isArray(){
+
+		return beginIndex != 0 || endIndex != 1;
+
+	}
+
 	public int getBeginIndex(){
 
 		return beginIndex;

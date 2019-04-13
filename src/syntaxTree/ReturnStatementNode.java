@@ -46,10 +46,27 @@ public class ReturnStatementNode extends StatementNode {
 
 		String answer = indent + "#ReturnStatementNode\n";
 
+		answer += returnExpression.toMips( indent );
+
+		if( returnExpression.getStandardType()
+				== EnumStandardType.REAL ){
+
+			answer += "lw $f0, ($sp) #$f0 is floating point return\n"
+				+ "addi $sp, $sp, 4 #pop stack\n"
+				;
+
+		}else{
+
+			answer += "lw $v0, ($sp) #$v0 is return register\n"
+				+ "addi $sp, $sp, 4 #pop stack\n"
+				;
+
+		}
+		
 		answer += indent + "#end ReturnStatementNode\n";
 
 		return answer;
-
+	
 	}
 
 }

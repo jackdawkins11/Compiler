@@ -159,8 +159,8 @@ public class NumValueExpressionNode extends ExpressionNode {
 		if( standardType == EnumStandardType.REAL ){
 
 			answer +=  indent + "addi $sp, $sp, -4 #make room on stack\n"
-				+ indent + "li.s $f12, " + finalNumString + " #put number into $f12\n"
-				+ indent + "s.s $f12, 0($sp) #put $f12 on stack\n";
+				+ indent + "li.s $f4, " + finalNumString + " #put number into $f4\n"
+				+ indent + "s.s $f4, 0($sp) #put $f4 on stack\n";
 
 		}else{
 

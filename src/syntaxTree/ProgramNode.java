@@ -44,7 +44,6 @@ public class ProgramNode extends SyntaxTreeNode {
 	//     Public Functions     //
 	//////////////////////////////
 
-	@Override
 	public String indentedToString( int level ){
 
 		String answer = indentation( level )
@@ -66,11 +65,21 @@ public class ProgramNode extends SyntaxTreeNode {
 		answer += ".text\n"
 			+ "main:\n";
 
-		answer += variables.toMips( "     " );
+		//global variables
+		
+		RegisterInfo integerRegisterInfo = new RegisterInfo( 0, 3, "$s" );
+		
+		RegisterInfo fpRegisterInfo = new RegisterInfo( 20, 25, "$f" );
+
+		answer += variables.mipsDeclareVariables( "     ",
+				integerRegisterInfo,
+				fpRegisterInfo );
 
 		answer += main.toMips( "     " );
 
 		answer += functions.toMips();
+
+		answer += "#end ProgramNode\n";
 
 		return answer;
 

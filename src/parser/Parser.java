@@ -294,6 +294,8 @@ public class Parser{
 
 			DeclarationsNode parameters = arguments();
 
+			parameters.makeArguments();
+
 			match( EnumToken.COLON );
 
 			EnumStandardType returnType = null;
@@ -318,11 +320,10 @@ public class Parser{
 
 			CompoundStatementNode main = compound_statement() ;
 
-			variables.addVariables( parameters );
-
 			subProgramNode = new SubProgramNode( functionName,
 					returnType,
 					variables,
+					parameters,
 					main );
 
 		}else if( lookAHead.getType() == EnumToken.PROCEDURE ){
@@ -333,6 +334,8 @@ public class Parser{
 
 			DeclarationsNode parameters = arguments();
 
+			parameters.makeArguments();
+
 			match( EnumToken.SEMICOLON );
 
 			EnumStandardType returnType = EnumStandardType.VOID;
@@ -341,11 +344,10 @@ public class Parser{
 
 			CompoundStatementNode main = compound_statement() ;
 
-			variables.addVariables( parameters );
-			
 			subProgramNode = new SubProgramNode( procedureName,
 					returnType,
 					variables,
+					parameters,
 					main );
 
 		}else{

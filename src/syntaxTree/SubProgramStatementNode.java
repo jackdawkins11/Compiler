@@ -23,7 +23,14 @@ public class SubProgramStatementNode extends StatementNode {
 	//////////////////////////
 
 	public SubProgramStatementNode( SubProgramNode subProgramTmp,
-			ArrayList< ExpressionNode > parametersTmp ){
+			ArrayList< ExpressionNode > parametersTmp )
+	throws exception {
+
+		if( 2 < parametersTmp.getSize() ){
+
+			throw new Exception( "too many parameters in function definition." );
+
+		}
 
 		subProgram = subProgramTmp;
 
@@ -64,6 +71,25 @@ public class SubProgramStatementNode extends StatementNode {
 	public String toMips( String indent ){
 
 		String answer = indent + "#SubProgramStatementNode\n";
+
+		for( int i =0 ; i < parameters.size(); i++){
+
+			if( parameters.get( i ).getStandardType()
+					== EnumStandardType.REAL ){
+
+				answer += parameters.get( i ).toMips( indent );
+
+			}else{
+
+				answer += parameters.get( i ).toMips( indent );
+
+			}
+
+		}
+
+		answer += "jal " + subProgram.getName() + "\n";
+		
+		String answer += indent + "#end SubProgramStatementNode\n";
 
 		return answer;
 
