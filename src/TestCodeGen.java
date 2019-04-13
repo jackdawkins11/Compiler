@@ -10,13 +10,6 @@ public class TestCodeGen{
 
 	public static void TestOne(){
 
-		String expected =
-				"ProgramNode. Name: JacksProgram\n"
-			+	"|-- DeclarationsNode.\n"
-			+	"|-- SubProgramDeclarationsNode.\n"
-			+	"|-- CompoundStatementNode.\n"
-			;
-
 		DeclarationsNode declarationsNode = new DeclarationsNode();
 
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
@@ -33,13 +26,16 @@ public class TestCodeGen{
 
 			operationExpressionNode = new OperationExpressionNode( lvalue, "+", rvalue );
 
-		}catch( Exception e ){ System.exit( 1 ); }
+		}catch( Exception e ){
+			System.out.println( "Error .." );
+			System.exit( 1 );
+		}
 
 		WriteStatementNode writeStatementNode = new WriteStatementNode( operationExpressionNode );
 
 		compoundStatementNode.addStatement( writeStatementNode );
 
-		ProgramNode programNode = new ProgramNode( "JacksProgram",
+		ProgramNode programNode = new ProgramNode( "ProgramOne",
 				declarationsNode,
 				subProgramDeclarationsNode,
 				compoundStatementNode );
@@ -50,20 +46,6 @@ public class TestCodeGen{
 
 	public static void TestTwo(){
 
-		String expected =
-				"ProgramNode. Name: JacksProgram\n"
-			+	"|-- DeclarationsNode.\n"
-			+	"|-- --- VariableNode. Name: jacksInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- VariableNode. Name: jacksArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
-			+	"|-- SubProgramDeclarationsNode.\n"
-			+	"|-- --- SubProgramNode. Name: functionOne\n"
-			+	"|-- --- --- DeclarationsNode.\n"
-			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
-			+	"|-- --- --- CompoundStatementNode.\n"
-			+	"|-- CompoundStatementNode.\n"
-			;
-
 		DeclarationsNode programVariables = new DeclarationsNode();
 		
 		programVariables.addVariable( new VariableNode( "jacksInteger", new VariableType( 0, 1, EnumStandardType.INTEGER ) ) );
@@ -73,6 +55,8 @@ public class TestCodeGen{
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
 
 		DeclarationsNode functionVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionArguments = new DeclarationsNode();
 	
 		functionVariables.addVariable( new VariableNode( "functionInteger", new VariableType( 0, 1, EnumStandardType.INTEGER ) ) );
 		
@@ -81,11 +65,11 @@ public class TestCodeGen{
 		CompoundStatementNode functionBody = new CompoundStatementNode();
 
 		subProgramDeclarationsNode.addSubProgram( new SubProgramNode( "functionOne", EnumStandardType.INTEGER,
-					functionVariables, functionBody ) );
+					functionVariables, functionArguments, functionBody ) );
 
 		CompoundStatementNode main = new CompoundStatementNode();
 
-		ProgramNode programNode = new ProgramNode( "JacksProgram",
+		ProgramNode programNode = new ProgramNode( "ProgramTwo",
 				programVariables,
 				subProgramDeclarationsNode,
 				main );
@@ -95,27 +79,7 @@ public class TestCodeGen{
 	}
 
 	public static void TestThree(){
-		
-		String expected =
-				"ProgramNode. Name: JacksProgram\n"
-			+	"|-- DeclarationsNode.\n"
-			+	"|-- --- VariableNode. Name: jacksInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- VariableNode. Name: jacksArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
-			+	"|-- SubProgramDeclarationsNode.\n"
-			+	"|-- --- SubProgramNode. Name: functionOne\n"
-			+	"|-- --- --- DeclarationsNode.\n"
-			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
-			+	"|-- --- --- CompoundStatementNode.\n"
-			+	"|-- --- --- --- VariableAssignmentStatementNode.\n"
-			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 1 Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
-			+	"|-- --- --- --- --- VariableValueExpressionNode. Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- --- NumValueExpressionNode. Num: 1 Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- CompoundStatementNode.\n"
-			;
-
+				
 		VariableType integerType = new VariableType( 0, 1, EnumStandardType.INTEGER );
 		
 		VariableType arrayType = new VariableType( 1, 10, EnumStandardType.INTEGER );
@@ -129,6 +93,8 @@ public class TestCodeGen{
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
 
 		DeclarationsNode functionVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionArguments = new DeclarationsNode();
 
 		VariableNode functionInteger = new VariableNode( "functionInteger", integerType );
 		
@@ -147,11 +113,11 @@ public class TestCodeGen{
 		functionBody.addStatement( new VariableAssignmentStatementNode( functionArray, arrayOffset, rValue ) );	
 
 		subProgramDeclarationsNode.addSubProgram( new SubProgramNode( "functionOne", EnumStandardType.INTEGER,
-					functionVariables, functionBody ) );
+					functionVariables, functionArguments, functionBody ) );
 
 		CompoundStatementNode main = new CompoundStatementNode();
 
-		ProgramNode programNode = new ProgramNode( "JacksProgram",
+		ProgramNode programNode = new ProgramNode( "ProgramThree",
 				programVariables,
 				subProgramDeclarationsNode,
 				main );
@@ -161,42 +127,7 @@ public class TestCodeGen{
 
 
 	public static void TestFour(){
-		
-		String expected =
-				"ProgramNode. Name: JacksProgram\n"
-			+	"|-- DeclarationsNode.\n"
-			+	"|-- --- VariableNode. Name: jacksInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- VariableNode. Name: jacksArray Standard Type: REAL Begin Index: 1 End Index: 10\n"
-			+	"|-- SubProgramDeclarationsNode.\n"
-			+	"|-- --- SubProgramNode. Name: functionOne\n"
-			+	"|-- --- --- DeclarationsNode.\n"
-			+	"|-- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
-			+	"|-- --- --- CompoundStatementNode.\n"
-			+	"|-- --- --- --- VariableAssignmentStatementNode.\n"
-			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 8 Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- VariableNode. Name: functionArray Standard Type: INTEGER Begin Index: 1 End Index: 10\n"
-			+	"|-- --- --- --- --- VariableValueExpressionNode. Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- --- NumValueExpressionNode. Num: 1 Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- --- VariableNode. Name: functionInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- SubProgramNode. Name: functionTwo\n"
-			+	"|-- --- --- DeclarationsNode.\n"
-			+	"|-- --- --- CompoundStatementNode.\n"
-			+	"|-- --- --- --- ReturnStatementNode.\n"
-			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 33 Standard Type: INTEGER\n"
-			+	"|-- CompoundStatementNode.\n"
-			+	"|-- --- WhileDoStatementNode.\n"
-			+	"|-- --- --- OperationExpressionNode. Operation: < Standard Type: INTEGER\n"
-			+	"|-- --- --- --- NotValueExpressionNode. Standard Type: INTEGER\n"
-		       	+	"|-- --- --- --- --- VariableValueExpressionNode. Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- --- NumValueExpressionNode. Num: 0 Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- --- VariableNode. Name: jacksInteger Standard Type: INTEGER Begin Index: 0 End Index: 1\n"
-			+	"|-- --- --- --- SubProgramValueExpressionNode. Name: functionTwo Standard Type: INTEGER\n"
-			+	"|-- --- --- --- --- NumValueExpressionNode. Num: 4 Standard Type: INTEGER\n"
-			+	"|-- --- --- WriteStatementNode.\n"
-			+	"|-- --- --- --- NumValueExpressionNode. Num: 3.14 Standard Type: REAL\n"
-			;
-
+			
 		//variable types
 
 		VariableType integerType = new VariableType( 0, 1, EnumStandardType.INTEGER);
@@ -222,6 +153,8 @@ public class TestCodeGen{
 		//functionOneVariables
 
 		DeclarationsNode functionOneVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionOneArguments = new DeclarationsNode();
 
 		VariableNode functionInteger = new VariableNode( "functionInteger", integerType );
 		
@@ -249,13 +182,15 @@ public class TestCodeGen{
 		//create function
 
 		SubProgramNode functionOne = new SubProgramNode( "functionOne", EnumStandardType.INTEGER,
-					functionOneVariables, functionOneBody );
+					functionOneVariables, functionOneArguments, functionOneBody );
 	
 		//functionTwo
 
 		//functionTwoVariables
 
 		DeclarationsNode functionTwoVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionTwoArguments = new DeclarationsNode();
 
 		//functionTwo statement
 		
@@ -268,7 +203,7 @@ public class TestCodeGen{
 		//create function
 
 		SubProgramNode functionTwo = new SubProgramNode( "functionTwo", EnumStandardType.INTEGER,
-					functionTwoVariables, functionTwoBody );
+					functionTwoVariables, functionTwoVariables, functionTwoBody );
 	
 		//add the functions
 
@@ -320,7 +255,7 @@ public class TestCodeGen{
 
 		main.addStatement( new WhileDoStatementNode( operationExpressionNode, writeStatementNode ) );
 
-		ProgramNode programNode = new ProgramNode( "JacksProgram",
+		ProgramNode programNode = new ProgramNode( "ProgramFour",
 				programVariables,
 				subProgramDeclarationsNode,
 				main );
