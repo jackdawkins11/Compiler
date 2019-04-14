@@ -1,6 +1,8 @@
 
 package syntaxTree;
 
+import variableType.*;
+
 /*
  * An if-then statement is a
  * test expression

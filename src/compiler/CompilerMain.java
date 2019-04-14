@@ -4,6 +4,7 @@ package compiler;
 import scanner.MyScanner;
 import parser.Parser;
 import syntaxTree.ProgramNode;
+import java.io.PrintWriter;
 
 public class CompilerMain{
 
@@ -26,8 +27,26 @@ public class CompilerMain{
 			System.exit( 1 );
 
 		}
-	
-		System.out.println( programNode.toMips() );
+
+		PrintWriter output = null;
+		
+		try{
+			output = new PrintWriter( "output.asm" );
+
+		}catch( Exception e ){
+
+			System.out.println("error creating output file");
+
+			System.exit( 1 );
+
+		}
+
+		String code = programNode.toMips();
+
+		output.println( code );
+
+		output.close();
+
 		
 	}
 

@@ -62,21 +62,20 @@ public class VariableAssignmentStatementNode extends StatementNode{
 		if( variable.isArray() ){
 		
 			answer += arrayOffset.toMips()
-				+ "     lw $t0, ($sp) #$t0 is array index\n"
-				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ rValue.toMips()
+				+ "     lw $t0, 4($sp) #$t0 is array index\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     lw $t1, " + variable.getName() + " #$t1 is array start\n"
 				+ "     add $t0, $t1, $t0 # $t0 is value\n"
-				+ rValue.toMips()
 				+ "     lw $t1, ($sp) #$t1 is value\n"
-				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ "     addi $sp, $sp, 8 #pop stack\n"
 				+ "     sw $t1, ($t0) #set array\n";
 	
 		}else{
 
-			answer += "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
-				+ rValue.toMips()
+			answer += rValue.toMips()
+				+ "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
 				+ "     lw $t1, ($sp) #$t1 is value\n"
 				+ "     addi $sp, $sp, 4 #pop stack\n"
 				+ "     sw $t1, ($t0) #set var\n";

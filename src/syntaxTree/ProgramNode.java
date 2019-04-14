@@ -74,6 +74,8 @@ public class ProgramNode extends SyntaxTreeNode {
 		answer += main.toMips();
 
 		answer += functions.mipsDeclareFunctions();
+	
+		answer += "     jr $ra\n";
 
 		answer += "#end ProgramNode\n";
 

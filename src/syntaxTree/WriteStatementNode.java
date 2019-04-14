@@ -60,10 +60,16 @@ public class WriteStatementNode extends StatementNode {
 			
 			answer += "     lw $a0, 0($sp) #move int from stack to $a0\n"
 				+ "     addi $sp, $sp, 4 #pop stack\n"
-				+ "     li $v0, 2 #syscall 1\n"
+				+ "     li $v0, 1 #syscall 1\n"
 				+ "     syscall\n";
 
 		}
+
+		//write newline
+
+		answer += "     li $a0, 0xA\n"
+			+ "     li $v0, 11\n"
+			+ "syscall\n";
 
 		answer += "     #end WriteStatementNode\n";
 
