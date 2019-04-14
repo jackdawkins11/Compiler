@@ -45,7 +45,20 @@ public class OperationExpressionNode extends ExpressionNode {
 	@Override
 	public EnumStandardType getStandardType(){
 
-		return leftExpression.getStandardType();
+		if( ( operation == "+"
+		 || operation == "-"
+		 || operation == "*"
+		 || operation == "/" )
+		&& leftExpression.getStandardType()
+			== rightExpression.getStandardType() ){
+
+			return leftExpression.getStandardType();
+
+		}else{
+
+			return EnumStandardType.INTEGER;
+
+		}
 
 	}
 
@@ -75,19 +88,117 @@ public class OperationExpressionNode extends ExpressionNode {
 		//add code for second expression
 		answer += rightExpression.toMips();
 
-		if( getStandardType() == EnumStandardType.REAL ){
+		if( leftExpression.getStandardType() == EnumStandardType.REAL
+		 	&& leftExpression.getStandardType() == rightExpression.getStandardType() ){
 
-			System.out.println("soon..");
+			//code to put expressions into $f4, $f5
 
-			System.exit( 1 );
+			answer += "     lw $f4, 4($sp) \n"
+				+ "     lw $f5, ($sp) \n"
+				+ "     addi $sp, $sp, 4 #save room for one word on stack\n";
+
+			//code to put operation onto stack
+			
+			if( operation == "+" ){
+
+				answer += "     add.s $f6, $f4, $f5 #operation result in $f6\n"
+					+ "     s.s $f6, ($sp) #put on stack\n";
+
+			}else if( operation == "-" ){
+
+				answer += "     sub.s $f6, $f4, $f5 #operation result in $t2\n"
+					+ "     s.s $f6, ($sp) #put on stack\n";
+
+			}else if( operation == "*" ){
+
+				answer += "     mult.s $f6, $f4, $f5 #operation result in $f6\n"
+					+ "     s.s $f6, ($sp) #put on stack\n";
+
+			}else if( operation == "/" ){
+
+				answer += "     div $f6, $f4, $f5 #operation result in $f6\n"
+					+ "     s.s $f6, ($sp) #put on stack\n";
+
+			}else if( operation == "=" ){
+
+				answer += "     c.eq.s $f4, $f5 \n"
+					+ "     bc1f notEqual\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     notEqual:\n"
+					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
+
+			}else if( operation == "<=" ){
+				
+				answer += "     c.le.s $f4, $f5 \n"
+					+ "     bc1f notEqual\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     notEqual:\n"
+					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
+
+			}else if( operation == ">=" ){
+				
+				answer += "     c.le.s $f5, $f4 \n"
+					+ "     bc1f notEqual\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     notEqual:\n"
+					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
+
+			}else if( operation == "<" ){
+				
+				answer += "     c.lt.s $f4, $f5 \n"
+					+ "     bc1f notEqual\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     notEqual:\n"
+					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
+
+
+			}else if( operation == ">" ){
+					
+				answer += "     c.lt.s $f5, $f4 \n"
+					+ "     bc1f notEqual\n"
+					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     j endIf\n"
+					+ "     notEqual:\n"
+					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     endIf:\n"
+					+ "     sw $t2, ($sp) #put on stack\n";
+			}
 
 		}else{
 
 			//code to put expressions into $t0, $t1
 
-			answer += "     lw $t0, 4($sp) \n"
-				+ "     lw $t1, ($sp) \n"
-				+ "     addi $sp, $sp, 4 #save room for one word on stack\n";
+			if( leftExpression.getStandardType() == EnumStandardType.REAL ){
+
+				answer += "     lw $f4, 4($sp) \n"
+					+ "     cvt.w.s $t0, $f4 \n"
+					+ "     lw $t1, ($sp) \n";
+
+			}else if( rightExpression.getStandardType() == EnumStandardType.REAL ){
+
+				answer += "     lw $f4, ($sp) \n"
+					+ "     cvt.w.s $t1, $f4 \n"
+					+ "     lw $t0, 4($sp) \n";
+
+			}else{
+
+				answer += "     lw $t0, 4($sp) \n"
+					+ "     lw $t1, ($sp) \n"
+					+ "     addi $sp, $sp, 4 #save room for one word on stack\n";
+
+			}
 
 			//code to put operation onto stack
 			
@@ -182,7 +293,6 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     sw $t2, ($sp) #put on stack\n";
 
 			}
-
 
 		}
 

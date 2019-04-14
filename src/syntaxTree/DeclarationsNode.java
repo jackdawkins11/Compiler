@@ -60,7 +60,7 @@ public class DeclarationsNode extends SyntaxTreeNode {
 
 			}else if( variable.getStandardType() == EnumStandardType.INTEGER ){
 	
-				answer += variable.getName() + ": .word 0.0 \n";
+				answer += variable.getName() + ": .word 0 \n";
 
 			}
 
@@ -82,7 +82,7 @@ public class DeclarationsNode extends SyntaxTreeNode {
 		for( int i = 0; i < variables.size(); i++ ){
 
 			VariableNode variable = variables.get( i );
-		
+			
 			answer += "     lw $t0, -" + String.valueOf( 4 * i ) + "($sp) #argument in $t0\n"
 				+ "     la $t1, " + variable.getName() + " #$t1 is location of var\n"
 				+ "     sw $t0, ($t1) #set variable\n";

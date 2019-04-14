@@ -25,13 +25,20 @@ public class IfThenStatementNode extends StatementNode {
 
 	public IfThenStatementNode( ExpressionNode testExpressionTmp,
 			StatementNode thenStatementTmp,
-			StatementNode elseStatementTmp ){
+			StatementNode elseStatementTmp ) throws Exception{
 
 		testExpression = testExpressionTmp;
 
 		thenStatement = thenStatementTmp;
 
 		elseStatement = elseStatementTmp;
+
+		if( testExpression.getStandardType()
+				== EnumStandardType.REAL ){
+
+			throw new Exception( "Cannot convert real to boolean." );
+
+		}
 
 	}
 

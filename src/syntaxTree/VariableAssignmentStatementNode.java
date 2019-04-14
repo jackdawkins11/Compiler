@@ -70,6 +70,7 @@ public class VariableAssignmentStatementNode extends StatementNode{
 				+ "     add $t0, $t1, $t0 # $t0 is value\n"
 				+ rValue.toMips()
 				+ "     lw $t1, ($sp) #$t1 is value\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
 				+ "     sw $t1, ($t0) #set array\n";
 	
 		}else{
@@ -77,6 +78,7 @@ public class VariableAssignmentStatementNode extends StatementNode{
 			answer += "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
 				+ rValue.toMips()
 				+ "     lw $t1, ($sp) #$t1 is value\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
 				+ "     sw $t1, ($t0) #set var\n";
 	
 		}

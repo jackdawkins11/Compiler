@@ -18,6 +18,8 @@ public class TestSymbolTable{
 		VariableType arrayType = new VariableType( 1, 10, EnumStandardType.REAL );
 
 		DeclarationsNode functionVariables = new DeclarationsNode();
+		
+		DeclarationsNode functionArguments = new DeclarationsNode();
 
 		VariableNode functionInteger = new VariableNode( "functionInteger", integerType );
 		
@@ -30,7 +32,7 @@ public class TestSymbolTable{
 		CompoundStatementNode functionBody = new CompoundStatementNode();
 
 		SubProgramNode functionOne = new SubProgramNode( "functionOne",
-					EnumStandardType.INTEGER, functionVariables, functionBody ) ;
+					EnumStandardType.INTEGER, functionVariables, functionArguments, functionBody ) ;
 
 		symbolTable.addSubProgram( functionOne );
 

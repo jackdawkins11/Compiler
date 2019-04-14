@@ -152,16 +152,25 @@ public class NumValueExpressionNode extends ExpressionNode {
 
 		}
 
-		//the mips code
+		if( standardType == EnumStandardType.REAL ){
 
-		String answer = 
-			  "     #NumValueExpressionNode\n"
-			+ "     addi $sp, $sp, -4 #make room on stack\n"
-			+ "     li $t0, " + finalNumString + " #put number into $t0\n"
-			+ "     sw $t0, ($sp) #put $t0 on stack\n"
-			+ "     #end NumValueExpressionNode\n";
-		
-		return answer;
+			return
+				  "     #NumValueExpressionNode\n"
+				+ "     addi $sp, $sp, -4 #make room on stack\n"
+				+ "     li.s $f4, " + finalNumString + " #put number into $f4\n"
+				+ "     sw $f4, ($sp) #put $f4 on stack\n"
+				+ "     #end NumValueExpressionNode\n";
+
+		}else{
+	
+			return 
+				  "     #NumValueExpressionNode\n"
+				+ "     addi $sp, $sp, -4 #make room on stack\n"
+				+ "     li $t0, " + finalNumString + " #put number into $t0\n"
+				+ "     sw $t0, ($sp) #put $t0 on stack\n"
+				+ "     #end NumValueExpressionNode\n";
+
+		}
 
 	}
 
