@@ -37,6 +37,17 @@ public class VariableAssignmentStatementNode extends StatementNode{
 
 	}
 
+	public VariableAssignmentStatementNode( VariableNode variableTmp,
+			ExpressionNode rValueTmp ){
+
+		variable = variableTmp;
+
+		arrayOffset = null;
+
+		rValue = rValueTmp;
+
+	}
+
 	//////////////////////////////
 	//     Public Functions     //
 	//////////////////////////////
@@ -44,13 +55,26 @@ public class VariableAssignmentStatementNode extends StatementNode{
 	@Override
 	public String indentedToString( int level ){
 
-		String answer = indentation( level )
-			+ "VariableAssignmentStatementNode.\n"
-			+ arrayOffset.indentedToString( level + 1 )
-			+ variable.indentedToString( level + 1 )
-			+ rValue.indentedToString( level + 1 );
+		if( arrayOffset != null ){
 
-		return answer;
+			String answer = indentation( level )
+				+ "VariableAssignmentStatementNode.\n"
+				+ arrayOffset.indentedToString( level + 1 )
+				+ variable.indentedToString( level + 1 )
+				+ rValue.indentedToString( level + 1 );
+
+			return answer;
+
+		}else{
+
+			String answer = indentation( level )
+				+ "VariableAssignmentStatementNode.\n"
+				+ variable.indentedToString( level + 1 )
+				+ rValue.indentedToString( level + 1 );
+
+			return answer;
+
+		}
 
 	}
 

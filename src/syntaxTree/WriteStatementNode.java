@@ -69,7 +69,7 @@ public class WriteStatementNode extends StatementNode {
 
 		answer += "     li $a0, 0xA\n"
 			+ "     li $v0, 11\n"
-			+ "syscall\n";
+			+ "     syscall\n";
 
 		answer += "     #end WriteStatementNode\n";
 

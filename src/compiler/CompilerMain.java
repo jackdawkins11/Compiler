@@ -10,6 +10,14 @@ public class CompilerMain{
 
 	public static void main( String args[] ){
 
+		if( args.length != 1 ){
+
+			System.out.println( "Error expected file name in arguments." );
+
+			System.exit( 1 );
+
+		}
+
 		MyScanner scanner = new MyScanner( args[ 0 ], true );
 
 		Parser parser = new Parser( scanner );

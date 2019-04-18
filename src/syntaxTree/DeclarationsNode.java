@@ -83,7 +83,7 @@ public class DeclarationsNode extends SyntaxTreeNode {
 
 			VariableNode variable = variables.get( i );
 			
-			answer += "     lw $t0, -" + String.valueOf( 4 * i ) + "($sp) #argument in $t0\n"
+			answer += "     lw $t0, -" + String.valueOf( 4 * ( i + 1 ) ) + "($sp) #argument in $t0\n"
 				+ "     la $t1, " + variable.getName() + " #$t1 is location of var\n"
 				+ "     sw $t0, ($t1) #set variable\n";
 		

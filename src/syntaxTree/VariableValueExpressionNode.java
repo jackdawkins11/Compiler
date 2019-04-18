@@ -30,6 +30,14 @@ public class VariableValueExpressionNode extends ExpressionNode {
 
 	}
 
+	public VariableValueExpressionNode( VariableNode variableTmp ){
+
+		variable = variableTmp;
+
+		arrayIndex = null;
+
+	}
+
 	//////////////////////////////
 	//     Public Functions     //
 	//////////////////////////////
@@ -44,12 +52,27 @@ public class VariableValueExpressionNode extends ExpressionNode {
 	@Override
 	public String indentedToString( int level ){
 
-		String answer = indentation( level )
-			+ "VariableValueExpressionNode."
-			+ " Standard Type: " + getStandardType().toString()
-			+ "\n"
-			+ arrayIndex.indentedToString( level + 1 )
-			+ variable.indentedToString( level + 1 );
+		String answer = null;
+
+		if( arrayIndex != null ){
+
+			answer = indentation( level )
+				+ "VariableValueExpressionNode."
+				+ " Standard Type: " + getStandardType().toString()
+				+ "\n"
+				+ arrayIndex.indentedToString( level + 1 )
+				+ variable.indentedToString( level + 1 );
+
+		}else{
+
+			answer = indentation( level )
+				+ "VariableValueExpressionNode."
+				+ " Standard Type: " + getStandardType().toString()
+				+ "\n"
+				+ arrayIndex.indentedToString( level + 1 )
+				+ variable.indentedToString( level + 1 );
+
+		}
 
 		return answer;
 
@@ -75,7 +98,7 @@ public class VariableValueExpressionNode extends ExpressionNode {
 
 			answer += "     lw $t0, " + variable.getName() + " #$t0 is value\n"
 				+ "     addi $sp, $sp, -4 #make room on stack\n"
-				+ "     lw $t0, ($sp) #add to stack\n";
+				+ "     sw $t0, ($sp) #add to stack\n";
 	
 		}
 

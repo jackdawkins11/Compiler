@@ -51,8 +51,6 @@ public class Parser{
 
 	public ProgramNode program() throws Exception {
 
-		try{
-
 		match( EnumToken.PROGRAM );
 
 		String programName = match( EnumToken.ID );
@@ -69,11 +67,6 @@ public class Parser{
 
 		return new ProgramNode( programName, variables, functions, main );
 	
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 	public void printSymbolTable(){
@@ -125,8 +118,6 @@ public class Parser{
 
 	ArrayList< String > identifier_list() throws Exception {
 
-		try{
-
 		ArrayList< String > ID_list = new ArrayList< String >();
 
 		ID_list.add( match( EnumToken.ID ) );
@@ -141,17 +132,9 @@ public class Parser{
 
 		return ID_list;
 
-		} catch( Exception e ){
-
-			throw e;
-
-		}
-	
 	}
 
 	DeclarationsNode declarations() throws Exception {
-
-		try{
 
 		DeclarationsNode declarationsNode = new DeclarationsNode();
 
@@ -181,16 +164,9 @@ public class Parser{
 
 		return declarationsNode;
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 	
 	VariableType type() throws Exception {
-
-		try{
 
 		VariableType variableType = null;
 
@@ -238,22 +214,15 @@ public class Parser{
 
 				variableType = new VariableType( rows, cols, EnumStandardType.INTEGER );
 
-			}else{ throw new Exception( "error" ); }
+			}else{ throw new Exception( "Error parsing variable \"type\"." ); }
 
 		}
 
 		return variableType;
 	
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 	SubProgramDeclarationsNode subprogram_declarations() throws Exception {
-
-		try{
 
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
 
@@ -272,17 +241,9 @@ public class Parser{
 
 		return subProgramDeclarationsNode;
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
-
 	}
 
 	SubProgramNode subprogram_declaration() throws Exception {
-
-		try{
 
 		SubProgramNode subProgramNode = null;
 
@@ -310,7 +271,7 @@ public class Parser{
 
 				returnType = EnumStandardType.REAL;
 
-			}else{ throw new Exception( "function type" ); }
+			}else{ throw new Exception( "Error no function return type." ); }
 
 			match( EnumToken.SEMICOLON );
 
@@ -346,24 +307,14 @@ public class Parser{
 					parameters,
 					main );
 
-		}else{
-
-			throw new Exception( "subprogram_declaration" );
-
 		}
+
 
 		return subProgramNode;
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 	DeclarationsNode arguments() throws Exception {
-
-		try{
 
 		DeclarationsNode declarationsNode = new DeclarationsNode();
 		
@@ -407,16 +358,9 @@ public class Parser{
 
 		return declarationsNode;
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 	CompoundStatementNode compound_statement() throws Exception {
-
-		try{
 
 		CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
 
@@ -442,17 +386,9 @@ public class Parser{
 
 		return compoundStatementNode;
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
-	
 	}
 
 	StatementNode statement() throws Exception {
-
-		try{
 
 		StatementNode statementNode = null;
 
@@ -475,12 +411,6 @@ public class Parser{
 
 				ExpressionNode rValue = expression();
 
-				if( variableNode.getStandardType() != rValue.getStandardType() ){
-
-					throw new Exception( "Error incompatible types." );
-
-				}
-
 				statementNode = new VariableAssignmentStatementNode( variableNode, arrayIndex, rValue );
 
 			}else{
@@ -489,13 +419,7 @@ public class Parser{
 
 				ExpressionNode rValue = expression();
 
-				if( variableNode.getStandardType() != rValue.getStandardType() ){
-
-					throw new Exception( "Error incompatible types." );
-
-				}
-				
-				statementNode = new VariableAssignmentStatementNode( variableNode, new NumValueExpressionNode( "0" ), rValue );
+				statementNode = new VariableAssignmentStatementNode( variableNode, rValue );
 
 			}
 
@@ -586,20 +510,13 @@ public class Parser{
 
 			statementNode = new ReturnStatementNode( returnExpression );
 
-		}else{ throw new Exception( "statement" ); }
+		}else{ throw new Exception( "Couldnt find statement start." ); }
 
 		return statementNode;
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 	ArrayList< ExpressionNode > expression_list() throws Exception {
-
-		try{
 
 		ArrayList< ExpressionNode > expressionList = new ArrayList< ExpressionNode >();
 
@@ -615,17 +532,9 @@ public class Parser{
 
 		return expressionList;
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
-
 	}
 
 	ExpressionNode expression() throws Exception {
-
-		try{
 
 		ExpressionNode result = null;
 
@@ -647,17 +556,10 @@ public class Parser{
 
 		return result;
 
-		} catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 	ExpressionNode simple_expression() throws Exception {
 		
-		try{
-
 		String signString = "+";
 
 		if( lookAHead.getType() == EnumToken.SIGN ){
@@ -692,16 +594,9 @@ public class Parser{
 
 		return result.get( result.size() - 1 );
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 	ExpressionNode term() throws Exception {
-
-		try{
 
 		ArrayList< ExpressionNode > factors = new ArrayList< ExpressionNode >();
 
@@ -729,16 +624,9 @@ public class Parser{
 
 		return result.get( result.size() - 1 );
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 	ExpressionNode factor() throws Exception {
-
-		try{
 
 		ExpressionNode result = null;
 
@@ -786,7 +674,7 @@ public class Parser{
 
 				}
 				
-				result = new VariableValueExpressionNode( symbolTable.getVariableByName( idName ), new NumValueExpressionNode( "0" ) );
+				result = new VariableValueExpressionNode( symbolTable.getVariableByName( idName ) );
 
 			}
 
@@ -810,17 +698,12 @@ public class Parser{
 
 		}else{
 
-			assert( false );
+			throw new Exception( "Couldn't start factor." );
 
 		}
 
-		return result;	
+		return result;
 
-		}catch( Exception e ){
-
-			throw e;
-
-		}
 	}
 
 }

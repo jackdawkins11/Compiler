@@ -94,6 +94,7 @@ public class SubProgramNode extends SyntaxTreeNode {
 			      + name + ":\n"
 			      + arguments.mipsInitFromStack()
 			      + functionBody.toMips()
+			      + "jr $ra\n"
 			      + "#end SubProgramNode\n";
 
 		return answer;

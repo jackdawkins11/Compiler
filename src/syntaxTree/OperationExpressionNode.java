@@ -45,10 +45,10 @@ public class OperationExpressionNode extends ExpressionNode {
 	@Override
 	public EnumStandardType getStandardType(){
 
-		if( ( operation == "+"
-		 || operation == "-"
-		 || operation == "*"
-		 || operation == "/" )
+		if( ( operation.equals("+")
+		 || operation.equals("-")
+		 || operation.equals("*")
+		 || operation.equals("/" ) )
 		&& leftExpression.getStandardType()
 			== rightExpression.getStandardType() ){
 
@@ -91,37 +91,37 @@ public class OperationExpressionNode extends ExpressionNode {
 		if( leftExpression.getStandardType() == EnumStandardType.REAL
 		 	&& leftExpression.getStandardType() == rightExpression.getStandardType() ){
 
-			//code to put expressions into $f4, $f5
+			//code to put expressions into $t0, $t1
 
-			answer += "     lw $f4, 4($sp) \n"
-				+ "     lw $f5, ($sp) \n"
+			answer += "     lw $t0, 4($sp) \n"
+				+ "     lw $t1, ($sp) \n"
 				+ "     addi $sp, $sp, 4 #save room for one word on stack\n";
 
 			//code to put operation onto stack
 			
-			if( operation == "+" ){
+			if( operation.equals("+" ) ){
 
-				answer += "     add.s $f6, $f4, $f5 #operation result in $f6\n"
-					+ "     s.s $f6, ($sp) #put on stack\n";
+				answer += "     add.s $t2, $t0, $t1 #operation result in $t2\n"
+					+ "     s.s $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "-" ){
+			}else if( operation.equals("-" ) ){
 
-				answer += "     sub.s $f6, $f4, $f5 #operation result in $t2\n"
-					+ "     s.s $f6, ($sp) #put on stack\n";
+				answer += "     sub.s $t2, $t0, $t1 #operation result in $t2\n"
+					+ "     s.s $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "*" ){
+			}else if( operation.equals("*" ) ){
 
-				answer += "     mult.s $f6, $f4, $f5 #operation result in $f6\n"
-					+ "     s.s $f6, ($sp) #put on stack\n";
+				answer += "     mult.s $t2, $t0, $t1 #operation result in $t2\n"
+					+ "     s.s $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "/" ){
+			}else if( operation.equals("/" ) ){
 
-				answer += "     div $f6, $f4, $f5 #operation result in $f6\n"
-					+ "     s.s $f6, ($sp) #put on stack\n";
+				answer += "     div $t2, $t0, $t1 #operation result in $t2\n"
+					+ "     s.s $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "=" ){
+			}else if( operation.equals("=" ) ){
 
-				answer += "     c.eq.s $f4, $f5 \n"
+				answer += "     c.eq.s $t0, $t1 \n"
 					+ "     bc1f notEqual\n"
 					+ "     li $t2, 1 #$t2 is true\n"
 					+ "     j endIf\n"
@@ -130,9 +130,9 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     endIf:\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "<=" ){
+			}else if( operation.equals("<=" ) ){
 				
-				answer += "     c.le.s $f4, $f5 \n"
+				answer += "     c.le.s $t0, $t1 \n"
 					+ "     bc1f notEqual\n"
 					+ "     li $t2, 1 #$t2 is true\n"
 					+ "     j endIf\n"
@@ -141,9 +141,9 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     endIf:\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == ">=" ){
+			}else if( operation.equals(">=" ) ){
 				
-				answer += "     c.le.s $f5, $f4 \n"
+				answer += "     c.le.s $t1, $t0 \n"
 					+ "     bc1f notEqual\n"
 					+ "     li $t2, 1 #$t2 is true\n"
 					+ "     j endIf\n"
@@ -152,9 +152,9 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     endIf:\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "<" ){
+			}else if( operation.equals("<" ) ){
 				
-				answer += "     c.lt.s $f4, $f5 \n"
+				answer += "     c.lt.s $t0, $t1 \n"
 					+ "     bc1f notEqual\n"
 					+ "     li $t2, 1 #$t2 is true\n"
 					+ "     j endIf\n"
@@ -164,9 +164,9 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     sw $t2, ($sp) #put on stack\n";
 
 
-			}else if( operation == ">" ){
+			}else if( operation.equals(">" ) ){
 					
-				answer += "     c.lt.s $f5, $f4 \n"
+				answer += "     c.lt.s $t1, $t0 \n"
 					+ "     bc1f notEqual\n"
 					+ "     li $t2, 1 #$t2 is true\n"
 					+ "     j endIf\n"
@@ -182,37 +182,38 @@ public class OperationExpressionNode extends ExpressionNode {
 
 			if( leftExpression.getStandardType() == EnumStandardType.REAL ){
 
-				answer += "     lw $f4, 4($sp) \n"
-					+ "     cvt.w.s $t0, $f4 \n"
+				answer += "     lw $t0, 4($sp) \n"
+					+ "     cvt.w.s $t0, $t0 \n"
 					+ "     lw $t1, ($sp) \n";
 
 			}else if( rightExpression.getStandardType() == EnumStandardType.REAL ){
 
-				answer += "     lw $f4, ($sp) \n"
-					+ "     cvt.w.s $t1, $f4 \n"
-					+ "     lw $t0, 4($sp) \n";
+				answer += "     lw $t0, 4($sp) \n"
+					+ "     lw $t1, ($sp) \n"
+					+ "     cvt.w.s $t1, $t1 \n";
 
 			}else{
 
 				answer += "     lw $t0, 4($sp) \n"
-					+ "     lw $t1, ($sp) \n"
-					+ "     addi $sp, $sp, 4 #save room for one word on stack\n";
+					+ "     lw $t1, ($sp) \n";
 
 			}
 
+			answer += "     addi $sp, $sp, 4 #save room for one word on stack\n";
+			
 			//code to put operation onto stack
 			
-			if( operation == "+" ){
+			if( operation.equals("+" ) ){
 
 				answer += "     add $t2, $t0, $t1 #operation result in $t2\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "-" ){
+			}else if( operation.equals("-" ) ){
 
 				answer += "     sub $t2, $t0, $t1 #operation result in $t2\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "or" ){
+			}else if( operation.equals("or" ) ){
 				
 				answer += "     bne $t0, $zero, success\n"
 					+ "     bne $t1, $zero, success\n"
@@ -223,25 +224,25 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     endIf:\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "*" ){
+			}else if( operation.equals("*" ) ){
 
 				answer += "     mult $t0, $t1 #operation result in $LO\n"
 					+ "     mflo $t2 #result in $t2\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "/" ){
+			}else if( operation.equals("/" ) ){
 
 				answer += "     div $t0, $t1 #operation result in $LO\n"
 					+ "     mflo $t2 #result in $t2\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "mod" ){
+			}else if( operation.equals("mod" ) ){
 
 				answer += "     div $t0, $t1 #operation result in $LO\n"
 					+ "     mfhi $t2 #result in $t2\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "and" ){
+			}else if( operation.equals("and" ) ){
 
 				answer += "     beq $t0, $zero, fail\n"
 					+ "     beq $t1, $zero, fail\n"
@@ -252,7 +253,7 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     endIf:\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "=" ){
+			}else if( operation.equals("=" ) ){
 
 				answer += "     bne $t0, $t1, notEqual\n"
 					+ "     li $t2, 1 #$t2 is true\n"
@@ -262,7 +263,7 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     endIf:\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "<=" ){
+			}else if( operation.equals("<=" ) ){
 
 				answer += "     bne $t0, $t1, notEqual\n"
 					+ "     li $t2, 1 #$t2 is true\n"
@@ -272,7 +273,7 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     endIf:\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == ">=" ){
+			}else if( operation.equals(">=" ) ){
 
 				answer += "     bne $t0, $t1, notEqual\n"
 					+ "     li $t2, 1 #$t2 is true\n"
@@ -282,12 +283,12 @@ public class OperationExpressionNode extends ExpressionNode {
 					+ "     endIf:\n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == "<" ){
+			}else if( operation.equals("<" ) ){
 
 				answer += "     slt $t2, $t0, $t1 \n"
 					+ "     sw $t2, ($sp) #put on stack\n";
 
-			}else if( operation == ">" ){
+			}else if( operation.equals(">" ) ){
 
 				answer += "     slt $t2, $t1, $t0 \n"
 					+ "     sw $t2, ($sp) #put on stack\n";
