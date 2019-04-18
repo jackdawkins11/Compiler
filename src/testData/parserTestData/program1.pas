@@ -1,19 +1,30 @@
 
 program foo;
 
-var fee, fi, fo, fum : integer;
+var x, y, z : integer;
+
+function square( number : integer ) : integer;
+var returnval : integer;
 begin
-	fee := 4;
-	fi := 5;
-	fo := 3 * fee + fi;
-	if fo < 13
-	then
-		fo := 13
-	else
-		fo := 26
+	returnval := number * number;
+	return (returnval)
+end
 ;
 
-write( fo )
+begin
+
+	read( x );
+
+	y := square( x );
+
+	write( y );
+	
+	read( y );
+
+	z := square( y );
+
+	write( z )
+
 end
 .
 

@@ -3,15 +3,15 @@ program foo;
 
 var fee, fi, fo, fum : integer;
 
-function funct ( x, y, z : real ) : integer;
-var a, b, c : real;
+function funct ( x, y, z : integer ) : integer;
+var varA, varB, varC : real;
 begin
 	
-	a := x * y + x;
+	varA := x * y + x;
 
-	b := c + a;
+	varB := varA + varB;
 
-	c := 100
+	varC := 100
 	
 end
 ;

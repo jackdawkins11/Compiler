@@ -77,6 +77,9 @@ public class SubProgramValueExpressionNode extends ExpressionNode {
 
 		String answer = "     #SubProgramValueExpressionNode\n";
 
+		answer += "     addi $sp, $sp, -4\n"
+			+ "     sw $ra, ($sp) #save $ra\n";
+
 		for( int i =0 ; i < parameters.size(); i++){
 
 			answer += parameters.get( i ).toMips();
@@ -85,18 +88,21 @@ public class SubProgramValueExpressionNode extends ExpressionNode {
 
 		answer += "     jal " + subProgram.getName() + "\n";
 
+		answer += "     lw $ra, ($sp) #restore $ra\n"
+			+ "     addi $sp, $sp, 4\n";
+
 		if( subProgram.getStandardType() == EnumStandardType.REAL ){
 
 			answer += "     addi $sp, $sp, -4 #make room on stack\n"
-				+ "     lw $f0, ($sp) #put on stack\n";
+				+ "     sw $f0, ($sp) #put on stack\n";
 
 		}else{
 
 			answer += "     addi $sp, $sp, -4 #make room on stack\n"
-				+ "     lw $v0, ($sp) #put on stack\n";
+				+ "     sw $v0, ($sp) #put on stack\n";
 
 		}
-
+		
 		answer += "     #end SubProgramValueExpressionNode\n";
 
 		return answer;

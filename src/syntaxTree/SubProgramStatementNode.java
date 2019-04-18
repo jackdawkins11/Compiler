@@ -67,6 +67,9 @@ public class SubProgramStatementNode extends StatementNode {
 
 		String answer = "     #SubProgramStatementNode\n";
 
+		answer += "     addi $sp, $sp, -4\n"
+			+ "     sw $ra, ($sp) #save $ra\n";
+
 		for( int i =0 ; i < parameters.size(); i++){
 
 			answer += parameters.get( i ).toMips();
@@ -74,7 +77,10 @@ public class SubProgramStatementNode extends StatementNode {
 		}
 
 		answer += "     jal " + subProgram.getName() + "\n";
-		
+	
+		answer += "     lw $ra, ($sp) #restore $ra\n"
+			+ "     addi $sp, $sp, 4\n";
+
 		answer += "     #end SubProgramStatementNode\n";
 
 		return answer;
