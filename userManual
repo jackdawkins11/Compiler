@@ -1,0 +1,10 @@
+
+This software takes as input a file containaing pascal code
+and outputs a file containing mips code.
+
+To compile the file "program.pas":
+
+java -jar production.jar program.pas
+
+The output will be a file called "output.asm"
+that can be run on a mips simulator/machine.
