@@ -76,8 +76,7 @@ public class DeclarationsNode extends SyntaxTreeNode {
 
 		String answer = "     #DeclarationsNode being set from stack.\n";
 
-		answer += "     addi $sp, $sp, "
-			+ "     " + String.valueOf( 4 * variables.size() ) + " #pop stack \n";
+		answer += "     addi $sp, $sp, " + String.valueOf( 4 * variables.size() ) + " #pop stack \n";
 
 		for( int i = 0; i < variables.size(); i++ ){
 

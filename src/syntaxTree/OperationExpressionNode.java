@@ -87,18 +87,16 @@ public class OperationExpressionNode extends ExpressionNode {
 
 		//add code for second expression
 		answer += rightExpression.toMips();
-
+		
 		if( leftExpression.getStandardType() == EnumStandardType.REAL
 		 	&& leftExpression.getStandardType() == rightExpression.getStandardType() ){
-
+		
 			//code to put expressions into $t0, $t1
 
 			answer += "     lw $t0, 4($sp) \n"
 				+ "     lw $t1, ($sp) \n"
 				+ "     addi $sp, $sp, 4 #save room for one word on stack\n";
-
-			//code to put operation onto stack
-			
+	
 			if( operation.equals("+" ) ){
 
 				answer += "     add.s $t2, $t0, $t1 #operation result in $t2\n"
