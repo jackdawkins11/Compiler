@@ -98,12 +98,24 @@ public class VariableAssignmentStatementNode extends StatementNode{
 	
 		}else{
 
-			answer += rValue.toMips()
-				+ "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
-				+ "     lw $t1, ($sp) #$t1 is value\n"
-				+ "     addi $sp, $sp, 4 #pop stack\n"
-				+ "     sw $t1, ($t0) #set var\n";
+			if( variable.getStandardType() == EnumStandardType.REAL ){
+
+				answer += rValue.toMips()
+					+ "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
+					+ "     lwc1 $f1, ($sp) #$t1 is value\n"
+					+ "     addi $sp, $sp, 4 #pop stack\n"
+					+ "     swc1 $f1, ($t0) #set var\n";
+
+			}else{	
+
+				answer += rValue.toMips()
+					+ "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
+					+ "     lw $t1, ($sp) #$t1 is value\n"
+					+ "     addi $sp, $sp, 4 #pop stack\n"
+					+ "     sw $t1, ($t0) #set var\n";
 	
+			}
+
 		}
 
 		answer += "     #end VariableAssignmentStatementNode\n";

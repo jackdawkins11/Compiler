@@ -94,7 +94,7 @@ public class SubProgramValueExpressionNode extends ExpressionNode {
 		if( subProgram.getStandardType() == EnumStandardType.REAL ){
 
 			answer += "     addi $sp, $sp, -4 #make room on stack\n"
-				+ "     sw $f0, ($sp) #put on stack\n";
+				+ "     swc1 $f0, ($sp) #put on stack\n";
 
 		}else{
 

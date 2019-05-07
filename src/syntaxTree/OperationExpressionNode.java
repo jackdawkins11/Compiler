@@ -91,87 +91,87 @@ public class OperationExpressionNode extends ExpressionNode {
 		if( leftExpression.getStandardType() == EnumStandardType.REAL
 		 	&& leftExpression.getStandardType() == rightExpression.getStandardType() ){
 		
-			//code to put expressions into $t0, $t1
+			//code to put expressions into $f0, $f1
 
-			answer += "     lw $t0, 4($sp) \n"
-				+ "     lw $t1, ($sp) \n"
+			answer += "     lwc1 $f0, 4($sp) \n"
+				+ "     lwc1 $f1, ($sp) \n"
 				+ "     addi $sp, $sp, 4 #save room for one word on stack\n";
 	
 			if( operation.equals("+" ) ){
 
-				answer += "     add.s $t2, $t0, $t1 #operation result in $t2\n"
-					+ "     s.s $t2, ($sp) #put on stack\n";
+				answer += "     add.s $f2, $f0, $f1 #operation result in $f2\n"
+					+ "     swc1 $f2, ($sp) #put on stack\n";
 
 			}else if( operation.equals("-" ) ){
 
-				answer += "     sub.s $t2, $t0, $t1 #operation result in $t2\n"
-					+ "     s.s $t2, ($sp) #put on stack\n";
+				answer += "     sub.s $f2, $f0, $f1 #operation result in $f2\n"
+					+ "     swc1 $f2, ($sp) #put on stack\n";
 
 			}else if( operation.equals("*" ) ){
 
-				answer += "     mult.s $t2, $t0, $t1 #operation result in $t2\n"
-					+ "     s.s $t2, ($sp) #put on stack\n";
+				answer += "     mult.s $f2, $f0, $f1 #operation result in $f2\n"
+					+ "     swc1 $f2, ($sp) #put on stack\n";
 
 			}else if( operation.equals("/" ) ){
 
-				answer += "     div $t2, $t0, $t1 #operation result in $t2\n"
-					+ "     s.s $t2, ($sp) #put on stack\n";
+				answer += "     div $f2, $f0, $f1 #operation result in $f2\n"
+					+ "     swc1 $f2, ($sp) #put on stack\n";
 
 			}else if( operation.equals("=" ) ){
 
-				answer += "     c.eq.s $t0, $t1 \n"
+				answer += "     c.eq.s $f0, $f1 \n"
 					+ "     bc1f notEqual\n"
-					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     li $f2, 1 #$f2 is true\n"
 					+ "     j endIf\n"
 					+ "     notEqual:\n"
-					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     li $f2, 0 #$f2 is false\n"
 					+ "     endIf:\n"
-					+ "     sw $t2, ($sp) #put on stack\n";
+					+ "     sw $f2, ($sp) #put on stack\n";
 
 			}else if( operation.equals("<=" ) ){
 				
-				answer += "     c.le.s $t0, $t1 \n"
+				answer += "     c.le.s $f0, $f1 \n"
 					+ "     bc1f notEqual\n"
-					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     li $f2, 1 #$f2 is true\n"
 					+ "     j endIf\n"
 					+ "     notEqual:\n"
-					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     li $f2, 0 #$f2 is false\n"
 					+ "     endIf:\n"
-					+ "     sw $t2, ($sp) #put on stack\n";
+					+ "     sw $f2, ($sp) #put on stack\n";
 
 			}else if( operation.equals(">=" ) ){
 				
-				answer += "     c.le.s $t1, $t0 \n"
+				answer += "     c.le.s $f1, $f0 \n"
 					+ "     bc1f notEqual\n"
-					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     li $f2, 1 #$f2 is true\n"
 					+ "     j endIf\n"
 					+ "     notEqual:\n"
-					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     li $f2, 0 #$f2 is false\n"
 					+ "     endIf:\n"
-					+ "     sw $t2, ($sp) #put on stack\n";
+					+ "     sw $f2, ($sp) #put on stack\n";
 
 			}else if( operation.equals("<" ) ){
 				
-				answer += "     c.lt.s $t0, $t1 \n"
+				answer += "     c.lt.s $f0, $f1 \n"
 					+ "     bc1f notEqual\n"
-					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     li $f2, 1 #$f2 is true\n"
 					+ "     j endIf\n"
 					+ "     notEqual:\n"
-					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     li $f2, 0 #$f2 is false\n"
 					+ "     endIf:\n"
-					+ "     sw $t2, ($sp) #put on stack\n";
+					+ "     sw $f2, ($sp) #put on stack\n";
 
 
 			}else if( operation.equals(">" ) ){
 					
-				answer += "     c.lt.s $t1, $t0 \n"
+				answer += "     c.lt.s $f1, $f0 \n"
 					+ "     bc1f notEqual\n"
-					+ "     li $t2, 1 #$t2 is true\n"
+					+ "     li $f2, 1 #$f2 is true\n"
 					+ "     j endIf\n"
 					+ "     notEqual:\n"
-					+ "     li $t2, 0 #$t2 is false\n"
+					+ "     li $f2, 0 #$f2 is false\n"
 					+ "     endIf:\n"
-					+ "     sw $t2, ($sp) #put on stack\n";
+					+ "     sw $f2, ($sp) #put on stack\n";
 			}
 
 		}else{
@@ -180,15 +180,15 @@ public class OperationExpressionNode extends ExpressionNode {
 
 			if( leftExpression.getStandardType() == EnumStandardType.REAL ){
 
-				answer += "     lw $t0, 4($sp) \n"
-					+ "     cvt.w.s $t0, $t0 \n"
+				answer += "     lwc1 $f0, 4($sp) \n"
+					+ "     cvt.w.s $t0, $f0 \n"
 					+ "     lw $t1, ($sp) \n";
 
 			}else if( rightExpression.getStandardType() == EnumStandardType.REAL ){
 
 				answer += "     lw $t0, 4($sp) \n"
-					+ "     lw $t1, ($sp) \n"
-					+ "     cvt.w.s $t1, $t1 \n";
+					+ "     lwc1 $f1, ($sp) \n"
+					+ "     cvt.w.s $t1, $f1 \n";
 
 			}else{
 

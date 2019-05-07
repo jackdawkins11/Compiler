@@ -52,7 +52,7 @@ public class ReturnStatementNode extends StatementNode {
 		if( returnExpression.getStandardType()
 				== EnumStandardType.REAL ){
 
-			answer += "     lw $f0, ($sp) #$f0 is floating point return\n"
+			answer += "     lwc1 $f0, ($sp) #$f0 is floating point return\n"
 				+ "     addi $sp, $sp, 4 #pop stack\n"
 				;
 

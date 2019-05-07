@@ -58,7 +58,7 @@ public class ReadStatementNode extends StatementNode {
 			answer += "     li $v0, 6 #read float is syscall 6\n"
 				+ "     syscall\n"
 				+ "     la $t0, " + variable.getName() + " #$t0 is location of var\n"
-				+ "     sw $f0, ($t0) #set var\n";
+				+ "     swc1 $f0, ($t0) #set var\n";
 
 		}else{
 
