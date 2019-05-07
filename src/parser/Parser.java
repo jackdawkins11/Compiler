@@ -214,7 +214,7 @@ public class Parser{
 
 				variableType = new VariableType( rows, cols, EnumStandardType.INTEGER );
 
-			}else{ throw new Exception( "Error parsing variable \"type\"." ); }
+			}else{ throw new Exception( "Error parsing array." ); }
 
 		}
 
@@ -510,7 +510,7 @@ public class Parser{
 
 			statementNode = new ReturnStatementNode( returnExpression );
 
-		}else{ throw new Exception( "Couldnt find statement start." ); }
+		}else{ throw new Exception( "Couldnt find any token to start statement." ); }
 
 		return statementNode;
 
@@ -698,7 +698,7 @@ public class Parser{
 
 		}else{
 
-			throw new Exception( "Couldn't start factor." );
+			throw new Exception( "Couldn't find token to start factor." );
 
 		}
 
