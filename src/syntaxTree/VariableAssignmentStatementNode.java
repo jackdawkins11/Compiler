@@ -90,7 +90,7 @@ public class VariableAssignmentStatementNode extends StatementNode{
 				+ "     lw $t0, 4($sp) #$t0 is array index\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     add $t0, $t0, $t0\n"
-				+ "     lw $t1, " + variable.getName() + " #$t1 is array start\n"
+				+ "     la $t1, " + variable.getName() + " #$t1 is array start\n"
 				+ "     add $t0, $t1, $t0 # $t0 is value\n"
 				+ "     lw $t1, ($sp) #$t1 is value\n"
 				+ "     addi $sp, $sp, 8 #pop stack\n"

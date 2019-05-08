@@ -89,7 +89,7 @@ public class VariableValueExpressionNode extends ExpressionNode {
 				+ "     lw $t0, ($sp) #$t0 is array index\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     add $t0, $t0, $t0\n"
-				+ "     lw $t1, " + variable.getName() + " #$t1 is array start\n"
+				+ "     la $t1, " + variable.getName() + " #$t1 is array start\n"
 				+ "     add $t0, $t1, $t0 # $t0 is value\n"
 				+ "     lw $t1, ($t0) #$t1 is value\n"
 				+ "     sw $t1, ($sp) #add to stack\n";
