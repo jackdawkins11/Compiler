@@ -24,7 +24,7 @@ public class VariableValueExpressionNode extends ExpressionNode {
 
 	public VariableValueExpressionNode( VariableNode variableTmp, ExpressionNode arrayIndexTmp ) throws RuntimeException {
 
-		if( arrayIndex.getStandardType() != EnumStandardType.INTEGER ){
+		if( arrayIndexTmp.getStandardType() != EnumStandardType.INTEGER ){
 
 			throw new RuntimeException( "cannot access array without integer type" );
 
@@ -93,7 +93,7 @@ public class VariableValueExpressionNode extends ExpressionNode {
 		
 			answer += arrayIndex.toMips()		//array index on stack
 				+ "     lw $t0, ($sp) #$t0 is array index\n"
-				+ "	addi $sp, $sp, 4 $pop stack\n"
+				+ "	addi $sp, $sp, 4 #pop stack\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     la $t1, " + variable.getName() + " #$t1 is array start\n"
@@ -115,7 +115,7 @@ public class VariableValueExpressionNode extends ExpressionNode {
 
 			answer += "lw $t1, ($t0) #val in $t1\n"
 				+ "addi $sp, $sp, -4 #make room on stack\n"
-				+ "sw $t1, ($sp) $save to stack\n";
+				+ "sw $t1, ($sp) #save to stack\n";
 
 		}
 

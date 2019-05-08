@@ -24,17 +24,7 @@ public class CompilerMain{
 
 		ProgramNode programNode = null;
 
-		try{
-
-			programNode = parser.program();
-
-		}catch( Exception e ){
-
-			System.out.println("Exception: " + e.getMessage() );
-
-			System.exit( 1 );
-
-		}
+		programNode = parser.program();
 
 		PrintWriter output = null;
 		

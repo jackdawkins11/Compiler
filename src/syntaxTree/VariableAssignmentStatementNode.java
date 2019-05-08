@@ -29,7 +29,7 @@ public class VariableAssignmentStatementNode extends StatementNode{
 			ExpressionNode arrayOffsetTmp,
 			ExpressionNode rValueTmp ) throws RuntimeException {
 
-		if( arrayOffset.getStandardType() != EnumStandardType.INTEGER ){
+		if( arrayOffsetTmp.getStandardType() != EnumStandardType.INTEGER ){
 
 			throw new RuntimeException( "Cannot index array with f.p." );
 
@@ -89,11 +89,13 @@ public class VariableAssignmentStatementNode extends StatementNode{
 
 		String answer = "     #VariableAssignmentStatementNode\n";
 
+		answer += rValue.toMips();	//expression on stack
+		
 		if( arrayOffset != null ){
 		
 			answer += arrayOffset.toMips()		//array index on stack
 				+ "     lw $t0, ($sp) #$t0 is array index\n"
-				+ "	addi $sp, $sp, 4 $pop stack\n"
+				+ "	addi $sp, $sp, 4 #pop stack\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     la $t1, " + variable.getName() + " #$t1 is array start\n"
@@ -104,8 +106,6 @@ public class VariableAssignmentStatementNode extends StatementNode{
 			answer += "     la $t0, " + variable.getName() + " #$t0 is variable address\n";
 		
 		}
-		
-		answer += rValue.toMips();	//expression on stack
 		
 		if( rValue.getStandardType() == EnumStandardType.REAL 
 				&& variable.getStandardType() == EnumStandardType.REAL ){
