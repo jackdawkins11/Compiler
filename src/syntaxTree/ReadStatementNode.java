@@ -21,13 +21,13 @@ public class ReadStatementNode extends StatementNode {
 	//     Constructor     //
 	/////////////////////////
 
-	public ReadStatementNode( VariableNode variableTmp ) throws Exception {
+	public ReadStatementNode( VariableNode variableTmp ) throws RuntimeException {
 
 		variable = variableTmp;
 
 		if( variable.isArray() ){
 
-			throw new Exception( "Cannot call read with array." );
+			throw new RuntimeException( "Cannot call read with array." );
 
 		}
 

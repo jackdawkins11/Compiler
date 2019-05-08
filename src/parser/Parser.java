@@ -49,7 +49,7 @@ public class Parser{
 	//	Public Functions       //
 	/////////////////////////////////
 
-	public ProgramNode program() throws Exception {
+	public ProgramNode program(){
 
 		match( EnumToken.PROGRAM );
 
@@ -79,7 +79,7 @@ public class Parser{
 	//      Helpers       //
 	////////////////////////	
 	
-	private String match( EnumToken expectedType ) throws Exception {
+	private String match( EnumToken expectedType ) throws RuntimeException {
 
 		String ret = null;
 
@@ -107,7 +107,7 @@ public class Parser{
 
 			if( !endOfFile ){ lookAHeadTypeString = lookAHead.getType().toString(); }
 
-			throw new Exception( "Trying to match a " + expectedType.toString() + " failed. Found " + lookAHeadTypeString
+			throw new RuntimeException( "Trying to match a " + expectedType.toString() + " failed. Found " + lookAHeadTypeString
 				+ " instead." );
 
 		}
@@ -116,7 +116,7 @@ public class Parser{
 
 	}
 
-	ArrayList< String > identifier_list() throws Exception {
+	ArrayList< String > identifier_list(){
 
 		ArrayList< String > ID_list = new ArrayList< String >();
 
@@ -134,7 +134,7 @@ public class Parser{
 
 	}
 
-	DeclarationsNode declarations() throws Exception {
+	DeclarationsNode declarations(){
 
 		DeclarationsNode declarationsNode = new DeclarationsNode();
 
@@ -166,7 +166,7 @@ public class Parser{
 
 	}
 	
-	VariableType type() throws Exception {
+	VariableType type() throws RuntimeException {
 
 		VariableType variableType = null;
 
@@ -214,7 +214,7 @@ public class Parser{
 
 				variableType = new VariableType( rows, cols, EnumStandardType.INTEGER );
 
-			}else{ throw new Exception( "Error parsing array." ); }
+			}else{ throw new RuntimeException( "Error parsing array." ); }
 
 		}
 
@@ -222,7 +222,7 @@ public class Parser{
 	
 	}
 
-	SubProgramDeclarationsNode subprogram_declarations() throws Exception {
+	SubProgramDeclarationsNode subprogram_declarations(){
 
 		SubProgramDeclarationsNode subProgramDeclarationsNode = new SubProgramDeclarationsNode();
 
@@ -243,7 +243,7 @@ public class Parser{
 
 	}
 
-	SubProgramNode subprogram_declaration() throws Exception {
+	SubProgramNode subprogram_declaration() throws RuntimeException {
 
 		SubProgramNode subProgramNode = null;
 
@@ -271,7 +271,7 @@ public class Parser{
 
 				returnType = EnumStandardType.REAL;
 
-			}else{ throw new Exception( "Error no function return type." ); }
+			}else{ throw new RuntimeException( "Error no function return type." ); }
 
 			match( EnumToken.SEMICOLON );
 
@@ -307,14 +307,13 @@ public class Parser{
 					parameters,
 					main );
 
-		}
-
+		}else{ throw new RuntimeException( "Couldn't find subprogram declaration." ); }
 
 		return subProgramNode;
 
 	}
 
-	DeclarationsNode arguments() throws Exception {
+	DeclarationsNode arguments(){
 
 		DeclarationsNode declarationsNode = new DeclarationsNode();
 		
@@ -360,7 +359,7 @@ public class Parser{
 
 	}
 
-	CompoundStatementNode compound_statement() throws Exception {
+	CompoundStatementNode compound_statement(){
 
 		CompoundStatementNode compoundStatementNode = new CompoundStatementNode();
 
@@ -388,7 +387,7 @@ public class Parser{
 
 	}
 
-	StatementNode statement() throws Exception {
+	StatementNode statement() throws RuntimeException {
 
 		StatementNode statementNode = null;
 
@@ -510,13 +509,13 @@ public class Parser{
 
 			statementNode = new ReturnStatementNode( returnExpression );
 
-		}else{ throw new Exception( "Couldnt find any token to start statement." ); }
+		}else{ throw new RuntimeException( "Couldnt find any token to start statement." ); }
 
 		return statementNode;
 
 	}
 
-	ArrayList< ExpressionNode > expression_list() throws Exception {
+	ArrayList< ExpressionNode > expression_list(){
 
 		ArrayList< ExpressionNode > expressionList = new ArrayList< ExpressionNode >();
 
@@ -534,7 +533,7 @@ public class Parser{
 
 	}
 
-	ExpressionNode expression() throws Exception {
+	ExpressionNode expression(){
 
 		ExpressionNode result = null;
 
@@ -558,7 +557,7 @@ public class Parser{
 
 	}
 
-	ExpressionNode simple_expression() throws Exception {
+	ExpressionNode simple_expression() throws RuntimeException {
 		
 		String signString = "+";
 
@@ -596,7 +595,7 @@ public class Parser{
 
 	}
 
-	ExpressionNode term() throws Exception {
+	ExpressionNode term(){
 
 		ArrayList< ExpressionNode > factors = new ArrayList< ExpressionNode >();
 
@@ -626,7 +625,7 @@ public class Parser{
 
 	}
 
-	ExpressionNode factor() throws Exception {
+	ExpressionNode factor() throws RuntimeException {
 
 		ExpressionNode result = null;
 
@@ -638,7 +637,7 @@ public class Parser{
 
 				if( !symbolTable.isVariableName( idName ) ){
 
-					throw new Exception( "Variable " + idName + " not declared." );
+					throw new RuntimeException( "Variable " + idName + " not declared." );
 
 				}
 				
@@ -654,7 +653,7 @@ public class Parser{
 
 				if( !symbolTable.isSubProgramName( idName ) ){
 
-					throw new Exception( "Subprogram " + idName + " not declared." );
+					throw new RuntimeException( "Subprogram " + idName + " not declared." );
 
 				}
 
@@ -670,7 +669,7 @@ public class Parser{
 
 				if( !symbolTable.isVariableName( idName ) ){
 
-					throw new Exception( "Variable " + idName + " not declared." );
+					throw new RuntimeException( "Variable " + idName + " not declared." );
 
 				}
 				
@@ -698,7 +697,7 @@ public class Parser{
 
 		}else{
 
-			throw new Exception( "Couldn't find token to start factor." );
+			throw new RuntimeException( "Couldn't find token to start factor." );
 
 		}
 

@@ -20,14 +20,14 @@ public class NotValueExpressionNode extends ExpressionNode {
 	//     Constructor     //
 	/////////////////////////
 
-	public NotValueExpressionNode( ExpressionNode expressionTmp ) throws Exception {
+	public NotValueExpressionNode( ExpressionNode expressionTmp ) throws RuntimeException {
 
 		expression = expressionTmp;
 
 		if( expression.getStandardType()
 				== EnumStandardType.REAL ){
 
-			throw new Exception( "Cannot convert real to boolean." );
+			throw new RuntimeException( "Cannot convert real to boolean." );
 
 		}
 

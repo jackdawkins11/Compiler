@@ -27,7 +27,13 @@ public class VariableAssignmentStatementNode extends StatementNode{
 
 	public VariableAssignmentStatementNode( VariableNode variableTmp,
 			ExpressionNode arrayOffsetTmp,
-			ExpressionNode rValueTmp ){
+			ExpressionNode rValueTmp ) throws RuntimeException {
+
+		if( arrayOffset.getStandardType() != EnumStandardType.INTEGER ){
+
+			throw new RuntimeException( "Cannot index array with f.p." );
+
+		}
 
 		variable = variableTmp;
 
@@ -83,38 +89,53 @@ public class VariableAssignmentStatementNode extends StatementNode{
 
 		String answer = "     #VariableAssignmentStatementNode\n";
 
-		if( variable.isArray() ){
+		if( arrayOffset != null ){
 		
-			answer += arrayOffset.toMips()
-				+ rValue.toMips()
-				+ "     lw $t0, 4($sp) #$t0 is array index\n"
+			answer += arrayOffset.toMips()		//array index on stack
+				+ "     lw $t0, ($sp) #$t0 is array index\n"
+				+ "	addi $sp, $sp, 4 $pop stack\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     add $t0, $t0, $t0\n"
 				+ "     la $t1, " + variable.getName() + " #$t1 is array start\n"
-				+ "     add $t0, $t1, $t0 # $t0 is value\n"
-				+ "     lw $t1, ($sp) #$t1 is value\n"
-				+ "     addi $sp, $sp, 8 #pop stack\n"
-				+ "     sw $t1, ($t0) #set array\n";
-	
+				+ "     add $t0, $t1, $t0 # $t0 is variable location\n";
+
 		}else{
 
-			if( variable.getStandardType() == EnumStandardType.REAL ){
+			answer += "     la $t0, " + variable.getName() + " #$t0 is variable address\n";
+		
+		}
+		
+		answer += rValue.toMips();	//expression on stack
+		
+		if( rValue.getStandardType() == EnumStandardType.REAL 
+				&& variable.getStandardType() == EnumStandardType.REAL ){
 
-				answer += rValue.toMips()
-					+ "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
-					+ "     lwc1 $f1, ($sp) #$t1 is value\n"
-					+ "     addi $sp, $sp, 4 #pop stack\n"
-					+ "     swc1 $f1, ($t0) #set var\n";
+			answer += "     lwc1 $f1, ($sp) #$f1 is value\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ "     swc1 $f1, ($t0) #set var\n";
 
-			}else{	
+		}else if( rValue.getStandardType() == EnumStandardType.REAL
+				&& variable.getStandardType() == EnumStandardType.INTEGER ){
 
-				answer += rValue.toMips()
-					+ "     la $t0, " + variable.getName() + " #$t0 is variable address\n"
-					+ "     lw $t1, ($sp) #$t1 is value\n"
-					+ "     addi $sp, $sp, 4 #pop stack\n"
-					+ "     sw $t1, ($t0) #set var\n";
-	
-			}
+			answer += "     lwc1 $f1, ($sp) #$f1 is value\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ "     cvt.w.s $t1, $f1 #convert to integer\n"
+				+ "     swc1 $t1, ($t0) #set var\n";
+
+		}else if( rValue.getStandardType() == EnumStandardType.INTEGER 
+				&& variable.getStandardType() == EnumStandardType.INTEGER ){
+
+			answer += "     lw $t1, ($sp) #$t1 is value\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ "     sw $t1, ($t0) #set var\n";
+
+		}else if( rValue.getStandardType() == EnumStandardType.INTEGER 
+				&& variable.getStandardType() == EnumStandardType.REAL ){
+
+			answer += "     lw $t1, ($sp) #$t1 is value\n"
+				+ "     addi $sp, $sp, 4 #pop stack\n"
+				+ "     cvt.s.w $f1, $t1 #convert to real\n"
+				+ "     swc1 $f1, ($t0) #set var\n";
 
 		}
 
