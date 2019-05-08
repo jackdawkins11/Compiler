@@ -117,9 +117,9 @@ public class VariableAssignmentStatementNode extends StatementNode{
 		}else if( rValue.getStandardType() == EnumStandardType.REAL
 				&& variable.getStandardType() == EnumStandardType.INTEGER ){
 
-			answer += "     lwc1 $f1, ($sp) #$f1 is value\n"
+			answer += "     lw $t1, ($sp) #$t1 is value\n"
 				+ "     addi $sp, $sp, 4 #pop stack\n"
-				+ "     cvt.w.s $t1, $f1 #convert to integer\n"
+				+ "     cvt.w.s $t1, $t1 #convert to integer\n"
 				+ "     swc1 $t1, ($t0) #set var\n";
 
 		}else if( rValue.getStandardType() == EnumStandardType.INTEGER 
@@ -132,9 +132,9 @@ public class VariableAssignmentStatementNode extends StatementNode{
 		}else if( rValue.getStandardType() == EnumStandardType.INTEGER 
 				&& variable.getStandardType() == EnumStandardType.REAL ){
 
-			answer += "     lw $t1, ($sp) #$t1 is value\n"
+			answer += "     lwc1 $f1, ($sp) #$t1 is value\n"
 				+ "     addi $sp, $sp, 4 #pop stack\n"
-				+ "     cvt.s.w $f1, $t1 #convert to real\n"
+				+ "     cvt.s.w $f1, $f1 #convert to real\n"
 				+ "     swc1 $f1, ($t0) #set var\n";
 
 		}
