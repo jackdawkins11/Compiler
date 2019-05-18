@@ -13,7 +13,7 @@ that can be run on a mips simulator/machine.
 
 I use the QtSpim simulator(https://sourceforge.net/projects/spimsimulator/files/).
 This simulator is a little weird to use. Here are the steps I take when I use it:
-(1) Run the QtSpim application. This will open two windows. One titled "Console" and
+(1) Run the QtSpim application. This will open two windows: one titled "Console" and
 one titled "QtSpim".
 (2) Click the "Load File" button in the "File" drop down menu and then select the
 file with mips code you want to run.
