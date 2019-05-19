@@ -27,7 +27,7 @@ public class NotValueExpressionNode extends ExpressionNode {
 		if( expression.getStandardType()
 				== EnumStandardType.REAL ){
 
-			throw new RuntimeException( "Cannot convert real to boolean." );
+			throw new RuntimeException( "Cannot convert not-expression to boolean." );
 
 		}
 

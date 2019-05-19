@@ -75,7 +75,6 @@ public class VariableValueExpressionNode extends ExpressionNode {
 				+ "VariableValueExpressionNode."
 				+ " Standard Type: " + getStandardType().toString()
 				+ "\n"
-				+ arrayIndex.indentedToString( level + 1 )
 				+ variable.indentedToString( level + 1 );
 
 		}

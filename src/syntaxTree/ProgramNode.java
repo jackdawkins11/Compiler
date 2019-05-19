@@ -46,8 +46,8 @@ public class ProgramNode extends SyntaxTreeNode {
 
 	public String indentedToString( int level ){
 
-		String answer = indentation( level )
-			+ "ProgramNode." 
+		String answer = 
+			"ProgramNode." 
 			+ " Name: " + name 
 			+ "\n"
 			+ variables.indentedToString( level + 1 )
