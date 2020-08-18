@@ -6,7 +6,7 @@ mips assembly.
 
 # Running it
 
-It only runs on linux due to differences in how text files are encoded across operating systems. On linux, you can compile a program by running:
+It only runs on linux. On linux, you can compile a program by running:
 
 	java -jar production.jar program.pas
 
